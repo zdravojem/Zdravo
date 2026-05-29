@@ -1,0 +1,124 @@
+:root {
+  --color-bg-card: #F5F0E8;
+  --color-green-dark: #2C4220;
+  --color-green-primary: #3D5A2E;
+  --color-green-accent: #6B8F3E;
+  --color-green-light: #E8F0E0;
+  --color-text-primary: #2C4220;
+  --color-text-muted: #7A8C6E;
+  --color-white: #FFFFFF;
+  --color-shadow: rgba(44, 66, 32, 0.15);
+
+  --font-serif: 'Lora', Georgia, serif;
+  --font-sans: 'Inter', 'Source Sans 3', system-ui, sans-serif;
+
+  --tap-min: 120px;
+  --radius-card: 32px;
+  --radius-btn: 60px;
+
+  --space-xs: 12px;
+  --space-sm: 24px;
+  --space-md: 40px;
+  --space-lg: 64px;
+  --space-xl: 88px;
+}
+
+@font-face {
+  font-family: 'Lora';
+  src: url('../../assets/fonts/Lora-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Lora';
+  src: url('../../assets/fonts/Lora-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Inter';
+  src: url('../../assets/fonts/Inter-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Inter';
+  src: url('../../assets/fonts/Inter-SemiBold.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-sans);
+  font-size: 28px;
+  line-height: 1.45;
+  color: var(--color-text-primary);
+  background: radial-gradient(circle at top, rgba(245, 240, 232, 0.8) 0%, rgba(232, 240, 224, 0.6) 40%, rgba(245, 240, 232, 0.9) 100%);
+  overflow: hidden;
+  user-select: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+body[data-screen="welcome"] {
+  background:
+    linear-gradient(140deg, rgba(245, 240, 232, 0.85), rgba(107, 143, 62, 0.25)),
+    url('../../assets/images/bg-landscape.jpg') center/cover no-repeat fixed;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  margin: 0;
+  font-family: var(--font-serif);
+  color: var(--color-green-primary);
+}
+
+h1 {
+  font-size: 64px;
+  letter-spacing: 1px;
+}
+
+h2 {
+  font-size: 44px;
+}
+
+h3 {
+  font-size: 36px;
+}
+
+p {
+  margin: 0;
+  color: var(--color-text-muted);
+}
