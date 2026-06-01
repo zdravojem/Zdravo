@@ -555,6 +555,7 @@ const copy = {
     preferencesSubtitle: 'Izberite, kar velja za vas (neobvezno)',
     resultsTitle: 'Predlagani recepti za vas',
     resultsEmpty: 'Brez omejitev',
+    resultsNoMatches: 'Ni receptov, ki bi ustrezali izbranim sestavinam in preferencam.',
     resultsFound: (count) => `Najdenih ${count} receptov`,
     selectedCount: (count) => {
       const label = count === 1 ? 'sestavina' : count === 2 ? 'sestavini' : count === 3 || count === 4 ? 'sestavine' : 'sestavin';
@@ -596,6 +597,7 @@ const copy = {
     preferencesSubtitle: 'Choose what applies to you (optional)',
     resultsTitle: 'Suggested recipes for you',
     resultsEmpty: 'No restrictions',
+    resultsNoMatches: 'No recipes match the selected ingredients and preferences.',
     resultsFound: (count) => `${count} recipes found`,
     selectedCount: (count) => `${count} ingredient${count === 1 ? '' : 's'} selected`,
     missingIngredients: (items) => `Missing: ${items}`,

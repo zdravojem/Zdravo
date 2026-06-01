@@ -63,6 +63,6 @@ export function bind({ actions, root }) {
   }
 
   root.querySelector('[data-action="next"]').addEventListener('pointerdown', () => {
-    actions.goTo('results');
+    actions.showMatchedRecipes();
   });
 }

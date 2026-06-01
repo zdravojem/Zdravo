@@ -20,6 +20,7 @@
   "build": {
     "appId": "si.zdravo.jem",
     "productName": "Zdravo Jem",
+    "icon": "assets/icons/zdravo-jem-icon.ico",
     "directories": {
       "output": "dist"
     },
@@ -27,7 +28,8 @@
       "**/*"
     ],
     "win": {
-      "target": "nsis"
+      "target": "nsis",
+      "icon": "assets/icons/zdravo-jem-icon.ico"
     }
   }
 }

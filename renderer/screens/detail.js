@@ -1,3 +1,5 @@
+import { ingredientImageSrc } from '../ingredient-images.js';
+
 function normalizeName(value) {
   return String(value || '').trim().toLowerCase();
 }
@@ -155,7 +157,9 @@ export function render({ state }) {
                   const amount = amountText(state, item);
                   return `
                     <div class="recipe-ingredient-tile ${hasIt ? 'is-available' : 'is-missing'}">
-                      <span class="recipe-ingredient-icon">${ingredientIcons[item.name_sl] || '&#129367;'}</span>
+                      <span class="recipe-ingredient-photo">
+                        <img src="${ingredientImageSrc(item.name_sl)}" alt="${state.ui.translateIngredient(item.name_sl)}" loading="lazy" />
+                      </span>
                       <span><strong>${state.ui.translateIngredient(item.name_sl)}</strong>${amount}</span>
                     </div>
                   `;
@@ -174,7 +178,9 @@ export function render({ state }) {
                 .map(
                   (item) => `
                     <div class="recipe-market-chip">
-                      <span>${ingredientIcons[item.name_sl] || '&#129367;'}</span>
+                      <span class="recipe-market-chip__photo">
+                        <img src="${ingredientImageSrc(item.name_sl)}" alt="${state.ui.translateIngredient(item.name_sl)}" loading="lazy" />
+                      </span>
                       ${state.ui.translateIngredient(item.name_sl)}
                     </div>
                   `

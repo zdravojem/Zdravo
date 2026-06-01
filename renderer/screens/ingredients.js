@@ -1,69 +1,125 @@
-const checkSvg = `
-<svg class="icon icon-check" viewBox="0 0 40 40" aria-hidden="true" focusable="false">
-  <path d="M10 20l6 6 14-14" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" />
-</svg>`;
+import { ingredientImageSrc, ingredientImageKey } from '../ingredient-images.js';
+
+const productOrderKeys = [
+  'korenje',
+  'paradiznik',
+  'bucke',
+  'krompir',
+  'cebula',
+  'zelje',
+  'jabolka',
+  'jagode',
+  'hruske',
+  'slive',
+  'ajda',
+  'kruh',
+  'govedina',
+  'piscanec',
+  'med'
+];
+
+function normalize(value) {
+  return ingredientImageKey(value);
+}
+
+function allProducts(state) {
+  const rows = Object.values(state.ingredientsByCategory).flat();
+  const byName = new Map(rows.map((item) => [normalize(item.name_sl), item]));
+
+  const ordered = productOrderKeys
+    .map((key) => byName.get(key))
+    .filter(Boolean);
+  const rest = rows.filter(
+    (item) => !productOrderKeys.includes(normalize(item.name_sl))
+  );
+  return ordered.concat(rest);
+}
+
+function visibleProducts(state) {
+  if (state.activeCategory === 'all') {
+    return allProducts(state);
+  }
+  return state.ingredientsByCategory[state.activeCategory] || [];
+}
+
+function categoryLabel(category, locale) {
+  if (category.key === 'meso_ribe') {
+    return locale === 'en' ? 'Meat' : 'Meso';
+  }
+  if (category.key === 'zacimbe') {
+    return locale === 'en' ? 'Herbs' : 'Zeli&#353;&#269;a';
+  }
+  return category.label;
+}
 
 export function render({ state }) {
-  const categories = state.ui.categories;
-  const activeItems = state.ingredientsByCategory[state.activeCategory] || [];
+  const locale = state.ui.locale;
+  const categories = [
+    { key: 'all', label: locale === 'en' ? 'All' : 'Vse' },
+    ...state.ui.categories
+  ];
+  const products = visibleProducts(state);
   const selectedCount = state.selectedIngredients.size;
-  const canContinue = selectedCount > 0;
 
   return `
-    <section class="screen screen--standard">
-      <header class="screen-header">
-        <button class="wordmark" data-action="home">${state.ui.copy.appTitle}</button>
-        <div class="header-copy">
-          <h1>${state.ui.copy.ingredientsTitle}</h1>
-          <p>${state.ui.copy.ingredientsSubtitle}</p>
-        </div>
-        <button class="btn btn--primary btn--home" data-action="home">${state.ui.copy.home}</button>
+    <section class="screen kiosk-screen screen--products">
+      <header class="kiosk-topbar">
+        <button class="kiosk-back" data-action="back" aria-label="${state.ui.copy.back}">
+          <span aria-hidden="true">&#8249;</span>
+          ${state.ui.copy.back}
+        </button>
+        <h1>${state.ui.copy.homeNavItems}</h1>
+        <span></span>
       </header>
 
-      <div class="tab-list" role="tablist">
-        ${categories
-          .map(
-            (category) => `
-              <button
-                class="tab ${category.key === state.activeCategory ? 'is-active' : ''}"
-                data-category="${category.key}"
-                role="tab"
-                aria-selected="${category.key === state.activeCategory}"
-              >
-                <span class="tab-emoji">${category.emoji}</span>
-                <span>${category.label}</span>
-              </button>
-            `
-          )
-          .join('')}
+      <div class="kiosk-scroll">
+        <div class="kiosk-tabs" role="tablist">
+          ${categories
+            .map(
+              (category) => `
+                <button
+                  class="kiosk-tab ${state.activeCategory === category.key ? 'is-active' : ''}"
+                  data-category="${category.key}"
+                  role="tab"
+                  aria-selected="${state.activeCategory === category.key}"
+                >
+                  ${categoryLabel(category, locale)}
+                </button>
+              `
+            )
+            .join('')}
+        </div>
+
+        <div class="product-browser-grid">
+          ${products
+            .map((item) => {
+              const label = state.ui.translateIngredient(item.name_sl);
+              const isSelected = state.selectedIngredients.has(item.name_sl);
+              return `
+                <button
+                  class="product-browser-card ${isSelected ? 'is-selected' : ''}"
+                  data-product="${item.name_sl}"
+                  aria-pressed="${isSelected}"
+                >
+                  <span class="product-browser-card__photo">
+                    <img src="${ingredientImageSrc(item.name_sl)}" alt="${label}" loading="lazy" />
+                  </span>
+                  <span class="product-browser-card__label">${label}</span>
+                  <span class="product-browser-card__check" aria-hidden="true">
+                    <svg viewBox="0 0 24 24">
+                      <path d="M20 6 9 17l-5-5" />
+                    </svg>
+                  </span>
+                </button>
+              `;
+            })
+            .join('')}
+        </div>
       </div>
 
-      <div class="ingredient-grid">
-        ${activeItems
-          .map((item) => {
-            const isSelected = state.selectedIngredients.has(item.name_sl);
-            return `
-              <button
-                class="ingredient-card ${isSelected ? 'is-selected' : ''}"
-                data-ingredient="${item.name_sl}"
-                aria-pressed="${isSelected}"
-              >
-                <div class="ingredient-emoji">${item.emoji || '🥗'}</div>
-                <div class="ingredient-name">${state.ui.translateIngredient(item.name_sl)}</div>
-                <div class="ingredient-check">${checkSvg}</div>
-              </button>
-            `;
-          })
-          .join('')}
-      </div>
-
-      <div class="bottom-bar">
-        <div class="counter-badge">${state.ui.copy.selectedCount(selectedCount)}</div>
-        <button
-          class="btn btn--primary"
-          data-action="next"
-          ${canContinue ? '' : 'disabled'}
-        >
+      <div class="ingredient-selection-bar">
+        <span class="counter-badge">${state.ui.copy.selectedCount(selectedCount)}</span>
+        <button class="btn btn--primary" data-action="next" ${selectedCount ? '' : 'disabled'}>
           ${state.ui.copy.next}
         </button>
       </div>
@@ -71,14 +127,15 @@ export function render({ state }) {
   `;
 }
 
-export function bind({ actions, root }) {
-  root.querySelectorAll('[data-action="home"]').forEach((button) => {
-    button.addEventListener('pointerdown', () => actions.goHome(true));
-  });
+export function bind({ actions, root, state }) {
+  const back = root.querySelector('[data-action="back"]');
+  if (back) {
+    back.addEventListener('pointerdown', () => actions.goHome(false));
+  }
 
-  const tabList = root.querySelector('.tab-list');
-  if (tabList) {
-    tabList.addEventListener('pointerdown', (event) => {
+  const tabs = root.querySelector('.kiosk-tabs');
+  if (tabs) {
+    tabs.addEventListener('pointerdown', (event) => {
       const tab = event.target.closest('[data-category]');
       if (tab) {
         actions.setCategory(tab.dataset.category);
@@ -86,18 +143,22 @@ export function bind({ actions, root }) {
     });
   }
 
-  const grid = root.querySelector('.ingredient-grid');
+  const grid = root.querySelector('.product-browser-grid');
   if (grid) {
     grid.addEventListener('pointerdown', (event) => {
-      const card = event.target.closest('[data-ingredient]');
+      const card = event.target.closest('[data-product]');
       if (card) {
-        actions.toggleIngredient(card.dataset.ingredient);
+        actions.toggleIngredient(card.dataset.product);
       }
     });
   }
 
-  const nextButton = root.querySelector('[data-action="next"]');
-  if (nextButton && !nextButton.disabled) {
-    nextButton.addEventListener('pointerdown', () => actions.goTo('preferences'));
+  const next = root.querySelector('[data-action="next"]');
+  if (next) {
+    next.addEventListener('pointerdown', () => {
+      if (state.selectedIngredients.size) {
+        actions.goTo('preferences');
+      }
+    });
   }
 }

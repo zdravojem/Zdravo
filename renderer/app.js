@@ -4,6 +4,7 @@ import * as ingredientsScreen from './screens/ingredients.js';
 import * as preferencesScreen from './screens/preferences.js';
 import * as resultsScreen from './screens/results.js';
 import * as detailScreen from './screens/detail.js';
+import * as gamesScreen from './screens/games.js';
 import { buildUi } from './i18n.js';
 
 const appRoot = document.getElementById('app');
@@ -29,27 +30,40 @@ function saveLocale(locale) {
 const initialLocale = loadLocale();
 const initialUi = buildUi(initialLocale);
 
-const state = {
-  locale: initialLocale,
-  ui: initialUi,
-  screen: 'welcome',
-  activeCategory: 'zelenjava',
-  ingredientsByCategory: {},
-  selectedIngredients: new Set(),
-  preferences: {
+function defaultPreferences() {
+  return {
     vegetarian: false,
     vegan: false,
     glutenFree: false,
     lactoseFree: false,
     heartHealthy: false,
     quick: false
-  },
+  };
+}
+
+const state = {
+  locale: initialLocale,
+  ui: initialUi,
+  screen: 'welcome',
+  activeCategory: 'zelenjava',
+  activeRecipeCategory: 'all',
+  recipeSearch: '',
+  ingredientsByCategory: {},
+  recipesByCategory: {},
+  selectedIngredients: new Set(),
+  preferences: defaultPreferences(),
   results: [],
   resultsMeta: {
     count: 0,
     label: initialUi.copy.resultsEmpty
   },
-  currentRecipe: null
+  resultsMode: 'matched',
+  resultIngredientFilter: null,
+  currentRecipe: null,
+  activeGame: null,
+  gameScore: 0,
+  gameQuestionIndex: 0,
+  gameAnswered: null
 };
 
 const screens = {
@@ -58,7 +72,8 @@ const screens = {
   ingredients: ingredientsScreen,
   preferences: preferencesScreen,
   results: resultsScreen,
-  detail: detailScreen
+  detail: detailScreen,
+  games: gamesScreen
 };
 
 const shellNavIcons = {
@@ -89,8 +104,27 @@ const shellNavIcons = {
   `
 };
 
-const IDLE_MS = 60000;
+const IDLE_MS = 120000;
 let idleTimer;
+
+// Scale the design surface (.app-root) to fill the viewport edge-to-edge on any
+// screen — portrait kiosk or landscape laptop. The vertical rhythm is fixed at
+// --app-base-h and scaled to the viewport height, while the logical width is
+// derived so that width * scale === viewport width. The kiosk (portrait 9:16)
+// resolves to the ~480px design width unchanged; wider screens simply get more
+// logical width, so the layout fills the screen with no letterbox bars.
+function fitAppScale() {
+  const styles = getComputedStyle(document.documentElement);
+  const baseH = parseFloat(styles.getPropertyValue('--app-base-h')) || 854;
+  const scale = window.innerHeight / baseH;
+  const logicalWidth = window.innerWidth / scale;
+  const rootStyle = document.documentElement.style;
+  rootStyle.setProperty('--app-scale', String(scale));
+  rootStyle.setProperty('--app-logical-w', logicalWidth + 'px');
+}
+
+window.addEventListener('resize', fitAppScale);
+window.addEventListener('orientationchange', fitAppScale);
 
 function normalizeName(value) {
   return String(value || '').trim().toLowerCase();
@@ -107,19 +141,21 @@ document.addEventListener('pointerdown', resetIdleTimer, { passive: true });
 document.addEventListener('touchstart', resetIdleTimer, { passive: true });
 
 function resetState() {
+  gamesScreen.cleanup?.();
   state.activeCategory = 'zelenjava';
+  state.activeRecipeCategory = 'all';
+  state.recipeSearch = '';
   state.selectedIngredients = new Set();
-  state.preferences = {
-    vegetarian: false,
-    vegan: false,
-    glutenFree: false,
-    lactoseFree: false,
-    heartHealthy: false,
-    quick: false
-  };
+  state.preferences = defaultPreferences();
   state.results = [];
   state.resultsMeta = { count: 0, label: state.ui.copy.resultsEmpty };
+  state.resultsMode = 'matched';
+  state.resultIngredientFilter = null;
   state.currentRecipe = null;
+  state.activeGame = null;
+  state.gameScore = 0;
+  state.gameQuestionIndex = 0;
+  state.gameAnswered = null;
 }
 
 async function loadIngredients() {
@@ -134,6 +170,24 @@ async function loadIngredients() {
     grouped[row.category].push(row);
   });
   state.ingredientsByCategory = grouped;
+}
+
+async function loadCategoryRecipes() {
+  const rows = await window.zdravo.dbQuery(
+    `SELECT DISTINCT i.category, r.*
+     FROM recipes r
+     JOIN recipe_ingredients ri ON ri.recipe_id = r.id
+     JOIN ingredients i ON i.id = ri.ingredient_id
+     ORDER BY i.category, r.name_sl`
+  );
+  const grouped = {};
+  rows.forEach((row) => {
+    if (!grouped[row.category]) {
+      grouped[row.category] = [];
+    }
+    grouped[row.category].push(row);
+  });
+  state.recipesByCategory = grouped;
 }
 
 function buildPreferenceLabel() {
@@ -184,6 +238,8 @@ async function computeResults() {
   const selectedNormalized = new Set(
     Array.from(state.selectedIngredients).map(normalizeName)
   );
+  const hasSelectedIngredients = selectedNormalized.size > 0;
+  const filterNormalized = normalizeName(state.resultIngredientFilter);
 
   const scored = recipes.map((recipe) => {
     const ingredients = ingredientMap.get(recipe.id) || [];
@@ -203,13 +259,29 @@ async function computeResults() {
     };
   });
 
-  const withMatch = scored.filter((item) => item.matchCount > 0);
-  let results = withMatch;
-
-  if (results.length < 3) {
-    const remaining = scored.filter((item) => item.matchCount === 0);
-    results = results.concat(remaining);
+  if (state.resultsMode === 'ingredient' && filterNormalized) {
+    state.results = scored.filter((item) =>
+      item.ingredients.some((ingredient) => normalizeName(ingredient.name_sl) === filterNormalized)
+    );
+    state.resultsMeta = {
+      count: state.results.length,
+      label: state.ui.translateIngredient(state.resultIngredientFilter)
+    };
+    return;
   }
+
+  if (state.resultsMode === 'all') {
+    state.results = scored;
+    state.resultsMeta = {
+      count: state.results.length,
+      label: state.ui.copy.resultsEmpty
+    };
+    return;
+  }
+
+  let results = hasSelectedIngredients
+    ? scored.filter((item) => item.matchCount > 0)
+    : scored;
 
   results.sort((a, b) => {
     if (b.matchCount !== a.matchCount) {
@@ -253,7 +325,19 @@ const actions = {
     state.activeCategory = categoryKey;
     render();
   },
+  setRecipeCategory(categoryKey) {
+    state.activeRecipeCategory = categoryKey;
+    render();
+  },
+  setRecipeSearch(query) {
+    state.recipeSearch = query;
+    render();
+  },
   toggleIngredient(name) {
+    state.resultsMode = 'matched';
+    state.resultIngredientFilter = null;
+    state.activeRecipeCategory = 'all';
+    state.recipeSearch = '';
     if (state.selectedIngredients.has(name)) {
       state.selectedIngredients.delete(name);
     } else {
@@ -262,8 +346,43 @@ const actions = {
     render();
   },
   togglePreference(key) {
+    state.resultsMode = 'matched';
+    state.resultIngredientFilter = null;
+    state.activeRecipeCategory = 'all';
+    state.recipeSearch = '';
     state.preferences[key] = !state.preferences[key];
     render();
+  },
+  openProducts(categoryKey) {
+    state.resultsMode = 'matched';
+    state.resultIngredientFilter = null;
+    state.activeCategory = categoryKey || 'all';
+    actions.goTo('ingredients');
+  },
+  async showAllRecipes() {
+    state.selectedIngredients = new Set();
+    state.preferences = defaultPreferences();
+    state.resultsMode = 'all';
+    state.resultIngredientFilter = null;
+    state.activeRecipeCategory = 'all';
+    state.recipeSearch = '';
+    await actions.goTo('results');
+  },
+  async showMatchedRecipes() {
+    state.resultsMode = 'matched';
+    state.resultIngredientFilter = null;
+    state.activeRecipeCategory = 'all';
+    state.recipeSearch = '';
+    await actions.goTo('results');
+  },
+  async showRecipesForIngredient(name) {
+    state.selectedIngredients = new Set([name]);
+    state.preferences = defaultPreferences();
+    state.resultsMode = 'ingredient';
+    state.resultIngredientFilter = name;
+    state.activeRecipeCategory = 'all';
+    state.recipeSearch = '';
+    await actions.goTo('results');
   },
   selectRecipe(recipeId) {
     state.currentRecipe =
@@ -272,6 +391,43 @@ const actions = {
       state.screen = 'detail';
       render();
     }
+  },
+  async selectRecipeById(recipeId) {
+    await actions.showAllRecipes();
+    actions.selectRecipe(recipeId);
+  },
+  startGame(gameKey) {
+    state.activeGame = gameKey;
+    state.gameScore = 0;
+    state.gameQuestionIndex = 0;
+    state.gameAnswered = null;
+    actions.goTo('games');
+  },
+  answerGame(optionIndex, isCorrect) {
+    if (state.gameAnswered !== null) {
+      return;
+    }
+    state.gameAnswered = optionIndex;
+    if (isCorrect) {
+      state.gameScore += 1;
+    }
+    render();
+  },
+  nextGameQuestion(totalQuestions) {
+    if (state.gameQuestionIndex + 1 >= totalQuestions) {
+      state.gameQuestionIndex = totalQuestions;
+    } else {
+      state.gameQuestionIndex += 1;
+    }
+    state.gameAnswered = null;
+    render();
+  },
+  closeGame() {
+    state.activeGame = null;
+    state.gameScore = 0;
+    state.gameQuestionIndex = 0;
+    state.gameAnswered = null;
+    actions.goTo('games');
   }
 };
 
@@ -282,11 +438,14 @@ function activeShellNav() {
   if (state.screen === 'results' || state.screen === 'detail') {
     return 'recipes';
   }
+  if (state.screen === 'games') {
+    return 'games';
+  }
   return 'home';
 }
 
 function renderShellNav() {
-  if (state.screen === 'welcome') {
+  if (state.screen === 'welcome' || (state.screen === 'games' && state.activeGame)) {
     return '';
   }
 
@@ -324,12 +483,17 @@ async function handleShellNav(action) {
   }
 
   if (action === 'items') {
-    actions.goTo('ingredients');
+    actions.openProducts();
     return;
   }
 
   if (action === 'recipes') {
-    actions.goTo('results');
+    actions.showAllRecipes();
+    return;
+  }
+
+  if (action === 'games') {
+    actions.goTo('games');
   }
 }
 
@@ -377,13 +541,16 @@ function render() {
     ${renderShellNav()}
   `;
   document.body.dataset.screen = state.screen;
+  document.body.dataset.gameActive = state.screen === 'games' && state.activeGame ? 'true' : 'false';
   screenModule.bind({ state, actions, root: appRoot });
   resetIdleTimer();
   window.scrollTo(0, 0);
 }
 
 async function init() {
+  fitAppScale();
   await loadIngredients();
+  await loadCategoryRecipes();
   document.documentElement.lang = state.locale;
   appRoot.addEventListener('pointerdown', (event) => {
     const shellButton = event.target.closest('[data-shell-action]');

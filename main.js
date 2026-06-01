@@ -5,10 +5,24 @@ const Database = require('better-sqlite3');
 const seedIngredients = require('./database/seed-ingredients');
 const seedRecipes = require('./database/seed-recipes');
 
-const dbPath = path.join(__dirname, 'database', 'zdravo-jem.db');
+let dbPath;
 let db;
+let isQuitting = false;
+
+if (process.platform === 'win32') {
+  app.setAppUserModelId('si.zdravo.jem');
+}
+
+function getDatabasePath() {
+  if (app.isPackaged) {
+    return path.join(app.getPath('userData'), 'zdravo-jem.db');
+  }
+
+  return path.join(__dirname, 'database', 'zdravo-jem.db');
+}
 
 function initDatabase() {
+  dbPath = getDatabasePath();
   const firstRun = !fs.existsSync(dbPath);
   fs.mkdirSync(path.dirname(dbPath), { recursive: true });
   db = new Database(dbPath);
@@ -35,6 +49,20 @@ function registerIpc() {
   });
 }
 
+function closeDatabase() {
+  if (!db) {
+    return;
+  }
+
+  try {
+    db.close();
+  } catch (error) {
+    console.warn('Failed to close database cleanly', error);
+  } finally {
+    db = undefined;
+  }
+}
+
 function createWindow() {
   const win = new BrowserWindow({
     fullscreen: true,
@@ -43,6 +71,7 @@ function createWindow() {
     alwaysOnTop: true,
     autoHideMenuBar: true,
     backgroundColor: '#2C4220',
+    icon: path.join(__dirname, 'assets', 'icons', 'zdravo-jem-icon.png'),
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true,
@@ -78,11 +107,21 @@ function createWindow() {
 }
 
 function relaunchApp() {
-  if (!app.isPackaged) {
+  if (!app.isPackaged || isQuitting) {
     return;
   }
+
   app.relaunch();
   app.exit(0);
+}
+
+function shouldRelaunch(details) {
+  if (isQuitting) {
+    return false;
+  }
+
+  const reason = details?.reason;
+  return Boolean(reason) && reason !== 'clean-exit' && reason !== 'killed';
 }
 
 app.whenReady().then(() => {
@@ -91,11 +130,28 @@ app.whenReady().then(() => {
   createWindow();
 });
 
-app.on('render-process-gone', () => relaunchApp());
-app.on('child-process-gone', () => relaunchApp());
+app.on('before-quit', () => {
+  isQuitting = true;
+  closeDatabase();
+});
+
+app.on('render-process-gone', (_event, _webContents, details) => {
+  if (shouldRelaunch(details)) {
+    relaunchApp();
+  }
+});
+
+app.on('child-process-gone', (_event, details) => {
+  if (shouldRelaunch(details)) {
+    relaunchApp();
+  }
+});
+
 process.on('uncaughtException', (error) => {
   console.error('Uncaught exception', error);
-  relaunchApp();
+  if (!isQuitting) {
+    relaunchApp();
+  }
 });
 
 app.on('window-all-closed', () => {
