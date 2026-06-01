@@ -66,6 +66,57 @@ function recipeTags(state, recipe) {
   return tags;
 }
 
+function shareCopy(locale) {
+  if (locale === 'en') {
+    return {
+      title: 'Scan the QR code',
+      description: 'Scan this code on your phone to open a prefilled email with the recipe.',
+      loading: 'Preparing QR code...',
+      openEmail: 'Open email app',
+      close: 'Close'
+    };
+  }
+
+  return {
+    title: 'Skeniraj QR kodo',
+    description: 'Skeniraj to kodo na telefonu, da se odpre pripravljen e-mail z receptom.',
+    loading: 'Pripravljam QR kodo ...',
+    openEmail: 'Odpri e-pošto',
+    close: 'Zapri'
+  };
+}
+
+function renderShareModal(state) {
+  const share = state.recipeShare;
+  if (!share || share.mode !== 'qr') {
+    return '';
+  }
+
+  const copy = shareCopy(state.ui.locale);
+
+  return `
+    <div class="recipe-share-modal-backdrop">
+      <div class="recipe-share-modal" role="dialog" aria-modal="true" aria-label="${copy.title}">
+        <button class="recipe-share-modal__close" data-action="close-share" aria-label="${copy.close}">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M6 6l12 12M18 6 6 18" />
+          </svg>
+        </button>
+        <h3>${copy.title}</h3>
+        <p>${copy.description}</p>
+        <div class="recipe-share-modal__qr ${share.loading ? 'is-loading' : ''}">
+          ${share.loading ? `<span class="recipe-share-modal__spinner"></span><strong>${copy.loading}</strong>` : share.qrSvg}
+        </div>
+        ${share.error ? `<p class="recipe-share-modal__error">${share.error}</p>` : ''}
+        <div class="recipe-share-modal__actions">
+          <button class="btn btn--outline" data-action="share-email">${copy.openEmail}</button>
+          <button class="btn btn--primary" data-action="close-share">${copy.close}</button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
 export function render({ state }) {
   const recipe = state.currentRecipe;
   if (!recipe) {
@@ -134,14 +185,14 @@ export function render({ state }) {
             </div>
             <p>${state.ui.locale === 'en' ? 'Choose a way to keep the recipe with you.' : 'Izberi na&#269;in in imej recept vedno pri sebi.'}</p>
             <div class="recipe-share-grid">
-              <button class="recipe-share-card">
+              <button class="recipe-share-card" type="button" data-action="share-email">
                 <svg viewBox="0 0 24 24" aria-hidden="true">
                   <path d="M4 6h16v12H4z" />
                   <path d="M4 7l8 6 8-6" />
                 </svg>
                 <span><strong>${state.ui.locale === 'en' ? 'Send by email' : 'Po&#353;lji na e-mail'}</strong>${state.ui.locale === 'en' ? 'Recipe to your inbox' : 'Recept prejme&#353; na svoj e-mail'}</span>
               </button>
-              <button class="recipe-share-card">
+              <button class="recipe-share-card" type="button" data-action="share-qr">
                 <span class="recipe-qr" aria-hidden="true"></span>
                 <span><strong>${state.ui.locale === 'en' ? 'Scan QR code' : 'Skeniraj QR kodo'}</strong>${state.ui.locale === 'en' ? 'Open on your phone' : 'Odpri recept na svojem telefonu'}</span>
               </button>
@@ -207,17 +258,44 @@ export function render({ state }) {
           </section>
         </div>
       </div>
+      ${renderShareModal(state)}
     </section>
   `;
 }
 
 export function bind({ actions, root }) {
-  root.querySelectorAll('[data-action="home"]').forEach((button) => {
-    button.addEventListener('pointerdown', () => actions.goHome(true));
-  });
+  root.addEventListener('pointerdown', (event) => {
+    const target = event.target.closest('[data-action]');
+    if (!target) {
+      if (event.target.classList.contains('recipe-share-modal-backdrop')) {
+        actions.closeRecipeShare();
+      }
+      return;
+    }
 
-  const backButton = root.querySelector('[data-action="back"]');
-  if (backButton) {
-    backButton.addEventListener('pointerdown', () => actions.goTo('results'));
-  }
+    const action = target.dataset.action;
+    if (action === 'home') {
+      actions.goHome(true);
+      return;
+    }
+
+    if (action === 'back') {
+      actions.goTo('results');
+      return;
+    }
+
+    if (action === 'share-email') {
+      actions.shareRecipeByEmail();
+      return;
+    }
+
+    if (action === 'share-qr') {
+      actions.openRecipeQrShare();
+      return;
+    }
+
+    if (action === 'close-share') {
+      actions.closeRecipeShare();
+    }
+  });
 }

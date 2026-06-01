@@ -41,6 +41,67 @@ function defaultPreferences() {
   };
 }
 
+function shareLocaleLabels(locale) {
+  if (locale === 'en') {
+    return {
+      time: 'Time',
+      servings: 'Servings',
+      ingredients: 'Ingredients',
+      steps: 'Steps',
+      footer: 'Shared from Zdravo Jem kiosk'
+    };
+  }
+
+  return {
+    time: 'Čas',
+    servings: 'Porcije',
+    ingredients: 'Sestavine',
+    steps: 'Koraki',
+    footer: 'Deljeno iz kioska Zdravo Jem'
+  };
+}
+
+function buildRecipeShareBody(state, recipe, recipeCopy) {
+  const labels = shareLocaleLabels(state.locale);
+  const totalMinutes = (recipe.prep_time_min || 0) + (recipe.cook_time_min || 0);
+
+  const ingredientLines = (recipe.ingredients || []).map((item) => {
+    const name = state.ui.translateIngredient(item.name_sl);
+    const amount = [item.quantity, state.ui.translateUnit(item.quantity, item.unit)]
+      .filter(Boolean)
+      .join(' ')
+      .trim();
+    return `- ${name}${amount ? ` (${amount})` : ''}`;
+  });
+
+  const stepLines = (recipeCopy.steps || []).map((step, index) => `${index + 1}. ${step}`);
+
+  return [
+    recipeCopy.title,
+    recipeCopy.description,
+    '',
+    `${labels.time}: ${totalMinutes} min`,
+    recipe.servings ? `${labels.servings}: ${recipe.servings}` : '',
+    '',
+    `${labels.ingredients}:`,
+    ...ingredientLines,
+    '',
+    `${labels.steps}:`,
+    ...stepLines,
+    '',
+    labels.footer
+  ]
+    .filter(Boolean)
+    .join('\n');
+}
+
+function buildRecipeMailto(state, recipe) {
+  const recipeCopy = state.ui.translateRecipe(recipe);
+  const subject = `${recipeCopy.title} - ${state.ui.copy.appTitle}`;
+  const body = buildRecipeShareBody(state, recipe, recipeCopy);
+  return `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+}
+
 const state = {
   locale: initialLocale,
   ui: initialUi,
@@ -60,6 +121,7 @@ const state = {
   resultsMode: 'matched',
   resultIngredientFilter: null,
   currentRecipe: null,
+  recipeShare: null,
   activeGame: null,
   gameScore: 0,
   gameQuestionIndex: 0,
@@ -152,6 +214,7 @@ function resetState() {
   state.resultsMode = 'matched';
   state.resultIngredientFilter = null;
   state.currentRecipe = null;
+  state.recipeShare = null;
   state.activeGame = null;
   state.gameScore = 0;
   state.gameQuestionIndex = 0;
@@ -315,6 +378,9 @@ const actions = {
     actions.goTo('welcome');
   },
   async goTo(screen) {
+    if (screen !== 'detail') {
+      state.recipeShare = null;
+    }
     if (screen === 'results') {
       await computeResults();
     }
@@ -385,6 +451,7 @@ const actions = {
     await actions.goTo('results');
   },
   selectRecipe(recipeId) {
+    state.recipeShare = null;
     state.currentRecipe =
       state.results.find((item) => item.id === recipeId) || null;
     if (state.currentRecipe) {
@@ -428,6 +495,69 @@ const actions = {
     state.gameQuestionIndex = 0;
     state.gameAnswered = null;
     actions.goTo('games');
+  },
+  async shareRecipeByEmail() {
+    if (!state.currentRecipe) {
+      return;
+    }
+
+    const mailto = buildRecipeMailto(state, state.currentRecipe);
+    state.recipeShare = null;
+    render();
+
+    try {
+      await window.zdravo.openExternal(mailto);
+    } catch (error) {
+      console.warn('Failed to open mail client', error);
+    }
+  },
+  async openRecipeQrShare() {
+    if (!state.currentRecipe) {
+      return;
+    }
+
+    const mailto = buildRecipeMailto(state, state.currentRecipe);
+    state.recipeShare = {
+      mode: 'qr',
+      mailto,
+      qrSvg: '',
+      loading: true,
+      error: ''
+    };
+    render();
+
+    try {
+      const qrSvg = await window.zdravo.generateQrSvg(mailto, {
+        margin: 2,
+        scale: 8,
+        errorCorrectionLevel: 'M'
+      });
+      if (!state.recipeShare || state.recipeShare.mode !== 'qr') {
+        return;
+      }
+      state.recipeShare.qrSvg = qrSvg;
+      state.recipeShare.loading = false;
+      render();
+    } catch (error) {
+      if (!state.recipeShare || state.recipeShare.mode !== 'qr') {
+        return;
+      }
+      console.warn('Failed to generate QR share code', error);
+      state.recipeShare.loading = false;
+      state.recipeShare.error =
+        state.locale === 'en'
+          ? 'Unable to generate the QR code.'
+          : 'QR kode ni bilo mogoče ustvariti.';
+      render();
+    }
+  },
+  closeRecipeShare() {
+    if (!state.recipeShare) {
+      return;
+    }
+
+    state.recipeShare = null;
+    render();
   }
 };
 

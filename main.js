@@ -1,7 +1,8 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain, shell } = require('electron');
 const path = require('path');
 const fs = require('fs');
 const Database = require('better-sqlite3');
+const QRCode = require('qrcode');
 const seedIngredients = require('./database/seed-ingredients');
 const seedRecipes = require('./database/seed-recipes');
 
@@ -46,6 +47,33 @@ function registerIpc() {
     }
     const stmt = db.prepare(sql);
     return stmt.all(params || []);
+  });
+
+  ipcMain.handle('shell:open-external', (_event, url) => {
+    if (typeof url !== 'string') {
+      throw new Error('Invalid external URL');
+    }
+
+    const trimmed = url.trim();
+    if (!/^(mailto:|https?:)/i.test(trimmed)) {
+      throw new Error('Unsupported external URL');
+    }
+
+    return shell.openExternal(trimmed);
+  });
+
+  ipcMain.handle('qr:generate-svg', (_event, text, options = {}) => {
+    if (typeof text !== 'string' || !text.trim()) {
+      throw new Error('Invalid QR payload');
+    }
+
+    return QRCode.toString(text, {
+      type: 'svg',
+      errorCorrectionLevel: 'M',
+      margin: 1,
+      scale: 8,
+      ...options
+    });
   });
 }
 

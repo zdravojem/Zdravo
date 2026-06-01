@@ -3,7 +3,6 @@ node_modules/
 
 # Electron build output
 dist/*
-!dist/*.exe
 out/
 release/
 

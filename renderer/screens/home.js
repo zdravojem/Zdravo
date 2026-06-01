@@ -5,12 +5,54 @@ import { recipeImageSrc } from '../recipe-images.js';
 const heroImageSrc = '../assets/images/home-hero.png';
 
 const categoryCards = [
-  { label: { sl: 'Meso', en: 'Meat' }, image: 'Govedina', categoryKey: 'meso_ribe' },
-  { label: { sl: 'Zelenjava', en: 'Vegetables' }, image: 'Korenje', categoryKey: 'zelenjava' },
-  { label: { sl: 'Sadje', en: 'Fruit' }, image: 'Jabolka', categoryKey: 'sadje' },
-  { label: { sl: '&#381;ita', en: 'Grains' }, image: 'Ajda', categoryKey: 'zita' },
-  { label: { sl: 'Med', en: 'Honey' }, image: 'Med', categoryKey: 'zacimbe' },
-  { label: { sl: 'Zeli&#353;&#269;a', en: 'Herbs' }, image: 'Timijan', categoryKey: 'zacimbe' }
+  {
+    label: { sl: 'Meso', en: 'Meat' },
+    subtitle: { sl: 'Sve&#382;e meso in perutnina', en: 'Fresh meat and poultry' },
+    image: 'Govedina',
+    categoryKey: 'meso_ribe',
+    accent: '#b54d2e',
+    icon: 'meat'
+  },
+  {
+    label: { sl: 'Zelenjava', en: 'Vegetables' },
+    subtitle: { sl: 'Sve&#382;a sezonska zelenjava', en: 'Fresh seasonal vegetables' },
+    image: 'Korenje',
+    categoryKey: 'zelenjava',
+    accent: '#cf7a1d',
+    icon: 'carrot'
+  },
+  {
+    label: { sl: 'Sadje', en: 'Fruit' },
+    subtitle: { sl: 'Sladko in so&#269;no sadje', en: 'Sweet and juicy fruit' },
+    image: 'Jabolka',
+    categoryKey: 'sadje',
+    accent: '#b14844',
+    icon: 'apple'
+  },
+  {
+    label: { sl: '&#381;ita in stro&#269;nice', en: 'Grains and pulses' },
+    subtitle: { sl: 'Polno hranil in energije', en: 'Full of nutrients and energy' },
+    image: 'Ajda',
+    categoryKey: 'zita',
+    accent: '#8c632f',
+    icon: 'grains'
+  },
+  {
+    label: { sl: 'Med in izdelki', en: 'Honey and goods' },
+    subtitle: { sl: 'Naravno in lokalno', en: 'Natural and local' },
+    image: 'Med',
+    categoryKey: 'zacimbe',
+    accent: '#c58b19',
+    icon: 'honey'
+  },
+  {
+    label: { sl: 'Zeli&#353;&#269;a', en: 'Herbs' },
+    subtitle: { sl: 'Sve&#382;a zeli&#353;&#269;a in za&#269;imbe', en: 'Fresh herbs and spices' },
+    image: 'Timijan',
+    categoryKey: 'zacimbe',
+    accent: '#7b972d',
+    icon: 'herbs'
+  }
 ];
 
 const featuredRecipes = [
@@ -85,6 +127,71 @@ const recipeMetaIcons = {
 
 function pickLabel(value, locale) {
   return value[locale] || value.sl;
+}
+
+function renderHomeLeafIcon() {
+  return `
+    <svg class="home-section__title-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path d="M19.5 5.2c-5.9 0-10.6 4.4-10.6 9.8 0 2.6 2.1 4.8 4.8 4.8 6.1 0 10.8-5.7 10.8-12.2 0-1.6-1.2-2.4-2.7-2.4-1.2 0-1.7 0-2.3 0z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+      <path d="M8.2 18.2c3-1.4 6.3-4.7 8.7-9.1" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+    </svg>
+  `;
+}
+
+function renderCategoryCardIcon(kind) {
+  const icons = {
+    meat: `
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M8.2 7.2c2.2-2 5.7-2.2 8.2-.4 2.1 1.6 3 4.5 2.1 6.9-.7 1.9-2.3 3.3-4.3 3.8-1.6.4-3.3.3-4.8-.4-1.3-.6-2.4-1.6-3.1-2.9-.8-1.6-.9-3.5-.3-5.1.4-1 1.1-1.8 2.2-2z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" />
+        <path d="M15.9 9.3c.4-.8 1.2-1.4 2.1-1.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+      </svg>
+    `,
+    carrot: `
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M12 5.2c2.2 2.3 4 4.8 5.4 7.7 1.1 2.3.8 4.4-.8 5.9-1.5 1.5-3.6 1.8-5.9.8-2.9-1.3-5.4-3.1-7.7-5.4L12 5.2z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" />
+        <path d="M10.4 5.6c-.4-1.4-1.4-2.3-2.8-2.6M11.9 4.8c.6-1.2 1.7-2 3.1-2.2M13.4 5.9c1.4-.4 2.5-.2 3.5.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    `,
+    apple: `
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M13.8 5.2c.7-1.2 1.8-2 3.2-2.3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+        <path d="M14.1 6.1c1.6-.2 2.8.2 3.7 1.2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+        <path d="M12 6.4c2.9 0 5.2 2.4 5.2 5.4 0 4.1-2.9 7.2-5.2 7.2S6.8 15.9 6.8 11.8c0-3 2.4-5.4 5.2-5.4z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" />
+      </svg>
+    `,
+    grains: `
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M12 19.5V6.2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+        <path d="M12 11.1c-1.7-1.1-3.4-1.4-5.1-.9.9 2.5 2.7 3.9 5.1 4.2M12 8.8c1.7-1.1 3.4-1.4 5.1-.9-.9 2.5-2.7 3.9-5.1 4.2M12 14.1c-1.2-1.2-2.7-1.9-4.4-2-.2 2.7 1.2 4.6 4.4 5.7M12 12.5c1.2-1.2 2.7-1.9 4.4-2 .2 2.7-1.2 4.6-4.4 5.7" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    `,
+    honey: `
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M9 4.8h6M10.2 7.2h3.6l1.4 2.2V17H8.8V9.4l1.4-2.2z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" />
+        <path d="M10 11.3h4M10 14h4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+      </svg>
+    `,
+    herbs: `
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M12 19.2V5.1" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+        <path d="M12 10.7c-2.9-2.3-5-2.2-6.2-1.4.9 2.4 2.8 3.7 6.2 4.1M12 8.8c2.9-2.3 5-2.2 6.2-1.4-.9 2.4-2.8 3.7-6.2 4.1M12 14c-2.2-1.7-3.9-1.8-5-.9.9 2 2.3 3.2 5 3.5M12 12.7c2.2-1.7 3.9-1.8 5-.9-.9 2-2.3 3.2-5 3.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    `
+  };
+
+  return icons[kind] || icons.herbs;
+}
+
+function renderCategoryChevronIcon() {
+  return `
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path d="M9 6.5l6 5.5-6 5.5" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" />
+    </svg>
+  `;
+}
+
+function categoryAriaLabel(category, locale) {
+  return `${pickLabel(category.label, locale)}. ${pickLabel(category.subtitle, locale)}.`;
 }
 
 function gameTitleLines(title, locale) {
@@ -427,19 +534,33 @@ export function render({ state }) {
       </section>
 
       <section class="home-section home-section--categories">
-        <div class="home-section__header">
-          <h2>${locale === 'en' ? 'Choose a category' : 'Izberi kategorijo'}</h2>
-          <button class="home-link" data-action="products">${locale === 'en' ? 'All' : 'Vse'} <span>&rarr;</span></button>
+        <div class="home-section__title-row">
+          ${renderHomeLeafIcon()}
+          <h2>${state.ui.copy.homeBrowseTitle}</h2>
         </div>
         <div class="home-category-grid">
           ${categoryCards
             .map(
               (category) => `
-                <button class="home-category-card" data-action="category" data-category="${category.categoryKey}">
-                  <span class="home-category-card__photo">
-                    <img src="${ingredientImageSrc(category.image)}" alt="${state.ui.translateIngredient(category.image)}" loading="lazy" />
+                <button
+                  class="home-category-card"
+                  data-action="category"
+                  data-category="${category.categoryKey}"
+                  style="--card-accent: ${category.accent};"
+                  aria-label="${categoryAriaLabel(category, locale)}"
+                >
+                  <span class="home-category-card__media" aria-hidden="true">
+                    <img class="home-category-card__image" src="${ingredientImageSrc(category.image)}" alt="" loading="eager" decoding="async" />
+                    <span class="home-category-card__veil"></span>
+                    <span class="home-category-card__badge">${renderCategoryCardIcon(category.icon)}</span>
+                    <span class="home-category-card__content">
+                      <span class="home-category-card__label-group">
+                        <span class="home-category-card__label">${pickLabel(category.label, locale)}</span>
+                        <span class="home-category-card__subtitle">${pickLabel(category.subtitle, locale)}</span>
+                      </span>
+                    </span>
+                    <span class="home-category-card__chevron">${renderCategoryChevronIcon()}</span>
                   </span>
-                  <span class="home-category-card__label">${pickLabel(category.label, locale)}</span>
                 </button>
               `
             )
