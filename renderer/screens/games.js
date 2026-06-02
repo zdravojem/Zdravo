@@ -45,7 +45,16 @@ const IMGS = {
   farm_plate_6:    '../assets/images/games/6.png',
   farm_plate_7:    '../assets/images/games/7.png',
   farm_plate_8:    '../assets/images/games/8.png',
-  farm_plate_9:    '../assets/images/games/9.png'
+  farm_plate_9:    '../assets/images/games/9.png',
+  strawberry_plate_1: '../assets/images/games/strawberry-journey-1.png',
+  strawberry_plate_2: '../assets/images/games/strawberry-journey-2.png',
+  strawberry_plate_3: '../assets/images/games/strawberry-journey-3.png',
+  strawberry_plate_4: '../assets/images/games/strawberry-journey-4.png',
+  strawberry_plate_5: '../assets/images/games/strawberry-journey-5.png',
+  strawberry_plate_6: '../assets/images/games/strawberry-journey-6.png',
+  strawberry_plate_7: '../assets/images/games/strawberry-journey-7.png',
+  strawberry_plate_8: '../assets/images/games/strawberry-journey-8.png',
+  strawberry_plate_9: '../assets/images/games/strawberry-journey-9.png'
 };
 
 // ---------------------------------------------------------------------------
@@ -73,12 +82,12 @@ const GL = {
     combo:         '🔥 Combo +100 točk!',
     revealAnswer:  'Pravilen odgovor je označen. 💡',
     recipeToast:   (r) => `Recept: ${r} 📖`,
-    endMsg0:       'Dobro poskušanje!',
-    endSub0:       'Poskusi znova, zmoreš!',
-    endMsg40:      'Bravo! Zelo dobro ti gre.',
-    endSub40:      'Kar nadaljuj!',
-    endMsg75:      'Odlično!',
-    endSub75:      'Pravi tržnični mojster!',
+    endMsg0:       'Dobro si poskusil! Poskusi znova.',
+    endSub0:       '',
+    endMsg40:      'Bravo! Dobro ti gre.',
+    endSub40:      '',
+    endMsg75:      'Odlično! Pravi tržnični mojster.',
+    endSub75:      '',
     pointsLabel:   'točk',
     pieces:        'Koščki',
     placed:        'koščkov sestavljenih',
@@ -92,7 +101,7 @@ const GL = {
     missionTitle:  '— Detektivske misije —',
     totalPoints:   'Skupaj točk',
     playAgain:     'Igraj znova',
-    viewRecipe:    'Poglej recept',
+    viewRecipe:    'Poglej povezan recept',
     backToGames:   'Nazaj na igrice',
     leaveGame:     'Zapusti igro?',
     leaveMsg:      'Ali želiš zapustiti igro? Napredek ne bo shranjen.',
@@ -100,8 +109,11 @@ const GL = {
     leaveContinue: 'Nadaljuj igro',
     restartGame:   'Začni znova?',
     restartMsg:    'Ali želiš začeti znova? Trenutni rezultat bo izgubljen.',
-    restartConfirm:'Potrdi',
-    restartCancel: 'Prekliči'
+    restartConfirm:'Začni znova',
+    restartCancel: 'Nadaljuj igro',
+    puzzleComplete: 'Sestavljanka je končana!',
+    puzzleCompleteTitle: 'Končano',
+    puzzleCompleteEmpty: 'Vsi koščki so že na mestu.'
   },
   en: {
     correctMsg:    (pts) => `Excellent! +${pts} points ⭐`,
@@ -115,12 +127,12 @@ const GL = {
     combo:         '🔥 Combo +100 points!',
     revealAnswer:  'Correct answer is highlighted. 💡',
     recipeToast:   (r) => `Recipe: ${r} 📖`,
-    endMsg0:       'Good try!',
-    endSub0:       'Try again, you can do it!',
-    endMsg40:      'Bravo! You are doing great.',
-    endSub40:      'Keep it up!',
-    endMsg75:      'Excellent!',
-    endSub75:      'A true market master!',
+    endMsg0:       'Good try! Try again.',
+    endSub0:       '',
+    endMsg40:      'Bravo! You are doing well.',
+    endSub40:      '',
+    endMsg75:      'Excellent! A true market master.',
+    endSub75:      '',
     pointsLabel:   'points',
     pieces:        'Pieces',
     placed:        'pieces placed',
@@ -134,16 +146,19 @@ const GL = {
     missionTitle:  '— Detective Missions —',
     totalPoints:   'Total points',
     playAgain:     'Play again',
-    viewRecipe:    'View recipe',
+    viewRecipe:    'View related recipe',
     backToGames:   'Back to games',
     leaveGame:     'Leave game?',
-    leaveMsg:      'Do you want to leave? Progress will not be saved.',
+    leaveMsg:      'Do you want to leave the game? Progress will not be saved.',
     leaveConfirm:  'Leave game',
-    leaveContinue: 'Continue playing',
+    leaveContinue: 'Continue game',
     restartGame:   'Start over?',
-    restartMsg:    'Do you want to restart? Your current score will be lost.',
-    restartConfirm:'Confirm',
-    restartCancel: 'Cancel'
+    restartMsg:    'Do you want to start again? The current score will be lost.',
+    restartConfirm:'Start again',
+    restartCancel: 'Continue game',
+    puzzleComplete: 'Puzzle complete!',
+    puzzleCompleteTitle: 'Done',
+    puzzleCompleteEmpty: 'All pieces are in place.'
   }
 };
 
@@ -181,18 +196,18 @@ const PUZZLE_SCENARIOS = [
     ],
     distractors:[{id:'d1',e:'🍦',img:IMGS.plate,l:{sl:'Sladoled',en:'Ice cream'},isDistractor:true}]
   },
-  { id:'strawberry', title:{sl:'Od jagod do sladice',en:'From Strawberries to Dessert'}, img:IMGS.strawberry, relatedRecipeId:'strawberry_dessert',
-    edu:{sl:'Jagode rastejo poleti in jih naredimo v sladico.',en:'Strawberries grow in summer and we turn them into dessert.'},
+  { id:'strawberry', title:{sl:'Od jagod do sladice',en:'From Strawberries to Dessert'}, img:IMGS.strawberry_plate_9, relatedRecipeId:'strawberry_dessert',
+    edu:{sl:'Sestavi pot jagod od nasada do sladice za družino.',en:'Build the journey of strawberries from the field to a family dessert.'},
     pieces:[
-      {id:'p1',e:'🌱',img:IMGS.seed,          l:{sl:'Sadika',  en:'Seedling'},      pos:1,easyPre:true},
-      {id:'p2',e:'☀️',img:IMGS.farm,          l:{sl:'Sonce',   en:'Sun'},           pos:2,easyPre:true},
-      {id:'p3',e:'🍓',img:IMGS.strawberry,    l:{sl:'Jagode',  en:'Strawberries'},  pos:3},
-      {id:'p4',e:'🧺',img:IMGS.harvest,       l:{sl:'Pobiranje',en:'Picking'},      pos:4},
-      {id:'p5',e:'🏪',img:IMGS.market,        l:{sl:'Tržnica', en:'Market'},        pos:5},
-      {id:'p6',e:'🛒',img:IMGS.market,        l:{sl:'Nakup',   en:'Shopping'},      pos:6},
-      {id:'p7',e:'🧀',img:IMGS.cottage_cheese,l:{sl:'Skuta',   en:'Cottage cheese'},pos:7},
-      {id:'p8',e:'🍯',img:IMGS.honey,         l:{sl:'Med',     en:'Honey'},         pos:8},
-      {id:'p9',e:'🍮',img:IMGS.plate,         l:{sl:'Sladica', en:'Dessert'},       pos:9}
+      {id:'p1',e:'🌱',img:IMGS.strawberry_plate_1,l:{sl:'Nasad',     en:'Field'},          pos:1,easyPre:true},
+      {id:'p2',e:'🧺',img:IMGS.strawberry_plate_2,l:{sl:'Obiranje',  en:'Picking'},        pos:2,easyPre:true},
+      {id:'p3',e:'🍓',img:IMGS.strawberry_plate_3,l:{sl:'Košara',    en:'Basket'},         pos:3},
+      {id:'p4',e:'🏪',img:IMGS.strawberry_plate_4,l:{sl:'Stojnica',  en:'Market stall'},   pos:4},
+      {id:'p5',e:'🛒',img:IMGS.strawberry_plate_5,l:{sl:'Nakup',     en:'Shopping'},       pos:5},
+      {id:'p6',e:'🥣',img:IMGS.strawberry_plate_6,l:{sl:'Mešanje',   en:'Mixing'},         pos:6},
+      {id:'p7',e:'🧀',img:IMGS.strawberry_plate_7,l:{sl:'Skuta',     en:'Cottage cheese'}, pos:7},
+      {id:'p8',e:'🍨',img:IMGS.strawberry_plate_8,l:{sl:'Sladica',   en:'Dessert'},        pos:8},
+      {id:'p9',e:'🍽️',img:IMGS.strawberry_plate_9,l:{sl:'Družina',   en:'Family table'},   pos:9}
     ],
     distractors:[{id:'d1',e:'🌭',img:IMGS.cooking,l:{sl:'Hot dog',en:'Hot dog'},isDistractor:true}]
   },
@@ -257,6 +272,8 @@ const PUZZLE_SCENARIOS = [
     distractors:[{id:'d1',e:'🍩',img:IMGS.plate,l:{sl:'Donut',en:'Donut'},isDistractor:true}]
   }
 ];
+
+const PICTURE_PUZZLE_ROTATION = ['apple', 'strawberry'];
 
 // ---------------------------------------------------------------------------
 // Detective questions
@@ -426,6 +443,15 @@ const QUESTIONS = [
   }
 ];
 
+const DETECTIVE_EXTRA_ANSWERS = [
+  { l:{sl:'Korenje',en:'Carrot'}, img:IMGS.carrot, c:false },
+  { l:{sl:'Jabolko',en:'Apple'}, img:IMGS.apple, c:false },
+  { l:{sl:'Jagode',en:'Strawberries'}, img:IMGS.strawberry, c:false },
+  { l:{sl:'Krompir',en:'Potato'}, img:IMGS.potato, c:false },
+  { l:{sl:'Solata',en:'Lettuce'}, img:IMGS.lettuce, c:false },
+  { l:{sl:'Med',en:'Honey'}, img:IMGS.honey, c:false }
+];
+
 // ---------------------------------------------------------------------------
 // Module-level game state (lives outside React-style render cycle)
 // ---------------------------------------------------------------------------
@@ -436,12 +462,126 @@ let _dragData  = null;   // current drag payload
 let _touchActive = false;
 let _touchSlotTarget = null;
 let _rootEl = null;      // bound DOM root
+let _lastPuzzleScenarioId = null;
+let _lastDetectiveQuestionIds = [];
+const _lastPuzzlePrePlaceKeys = new Map();
 
 function _gl(locale) { return GL[locale] || GL.sl; }
 function _lv(obj, locale) { return obj[locale] || obj.sl; }
 
+function _shuffle(items) {
+  const shuffled = [...items];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+}
+
+function _pickPrePlacedPuzzleIds(sc, count) {
+  if (!count) return [];
+  const clampedCount = Math.min(count, sc.pieces.length);
+  let ids = _shuffle(sc.pieces).slice(0, clampedCount).map((piece) => piece.id);
+  const previousKey = _lastPuzzlePrePlaceKeys.get(sc.id);
+  const keyFor = (pieceIds) => pieceIds.slice().sort().join('|');
+
+  if (previousKey && sc.pieces.length > clampedCount && keyFor(ids) === previousKey) {
+    const previousIds = new Set(previousKey.split('|'));
+    const freshPieces = sc.pieces.filter((piece) => !previousIds.has(piece.id));
+    ids = _shuffle(freshPieces).slice(0, clampedCount).map((piece) => piece.id);
+  }
+
+  _lastPuzzlePrePlaceKeys.set(sc.id, keyFor(ids));
+  return ids;
+}
+
+function _pickPuzzleScenario() {
+  const rotation = PICTURE_PUZZLE_ROTATION
+    .map((id) => PUZZLE_SCENARIOS.find((scenario) => scenario.id === id))
+    .filter(Boolean);
+  const pool = rotation.length ? rotation : PUZZLE_SCENARIOS;
+  if (!_lastPuzzleScenarioId) {
+    return pool[0];
+  }
+
+  const currentIndex = pool.findIndex((scenario) => scenario.id === _lastPuzzleScenarioId);
+  const nextIndex = currentIndex >= 0 ? (currentIndex + 1) % pool.length : 0;
+  return pool[nextIndex] || pool[0];
+}
+
+function _pickDetectiveQuestions() {
+  const previous = new Set(_lastDetectiveQuestionIds);
+  const fresh = QUESTIONS.filter((question) => !previous.has(question.id));
+  const pool = fresh.length >= 5 ? fresh : QUESTIONS;
+  return _shuffle(pool).slice(0, 5);
+}
+
+function _detectiveAnswers(question) {
+  const answers = [...question.answers];
+  const usedLabels = new Set(answers.map((answer) => _lv(answer.l, 'sl').toLowerCase()));
+  DETECTIVE_EXTRA_ANSWERS.forEach((answer) => {
+    const label = _lv(answer.l, 'sl').toLowerCase();
+    if (answers.length < 4 && !usedLabels.has(label)) {
+      answers.push({ ...answer });
+      usedLabels.add(label);
+    }
+  });
+  return _shuffle(answers).slice(0, 4);
+}
+
+function _formatTime(seconds) {
+  const safeSeconds = Math.max(0, Number(seconds) || 0);
+  const mins = Math.floor(safeSeconds / 60);
+  const secs = safeSeconds % 60;
+  return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+}
+
 function _clearTimer() {
   if (_timerInt) { clearInterval(_timerInt); _timerInt = null; }
+}
+
+const GM_ICONS = {
+  star: `
+    <svg viewBox="0 0 32 32" aria-hidden="true">
+      <path d="M16 3.5l3.8 7.7 8.5 1.2-6.1 6 1.4 8.4L16 22.8 8.4 26.8l1.4-8.4-6.1-6 8.5-1.2L16 3.5z" />
+    </svg>`,
+  clock: `
+    <svg viewBox="0 0 32 32" aria-hidden="true">
+      <circle cx="16" cy="16" r="11" fill="none" stroke="currentColor" stroke-width="4" />
+      <path d="M16 9v8l6 3" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+    </svg>`,
+  sound: `
+    <svg viewBox="0 0 32 32" aria-hidden="true">
+      <path d="M5 13v6h5l7 6V7l-7 6H5z" />
+      <path d="M21 11c2.1 2.4 2.1 7.6 0 10M24.5 7.5c4.5 5 4.5 12 0 17" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" />
+    </svg>`,
+  bulb: `
+    <svg viewBox="0 0 32 32" aria-hidden="true">
+      <path d="M16 4a8 8 0 0 0-4.8 14.4c1.2.9 1.8 2 1.8 3.6h6c0-1.6.6-2.7 1.8-3.6A8 8 0 0 0 16 4z" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round" />
+      <path d="M12.5 25h7M13.5 28h5M16 1.8v2M5.8 7.2l1.5 1.5M26.2 7.2l-1.5 1.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" />
+    </svg>`,
+  restart: `
+    <svg viewBox="0 0 32 32" aria-hidden="true">
+      <path d="M24.5 12A9 9 0 1 0 26 18" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" />
+      <path d="M24 4v8h-8" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+    </svg>`
+};
+
+function renderPuzzleBrand() {
+  return `
+    <div class="gm-header__brand" aria-label="Zdravo Jem">
+      <span class="gm-brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 40 40">
+          <path class="gm-brand-mark__heart" d="M20 32.5C10.2 24.8 5.2 19.6 5.2 13.3c0-4.1 3.2-7.3 7.3-7.3 2.4 0 4.8 1.2 6.2 3.1C20.1 7.2 22.5 6 24.9 6c4.1 0 7.3 3.2 7.3 7.3 0 6.3-5 11.5-14.8 19.2z" />
+          <path class="gm-brand-mark__leaf" d="M21.3 20.9C26.5 12.8 32.4 9.4 37 9.4c-.5 5.3-4.2 11.8-13.9 14.2z" />
+          <path class="gm-brand-mark__check" d="M9.5 17.4l7 7.3L30.8 9.8" />
+        </svg>
+      </span>
+      <span class="gm-brand-copy">
+        <strong>ZDRAVO</strong>
+        <span>JEM</span>
+      </span>
+    </div>`;
 }
 
 // ---------------------------------------------------------------------------
@@ -528,6 +668,13 @@ function renderPuzzle(locale) {
   const total = sc.pieces.length;
   const placed = gs.puzzle.placedCount;
   const pct = Math.round(placed / total * 100);
+  const completed = !!gs.puzzle.completed;
+  const piecesTitle = completed ? g.puzzleCompleteTitle : g.pieces;
+  const hintLabel = completed ? g.puzzleCompleteTitle : g.hint;
+  const puzzleTitle = locale === 'en'
+    ? { line1: 'FROM FARM', line2: 'TO PLATE' }
+    : { line1: 'OD KMETIJE', line2: 'DO KRO&#381;NIKA' };
+  const puzzleSubtitle = _lv(sc.edu, locale);
 
   // Build board slots HTML
   let boardHtml = '';
@@ -536,65 +683,100 @@ function renderPuzzle(locale) {
     const piece = placedId ? sc.pieces.find(p => p.id === placedId) : null;
     if (piece) {
       boardHtml += `
-        <div class="gm-slot gm-slot--filled gm-slot--correct" data-pos="${i}">
+        <div class="gm-slot gm-slot--pos-${i} gm-slot--filled gm-slot--correct" data-pos="${i}">
           <img src="${piece.img}" alt="${_lv(piece.l, locale)}" onerror="this.style.display='none'">
           <div class="gm-slot__label">${_lv(piece.l, locale)}</div>
         </div>`;
     } else {
-      boardHtml += `<div class="gm-slot" data-pos="${i}" data-gm-drop="${i}"><span class="gm-slot__num">${i}</span></div>`;
+      boardHtml += `<div class="gm-slot gm-slot--pos-${i}" data-pos="${i}" data-gm-drop="${i}"><span class="gm-slot__num">${i}</span></div>`;
     }
   }
 
   // Build available pieces
-  const prePlaceIds = cfg.puzzlePrePlaced > 0
-    ? sc.pieces.filter(p => p.easyPre).slice(0, cfg.puzzlePrePlaced).map(p => p.id)
-    : [];
+  const prePlaceIds = gs.puzzle.prePlaceIds || [];
   const available = sc.pieces.filter(p => !prePlaceIds.includes(p.id) && !gs.puzzle.placed[p.pos]);
   const distractors = cfg.distractors > 0 ? sc.distractors.slice(0, cfg.distractors) : [];
   const allPieces = [...available, ...distractors].sort(() => Math.random() - 0.5);
+  const hasRemainingPieces = allPieces.length > 0;
 
-  let piecesHtml = allPieces.map(p => `
-    <div class="gm-piece${p.isDistractor ? ' gm-piece--distractor' : ''}"
-         data-piece-id="${p.id}"
-         data-is-dist="${!!p.isDistractor}"
-         draggable="true">
-      <img src="${p.img}" alt="${_lv(p.l, locale)}" onerror="this.style.display='none'">
-      <span class="gm-piece__label">${_lv(p.l, locale)}</span>
-    </div>`).join('');
+  let piecesHtml = hasRemainingPieces
+    ? allPieces.map(p => `
+      <div class="gm-piece gm-piece--pos-${p.pos || 0}${p.isDistractor ? ' gm-piece--distractor' : ''}"
+           data-piece-id="${p.id}"
+           data-is-dist="${!!p.isDistractor}"
+           draggable="true">
+        <img src="${p.img}" alt="${_lv(p.l, locale)}" onerror="this.style.display='none'">
+        <span class="gm-piece__label">${_lv(p.l, locale)}</span>
+      </div>`).join('')
+    : (completed ? `<div class="gm-pieces-empty">${g.puzzleCompleteEmpty}</div>` : '');
 
   const hintsLeft = gs.puzzle.hintsLeft;
-  const hintDisabled = hintsLeft <= 0 ? 'gm-btn--disabled' : '';
+  const hintDisabled = hintsLeft <= 0 || completed ? 'gm-btn--disabled' : '';
+  const progressDots = Array.from({ length: total }, (_, index) => {
+    const dotClass = index < placed ? ' is-filled' : '';
+    return `<span class="gm-progress-dot${dotClass}" aria-hidden="true"></span>`;
+  }).join('');
 
   return `
     <section class="gm-puzzle">
       <div class="gm-header">
-        <button class="gm-header__back" data-gm-action="confirm-back">←</button>
-        <div class="gm-header__title">${_lv(sc.title, locale)}</div>
-        <div class="gm-header__score">⭐ <span class="gm-score-val">${gs.score}</span></div>
+        ${renderPuzzleBrand()}
+        <div class="gm-header__controls">
+        <button class="gm-header__back" data-gm-action="confirm-back">
+          <span class="gm-header__back-arrow" aria-hidden="true">&larr;</span>
+          <span>${locale === 'en' ? 'Back' : 'Nazaj'}</span>
+        </button>
+        <div class="gm-header__score">
+          <span class="gm-header__icon gm-header__icon--star">${GM_ICONS.star}</span>
+          <span class="gm-score-val">${gs.score}</span>
+        </div>
         <div class="gm-header__timer${gs.timeLeft <= 10 ? ' is-urgent' : ''}" id="gm-timer-badge">
-          ⏱ <span id="gm-time">${gs.timeLeft}</span>s
+          <span class="gm-header__icon gm-header__icon--clock">${GM_ICONS.clock}</span>
+          <span id="gm-time">${_formatTime(gs.timeLeft)}</span>
+        </div>
+        <button class="gm-header__sound" aria-label="${locale === 'en' ? 'Sound' : 'Zvok'}">
+          ${GM_ICONS.sound}
+        </button>
         </div>
       </div>
       <div class="gm-puzzle__content">
-        <p class="gm-puzzle__subtitle">${_lv(sc.edu, locale)}</p>
+        <div class="gm-puzzle-title" aria-label="${_lv(sc.title, locale)}">
+          <span class="gm-puzzle-title__line gm-puzzle-title__line--green">${puzzleTitle.line1}</span>
+          <span class="gm-puzzle-title__line gm-puzzle-title__line--orange">${puzzleTitle.line2}</span>
+        </div>
+        <div class="gm-puzzle-title__ornament" aria-hidden="true">
+          <span></span>
+          <b></b>
+          <span></span>
+        </div>
+        <p class="gm-puzzle__subtitle">${puzzleSubtitle}</p>
+        ${completed ? `<div class="gm-puzzle__complete">${g.puzzleComplete}</div>` : ''}
         <div class="gm-puzzle__area">
           <div class="gm-board" id="gm-board">${boardHtml}</div>
           <div class="gm-pieces-panel">
-            <h3 class="gm-pieces-panel__title">${g.pieces}</h3>
+            <h3 class="gm-pieces-panel__title">${completed && !hasRemainingPieces ? piecesTitle : g.pieces}</h3>
             <div id="gm-pieces-container">${piecesHtml}</div>
           </div>
         </div>
       </div>
       <div class="gm-puzzle__progress">
-        <p class="gm-progress-text"><span id="gm-placed">${placed}</span> / <span>${total}</span> ${g.placed}</p>
-        <div class="gm-progress-bar"><div class="gm-progress-fill" style="width:${pct}%"></div></div>
+        <div class="gm-progress-card">
+          <p class="gm-progress-text">
+            <strong><span id="gm-placed">${placed}</span> / <span>${total}</span></strong>
+            <small>${g.placed}</small>
+          </p>
+          <div class="gm-progress-dots" aria-hidden="true">${progressDots}</div>
+          <div class="gm-progress-bar"><div class="gm-progress-fill" style="width:${pct}%"></div></div>
+        </div>
       </div>
       <div class="gm-puzzle__actions">
         <button class="gm-btn gm-btn--hint ${hintDisabled}" id="gm-hint-btn" data-gm-action="hint">
-          💡 ${g.hint} (<span id="gm-hint-count">${hintsLeft}</span>)
+          ${GM_ICONS.bulb}
+          ${completed ? `${hintLabel}` : `${g.hint}<span class="gm-hint-count-wrap">(<span id="gm-hint-count">${hintsLeft}</span>)</span>`}
         </button>
         <button class="gm-btn gm-btn--restart" data-gm-action="confirm-restart">
-          🔄 ${g.restart}
+          ${GM_ICONS.restart}
+          ${g.restart}
         </button>
       </div>
       ${renderDragGhost()}
@@ -607,7 +789,7 @@ function renderPuzzle(locale) {
 // ---------------------------------------------------------------------------
 // DETECTIVE screen render
 // ---------------------------------------------------------------------------
-function renderDetective(locale) {
+function renderDetectiveLegacy(locale) {
   const gs = _gameState;
   const g = _gl(locale);
   const cfg = DIFF_CONFIG[gs.difficulty];
@@ -644,7 +826,7 @@ function renderDetective(locale) {
         <div class="gm-header__title">${locale === 'en' ? 'Market Detective 🔍' : 'Tržnični detektiv 🔍'}</div>
         <div class="gm-header__score">⭐ <span class="gm-score-val">${gs.score}</span></div>
         <div class="gm-header__timer${gs.timeLeft <= 10 ? ' is-urgent' : ''}" id="gm-timer-badge">
-          ⏱ <span id="gm-time">${gs.timeLeft}</span>s
+          ⏱ <span id="gm-time">${_formatTime(gs.timeLeft)}</span>
         </div>
       </div>
       <div class="gm-detective__content">
@@ -678,6 +860,145 @@ function renderDetective(locale) {
     </section>`;
 }
 
+// Reference-style DETECTIVE screen render
+function renderDetective(locale) {
+  const gs = _gameState;
+  const g = _gl(locale);
+  const cfg = DIFF_CONFIG[gs.difficulty];
+  const q = gs.det.questions[gs.det.currentQ];
+  const idx = gs.det.currentQ;
+  const totalMissions = gs.det.questions.length;
+  const progressPct = Math.round(((idx + 1) / totalMissions) * 100);
+  const title = locale === 'en'
+    ? { top: 'Market', bottom: 'detective' }
+    : { top: 'Tr&#382;ni&#269;ni', bottom: 'detektiv' };
+
+  let dotsHtml = '';
+  for (let i = 0; i < totalMissions; i++) {
+    if (i > 0) {
+      dotsHtml += `<div class="gm-mission-line${i <= idx ? ' is-done' : ''}" id="gm-ml-${i}"></div>`;
+    }
+    let cls = 'gm-mission-dot';
+    let label = i + 1;
+    if (i < idx) {
+      cls += ' is-done';
+      label = '&#10003;';
+    } else if (i === idx) {
+      cls += ' is-current';
+    }
+    const diffLabel = i < 2
+      ? (locale === 'en' ? 'Easy' : 'Lahko')
+      : i < 4
+        ? (locale === 'en' ? 'Medium' : 'Srednje')
+        : (locale === 'en' ? 'Hard' : 'Te&#382;je');
+    dotsHtml += `
+      <div class="gm-mission-step">
+        <div class="${cls}" id="gm-md-${i}">${label}</div>
+        <span>${diffLabel}</span>
+      </div>`;
+  }
+  dotsHtml += `<div class="gm-mission-line${idx >= totalMissions ? ' is-done' : ''}"></div>`;
+  dotsHtml += `
+    <div class="gm-mission-reward">
+      <div class="gm-mission-dot gm-mission-dot--reward">&#127873;</div>
+      <strong>${locale === 'en' ? 'REWARD' : 'NAGRADA'}</strong>
+      <span>${locale === 'en' ? 'at the end!' : 'na koncu poti!'}</span>
+    </div>`;
+
+  const answersHtml = _detectiveAnswers(q).map((a, ai) => `
+    <button class="gm-answer-btn" data-gm-action="answer" data-answer-idx="${ai}" data-is-correct="${a.c}">
+      <img class="gm-answer-btn__img" src="${a.img}" alt="${_lv(a.l, locale)}" onerror="this.style.display='none'">
+      <span class="gm-answer-btn__label">${_lv(a.l, locale)}</span>
+    </button>`).join('');
+
+  return `
+    <section class="gm-detective">
+      <div class="gm-det-awning" aria-hidden="true"></div>
+      <div class="gm-detective__content">
+        <header class="gm-det-hero">
+          <button class="gm-det-logo" data-gm-action="confirm-back" aria-label="${locale === 'en' ? 'Back' : 'Nazaj'}">
+            <span class="gm-det-logo__mark" aria-hidden="true">☺</span>
+            <span>
+              <strong>ZDRAVO</strong>
+              <b>JEM</b>
+              <small>${locale === 'en' ? 'for my health' : 'za moje zdravje'}</small>
+            </span>
+          </button>
+          <button class="gm-det-back" type="button" data-gm-action="confirm-back" aria-label="${locale === 'en' ? 'Back' : 'Nazaj'}">
+            <span aria-hidden="true">&larr;</span>
+            <strong>${locale === 'en' ? 'Back' : 'Nazaj'}</strong>
+          </button>
+          <div class="gm-det-title-wrap">
+            <h1 class="gm-det-title">
+              <span>${title.top}</span>
+              <strong>${title.bottom}</strong>
+            </h1>
+            <span class="gm-det-lens" aria-hidden="true"></span>
+          </div>
+          <div class="gm-det-ribbon">${locale === 'en' ? 'Solve the clue and find the right answer!' : 'Re&#353;i namig in odkrij pravi odgovor!'}</div>
+        </header>
+
+        <div class="gm-det-stats">
+          <div class="gm-det-stat gm-det-stat--time">
+            <span class="gm-det-clock" aria-hidden="true"></span>
+            <span>
+              <b>${locale === 'en' ? 'TIME' : '&#268;AS'}</b>
+              <strong id="gm-time">${_formatTime(gs.timeLeft)}</strong>
+            </span>
+          </div>
+          <div class="gm-det-stat gm-det-stat--progress">
+            <b>${locale === 'en' ? 'PROGRESS' : 'NAPREDEK'}</b>
+            <div class="gm-det-progress"><span style="width:${progressPct}%"></span></div>
+            <small>${idx + 1} / ${totalMissions}</small>
+            <em aria-hidden="true">&#11088;</em>
+          </div>
+          <div class="gm-det-stat gm-det-stat--score">
+            <em aria-hidden="true">&#11088;</em>
+            <span>
+              <strong class="gm-score-val">${gs.score}</strong>
+              <b>${g.pointsLabel}</b>
+            </span>
+          </div>
+        </div>
+
+        <article class="gm-question-card">
+          <div class="gm-question-lens" aria-hidden="true"></div>
+          <div class="gm-question-type">${_lv(q.type, locale)}</div>
+          <div class="gm-question-title">${_lv(q.title, locale)}</div>
+          <div class="gm-question-text">${_lv(q.text, locale)}</div>
+        </article>
+
+        <div class="gm-hint-area" id="gm-hint-area" style="display:none"></div>
+        <div class="gm-answers" id="gm-answers">${answersHtml}</div>
+
+        <div class="gm-det-play-row">
+          <button class="gm-det-hint-btn" id="gm-det-hint-btn" data-gm-action="det-hint">
+            <span aria-hidden="true">&#128161;</span>
+            <strong>${g.hint}</strong>
+            <small>-${cfg.hintCost} ${g.pointsLabel}</small>
+          </button>
+          <div class="gm-score-feedback" id="gm-score-feedback" style="display:none"></div>
+          <button class="gm-det-restart" data-gm-action="confirm-restart" aria-label="${g.restart}">&#8635;</button>
+          <div class="gm-det-mascot" aria-hidden="true">
+            <span>${locale === 'en' ? 'Bravo, detective!' : 'Bravo, pravi detektiv!'}</span>
+            <b>&#129488;</b>
+          </div>
+        </div>
+
+        <div class="gm-explanation" id="gm-explanation" style="display:none"></div>
+        <div class="gm-combo-badge" id="gm-combo-badge" style="display:none">${g.combo}</div>
+
+        <div class="gm-mission-bar">
+          <div class="gm-mission-bar__title">${g.missionTitle}</div>
+          <div class="gm-mission-dots" id="gm-mission-dots">${dotsHtml}</div>
+        </div>
+      </div>
+      ${renderToast()}
+      ${renderModal('back', locale)}
+      ${renderModal('restart', locale)}
+    </section>`;
+}
+
 // ---------------------------------------------------------------------------
 // END screen render
 // ---------------------------------------------------------------------------
@@ -685,24 +1006,27 @@ function renderEnd(locale) {
   const gs = _gameState;
   const g = _gl(locale);
   const pct = gs.endPct;
-  let sticker, msg, sub;
-  if (pct <= 40)      { sticker = '🌱'; msg = g.endMsg0;  sub = g.endSub0; }
-  else if (pct <= 75) { sticker = '⭐'; msg = g.endMsg40; sub = g.endSub40; }
-  else                { sticker = '🏆'; msg = g.endMsg75; sub = g.endSub75; }
+  let sticker, msg, sub, tone;
+  if (pct <= 40)      { sticker = '&#127793;'; msg = g.endMsg0;  sub = g.endSub0;  tone = 'try'; }
+  else if (pct <= 75) { sticker = '&#11088;';  msg = g.endMsg40; sub = g.endSub40; tone = 'bravo'; }
+  else                { sticker = '&#127942;'; msg = g.endMsg75; sub = g.endSub75; tone = 'master'; }
 
   return `
     <section class="gm-end">
-      <div class="gm-end__sticker">${sticker}</div>
-      <div class="gm-end__pct">${pct}%</div>
-      <div class="gm-end__msg">${msg}</div>
-      <div class="gm-end__sub">${sub}</div>
-      <div class="gm-end__score-box">
-        <p>${g.totalPoints}</p>
-        <div class="gm-end__score-big">${gs.score} ${g.pointsLabel}</div>
-      </div>
-      <div class="gm-end__buttons">
-        <button class="gm-end-btn gm-end-btn--primary" data-gm-action="confirm-restart">🔄 ${g.playAgain}</button>
-        <button class="gm-end-btn gm-end-btn--secondary" data-gm-action="go-select">🎮 ${g.backToGames}</button>
+      <div class="gm-end__overlay" role="dialog" aria-modal="true" aria-live="polite">
+        <div class="gm-end__sticker gm-end__sticker--${tone}" aria-hidden="true">${sticker}</div>
+        <div class="gm-end__pct">${pct}%</div>
+        <div class="gm-end__msg">${msg}</div>
+        ${sub ? `<div class="gm-end__sub">${sub}</div>` : ''}
+        <div class="gm-end__score-box">
+          <p>${g.totalPoints}</p>
+          <div class="gm-end__score-big">${gs.score} ${g.pointsLabel}</div>
+        </div>
+        <div class="gm-end__buttons">
+          <button class="gm-end-btn gm-end-btn--primary" data-gm-action="confirm-restart">&#8635; ${g.playAgain}</button>
+          <button class="gm-end-btn gm-end-btn--recipe" data-gm-action="view-recipe">&#128214; ${g.viewRecipe}</button>
+          <button class="gm-end-btn gm-end-btn--secondary" data-gm-action="go-select">&#127918; ${g.backToGames}</button>
+        </div>
       </div>
       ${renderToast()}
       ${renderModal('restart', locale)}
@@ -727,21 +1051,21 @@ function renderModal(type, locale) {
   const g = _gl(locale);
   if (type === 'back') {
     return `<div class="gm-modal-overlay" id="gm-modal-back" style="display:none">
-      <div class="gm-modal">
+      <div class="gm-modal" role="dialog" aria-modal="true">
         <h3>${g.leaveGame}</h3><p>${g.leaveMsg}</p>
         <div class="gm-modal__btns">
-          <button class="gm-modal-btn gm-modal-btn--confirm" data-gm-action="do-back">${g.leaveConfirm}</button>
           <button class="gm-modal-btn gm-modal-btn--cancel" data-gm-action="close-modal-back">${g.leaveContinue}</button>
+          <button class="gm-modal-btn gm-modal-btn--confirm" data-gm-action="do-back">${g.leaveConfirm}</button>
         </div>
       </div>
     </div>`;
   }
   return `<div class="gm-modal-overlay" id="gm-modal-restart" style="display:none">
-    <div class="gm-modal">
+    <div class="gm-modal" role="dialog" aria-modal="true">
       <h3>${g.restartGame}</h3><p>${g.restartMsg}</p>
       <div class="gm-modal__btns">
-        <button class="gm-modal-btn gm-modal-btn--confirm" data-gm-action="do-restart">${g.restartConfirm}</button>
         <button class="gm-modal-btn gm-modal-btn--cancel" data-gm-action="close-modal-restart">${g.restartCancel}</button>
+        <button class="gm-modal-btn gm-modal-btn--confirm" data-gm-action="do-restart">${g.restartConfirm}</button>
       </div>
     </div>
   </div>`;
@@ -813,7 +1137,7 @@ function _startTimer(onTick, onExpire) {
     _gameState.timeLeft--;
     const timeEl = _rootEl && _rootEl.querySelector('#gm-time');
     const badge  = _rootEl && _rootEl.querySelector('#gm-timer-badge');
-    if (timeEl) timeEl.textContent = _gameState.timeLeft;
+    if (timeEl) timeEl.textContent = _formatTime(_gameState.timeLeft);
     if (badge) badge.classList.toggle('is-urgent', _gameState.timeLeft <= 10);
     if (onTick) onTick();
     if (_gameState.timeLeft <= 0) { _clearTimer(); onExpire(); }
@@ -830,20 +1154,38 @@ function _hideModal(id) {
   if (el) el.style.display = 'none';
 }
 
+function _isTimedGameActive() {
+  if (!_gameState) return false;
+  if (_gameState.subScreen === 'puzzle') {
+    return !!_gameState.puzzle && !_gameState.puzzle.completed;
+  }
+  return _gameState.subScreen === 'detective';
+}
+
+function _openModal(id) {
+  if (_isTimedGameActive()) {
+    _clearTimer();
+  }
+  _showModal(id);
+}
+
+function _closeModal(id, actions) {
+  _hideModal(id);
+  if (_isTimedGameActive() && _gameState.timeLeft > 0) {
+    _startTimer(null, () => _endGame(actions));
+  }
+}
+
 // ---------------------------------------------------------------------------
 // Puzzle logic
 // ---------------------------------------------------------------------------
 function _startPuzzle(actions) {
   const locale = _gameState.locale;
   const cfg = DIFF_CONFIG[_gameState.difficulty];
-  let idx;
-  do { idx = Math.floor(Math.random() * PUZZLE_SCENARIOS.length); }
-  while (idx === (_gameState.lastPuzzleIdx || -1) && PUZZLE_SCENARIOS.length > 1);
-
-  const sc = PUZZLE_SCENARIOS[idx];
-  const prePlaceIds = cfg.puzzlePrePlaced > 0
-    ? sc.pieces.filter(p => p.easyPre).slice(0, cfg.puzzlePrePlaced).map(p => p.id)
-    : [];
+  const sc = _pickPuzzleScenario();
+  const idx = PUZZLE_SCENARIOS.findIndex((scenario) => scenario.id === sc.id);
+  _lastPuzzleScenarioId = sc.id;
+  const prePlaceIds = _pickPrePlacedPuzzleIds(sc, cfg.puzzlePrePlaced);
 
   const placed = {};
   let placedCount = 0;
@@ -859,7 +1201,7 @@ function _startPuzzle(actions) {
     timeLeft: cfg.time,
     lastPuzzleIdx: idx,
     endRecipe: sc.relatedRecipeId,
-    puzzle: { scenario: sc, placed, hintsLeft: 3, placedCount }
+    puzzle: { scenario: sc, placed, prePlaceIds, hintsLeft: 3, placedCount, completed: false }
   };
 
   actions.goTo('games');
@@ -985,10 +1327,48 @@ function _onDrop(pos, actions) {
     _dragData.el.remove();
     _addScore(100);
     _updatePuzzleProgress();
-    _showToast(g.snapGood(100), 'good');
+    const isPuzzleComplete = _gameState.puzzle.placedCount === sc.pieces.length;
+    _showToast(isPuzzleComplete ? g.puzzleComplete : g.snapGood(100), 'good');
 
-    if (_gameState.puzzle.placedCount === sc.pieces.length) {
-      setTimeout(() => _endGame(actions, true), 500);
+    if (isPuzzleComplete) {
+      _gameState.puzzle.completed = true;
+      _clearTimer();
+
+      const timerBadge = _rootEl.querySelector('#gm-timer-badge');
+      if (timerBadge) timerBadge.classList.remove('is-urgent');
+
+      const subtitleEl = _rootEl.querySelector('.gm-puzzle__subtitle');
+      if (subtitleEl) {
+        let completeBanner = _rootEl.querySelector('.gm-puzzle__complete');
+        if (!completeBanner) {
+          completeBanner = document.createElement('div');
+          completeBanner.className = 'gm-puzzle__complete';
+          subtitleEl.insertAdjacentElement('afterend', completeBanner);
+        }
+        completeBanner.textContent = g.puzzleComplete;
+      }
+
+      const hintBtn = _rootEl.querySelector('#gm-hint-btn');
+      if (hintBtn) {
+        hintBtn.classList.add('gm-btn--disabled');
+        hintBtn.innerHTML = `${GM_ICONS.bulb}${g.puzzleCompleteTitle}`;
+      }
+
+      const piecesContainer = _rootEl.querySelector('#gm-pieces-container');
+      const hasRemainingPieces = !!(piecesContainer && piecesContainer.querySelector('.gm-piece'));
+
+      const titleEl = _rootEl.querySelector('.gm-pieces-panel__title');
+      if (titleEl && !hasRemainingPieces) titleEl.textContent = g.puzzleCompleteTitle;
+
+      if (piecesContainer && !hasRemainingPieces) {
+        piecesContainer.innerHTML = `<div class="gm-pieces-empty">${g.puzzleCompleteEmpty}</div>`;
+      }
+
+      setTimeout(() => {
+        if (_gameState && _gameState.subScreen === 'puzzle' && _gameState.puzzle.completed) {
+          _endGame(actions, true);
+        }
+      }, 900);
     }
   } else {
     // Wrong slot
@@ -1012,6 +1392,11 @@ function _updatePuzzleProgress() {
   const fillEl   = _rootEl && _rootEl.querySelector('.gm-progress-fill');
   if (placedEl) placedEl.textContent = placed;
   if (fillEl)   fillEl.style.width = pct + '%';
+  if (_rootEl) {
+    _rootEl.querySelectorAll('.gm-progress-dot').forEach((dot, index) => {
+      dot.classList.toggle('is-filled', index < placed);
+    });
+  }
 }
 
 function _useHint() {
@@ -1039,7 +1424,7 @@ function _useHint() {
 
   if (gs.puzzle.hintsLeft === 0) {
     const btn = _rootEl.querySelector('#gm-hint-btn');
-    if (btn) { btn.classList.add('gm-btn--disabled'); btn.textContent = `💡 ${g.noHints}`; }
+    if (btn) { btn.classList.add('gm-btn--disabled'); btn.innerHTML = `${GM_ICONS.bulb}${g.noHints}`; }
   }
   _showToast(g.hintToast, 'good');
 }
@@ -1049,8 +1434,8 @@ function _useHint() {
 // ---------------------------------------------------------------------------
 function _startDetective(actions) {
   const cfg = DIFF_CONFIG[_gameState.difficulty];
-  const pool = [...QUESTIONS].sort(() => Math.random() - 0.5);
-  const qs = pool.slice(0, 5);
+  const qs = _pickDetectiveQuestions();
+  _lastDetectiveQuestionIds = qs.map((question) => question.id);
 
   _gameState = {
     ..._gameState,
@@ -1134,6 +1519,10 @@ function _showDetFeedback(msg, type) {
   const el = _rootEl && _rootEl.querySelector('#gm-score-feedback');
   if (!el) return;
   el.textContent = msg;
+  const pointsMatch = String(msg).match(/\+(\d+)/);
+  el.dataset.score = pointsMatch
+    ? `+${pointsMatch[1]} ${_gl(_gameState.locale).pointsLabel}`.toUpperCase()
+    : '';
   el.className = `gm-score-feedback gm-score-feedback--${type}`;
   el.style.display = 'block';
 }
@@ -1230,16 +1619,15 @@ export function bind({ state, actions, root }) {
     }
 
     // ---- PUZZLE / DETECTIVE shared ----
-    if (action === 'confirm-back') { _showModal('gm-modal-back'); return; }
-    if (action === 'confirm-restart') { _showModal('gm-modal-restart'); return; }
-    if (action === 'close-modal-back') { _hideModal('gm-modal-back'); return; }
-    if (action === 'close-modal-restart') { _hideModal('gm-modal-restart'); return; }
+    if (action === 'confirm-back') { _openModal('gm-modal-back'); return; }
+    if (action === 'confirm-restart') { _openModal('gm-modal-restart'); return; }
+    if (action === 'close-modal-back') { _closeModal('gm-modal-back', actions); return; }
+    if (action === 'close-modal-restart') { _closeModal('gm-modal-restart', actions); return; }
 
     if (action === 'do-back') {
       _hideModal('gm-modal-back');
-      _clearTimer();
-      _gameState = { subScreen: 'intro', game: _gameState.game, difficulty: _gameState.difficulty, locale };
-      actions.goTo('games');
+      cleanup();
+      actions.closeGame();
       return;
     }
     if (action === 'do-restart') {
@@ -1272,6 +1660,17 @@ export function bind({ state, actions, root }) {
     }
 
     // ---- END screen ----
+    if (action === 'view-recipe') {
+      const recipeKey = _gameState && _gameState.endRecipe;
+      cleanup();
+      if (actions.openGameRecipe) {
+        actions.openGameRecipe(recipeKey);
+      } else {
+        actions.closeGame();
+      }
+      return;
+    }
+
     if (action === 'go-select') {
       cleanup();
       actions.closeGame();

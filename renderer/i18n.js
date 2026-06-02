@@ -162,7 +162,8 @@ const ingredients = {
     Rožmarin: 'Rožmarin',
     Peteršilj: 'Peteršilj',
     Drobnjak: 'Drobnjak',
-    Meta: 'Meta'
+    Meta: 'Meta',
+    'Oljčno olje': 'Oljčno olje'
   },
   en: {
     Krompir: 'Potato',
@@ -218,7 +219,8 @@ const ingredients = {
     Rožmarin: 'Rosemary',
     Peteršilj: 'Parsley',
     Drobnjak: 'Chives',
-    Meta: 'Mint'
+    Meta: 'Mint',
+    'Oljčno olje': 'Olive oil'
   }
 };
 
@@ -345,13 +347,13 @@ const recipes = {
       ]
     },
     'ajdova-kasa-z-jurcki': {
-      title: 'Ajdova kaša z jurčki',
-      description: 'Ajdova kaša z gozdnimi jurčki.',
+      title: 'Ajdova skleda z zelenjavo',
+      description: 'Hitra, barvita in hranljiva ajdova skleda z zelenjavo.',
       steps: [
-        'Ajdo speremo in skuhamo do mehkega.',
-        'Na čebuli popražimo jurčke in česen.',
-        'Kašo zmešamo z jurčki in začinimo.',
-        'Postrežemo s peteršiljem.'
+        'Ajdo speremo in skuhamo v osoljeni vodi.',
+        'Korenje, papriko, paradižnik in koruzo na hitro prepražimo.',
+        'Dodamo ajdo, peteršilj in meto ter vse skupaj premešamo.',
+        'Začinimo z oljčnim oljem, soljo in poprom ter postrežemo.'
       ]
     },
     'kislo-zelje-z-mesom': {
@@ -497,13 +499,13 @@ const recipes = {
       ]
     },
     'ajdova-kasa-z-jurcki': {
-      title: 'Buckwheat Porridge with Porcini',
-      description: 'Buckwheat porridge with forest porcini mushrooms.',
+      title: 'Buckwheat Bowl with Vegetables',
+      description: 'A quick, colorful and nourishing buckwheat bowl with vegetables.',
       steps: [
-        'Rinse the buckwheat and cook until tender.',
-        'Sauté the porcini mushrooms and garlic on onion.',
-        'Mix the porridge with the mushrooms and season.',
-        'Serve with parsley.'
+        'Rinse the buckwheat and cook it in salted water.',
+        'Quickly sauté the carrot, pepper, tomato and corn.',
+        'Add the buckwheat, parsley and mint and toss everything together.',
+        'Season with olive oil, salt and pepper, then serve.'
       ]
     },
     'kislo-zelje-z-mesom': {
@@ -541,6 +543,8 @@ const copy = {
     homeMarketBadge: 'Na voljo na tržnici',
     homeRecipesTitle: 'Predlogi receptov',
     homeGamesTitle: 'Igrice',
+    homeGamesSubtitle: 'U&#269;enje o hrani &#353;e nikoli ni bilo tako zabavno!',
+    homeGamesAllLabel: 'Vse igre',
     homeNavHome: 'Domov',
     homeNavItems: 'Izdelki',
     homeNavRecipes: 'Recepti',
@@ -584,6 +588,8 @@ const copy = {
     homeMarketBadge: 'Available at the market',
     homeRecipesTitle: 'Recipe ideas',
     homeGamesTitle: 'Games',
+    homeGamesSubtitle: 'Learning about food has never been this fun!',
+    homeGamesAllLabel: 'All games',
     homeNavHome: 'Home',
     homeNavItems: 'Items',
     homeNavRecipes: 'Recipes',

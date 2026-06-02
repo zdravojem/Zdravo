@@ -56,7 +56,8 @@ const ingredients = [
   { name_sl: 'Rožmarin', category: 'zacimbe', emoji: '🌿' },
   { name_sl: 'Peteršilj', category: 'zacimbe', emoji: '🌿' },
   { name_sl: 'Drobnjak', category: 'zacimbe', emoji: '🌿' },
-  { name_sl: 'Meta', category: 'zacimbe', emoji: '🌿' }
+  { name_sl: 'Meta', category: 'zacimbe', emoji: '🌿' },
+  { name_sl: 'Oljčno olje', category: 'zacimbe', emoji: '🫒' }
 ];
 
 module.exports = function seedIngredients(db) {

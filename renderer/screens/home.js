@@ -78,7 +78,7 @@ const recipeTitles = {
     10: 'Goveja juha z rezanci',
     11: 'Krompirjev gola&#382;',
     12: 'Postrv na &#382;aru',
-    13: 'Ajdova ka&#353;a z jur&#269;ki',
+    13: 'Ajdova skleda z zelenjavo',
     15: 'Flancati'
   },
   en: {
@@ -90,21 +90,33 @@ const recipeTitles = {
     10: 'Beef Noodle Soup',
     11: 'Potato Goulash',
     12: 'Grilled Trout',
-    13: 'Buckwheat Porcini Bowl',
+    13: 'Buckwheat Bowl with Vegetables',
     15: 'Flancati'
   }
 };
 
 const gameCards = [
   {
+    key: 'detective',
     title: { sl: 'Tržni detektiv', en: 'Market detective' },
     text: { sl: 'Detektivska igra', en: 'Detective game' },
-    image: 'trzni-detektiv'
+    image: 'trzni-detektiv',
+    description: {
+      sl: 'Razi&#353;&#269;i tr&#382;nico, postavi prava vpra&#353;anja in odkrij, od kod prihaja hrana!',
+      en: 'Explore the market, ask the right questions and discover where food comes from!'
+    },
+    cta: { sl: 'Igraj zdaj', en: 'Play now' }
   },
   {
     title: { sl: 'Od kmetije do krožnika', en: 'From farm to plate' },
     text: { sl: 'Puzzle igra', en: 'Puzzle game' },
-    image: 'od-kmetije-do-kroznika'
+    image: 'od-kmetije-do-kroznika',
+    key: 'puzzle',
+    description: {
+      sl: 'Sestavi slike in spoznaj pot hrane od kmetije do tvojega kro&#382;nika!',
+      en: 'Complete the pictures and learn the path food takes from farm to your plate!'
+    },
+    cta: { sl: 'Igraj zdaj', en: 'Play now' }
   }
 ];
 
@@ -134,6 +146,25 @@ function renderHomeLeafIcon() {
     <svg class="home-section__title-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
       <path d="M19.5 5.2c-5.9 0-10.6 4.4-10.6 9.8 0 2.6 2.1 4.8 4.8 4.8 6.1 0 10.8-5.7 10.8-12.2 0-1.6-1.2-2.4-2.7-2.4-1.2 0-1.7 0-2.3 0z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
       <path d="M8.2 18.2c3-1.4 6.3-4.7 8.7-9.1" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+    </svg>
+  `;
+}
+
+function renderHomeGamepadIcon() {
+  return `
+    <svg class="home-games-title-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path d="M6.2 9.2h11.6c2 0 3.6 1.6 3.6 3.6v2.5c0 1.8-1.4 3.2-3.2 3.2h-1.7l-1.9-2.1H9.4l-1.9 2.1H5.8c-1.8 0-3.2-1.4-3.2-3.2v-2.5c0-2 1.6-3.6 3.6-3.6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" />
+      <path d="M7.2 13.5h3.6M9 11.7v3.6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+      <circle cx="15.8" cy="12.7" r="1" fill="currentColor" />
+      <circle cx="18.1" cy="14.7" r="1" fill="currentColor" />
+    </svg>
+  `;
+}
+
+function renderGameCardArrowIcon() {
+  return `
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path d="M9 6.5l6 5.5-6 5.5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" />
     </svg>
   `;
 }
@@ -506,6 +537,41 @@ function renderFeaturedRecipeCard({ locale, recipe, recipeIndex, state }) {
   `;
 }
 
+function renderHomeGameCard({ game, locale }) {
+  const title = pickLabel(game.title, locale);
+  const badge = pickLabel(game.text, locale);
+  const description = pickLabel(game.description, locale);
+  const cta = pickLabel(game.cta, locale);
+
+  return `
+    <button
+      class="home-game-card home-game-card--${game.key}"
+      data-action="start-game"
+      data-game="${game.key}"
+      aria-label="${gameTitleText(game.title, locale)}. ${description}."
+    >
+      <span class="home-game-card__copy">
+        <span class="home-game-card__badge">${badge}</span>
+        <span class="home-game-card__title">${title}</span>
+        <span class="home-game-card__text">${description}</span>
+        <span class="home-game-card__cta">
+          <span>${cta}</span>
+          <span class="home-game-card__cta-icon">${renderGameCardArrowIcon()}</span>
+        </span>
+      </span>
+      <span class="home-game-card__scene" aria-hidden="true">
+        <img
+          class="home-game-card__image"
+          src="${gameCardImageSrc(game.image)}"
+          alt=""
+          loading="eager"
+          decoding="async"
+        />
+      </span>
+    </button>
+  `;
+}
+
 function heroImage(locale) {
   const label = locale === 'en'
     ? 'Zdravo Jem banner: choose market products and discover what you can prepare.'
@@ -581,31 +647,19 @@ export function render({ state }) {
       </section>
 
       <section class="home-section home-section--games">
-        <div class="home-section__header">
-          <h2>${state.ui.copy.homeGamesTitle}</h2>
-          <button class="home-link" data-action="games">${locale === 'en' ? 'All' : 'Vse'} <span>&rarr;</span></button>
+        <div class="home-section__header home-games-header">
+          <span class="home-games-heading">
+            ${renderHomeGamepadIcon()}
+            <span class="home-games-heading__copy">
+              <h2>${state.ui.copy.homeGamesTitle}</h2>
+              <span>${state.ui.copy.homeGamesSubtitle}</span>
+            </span>
+          </span>
+          <button class="home-link" data-action="games">${state.ui.copy.homeGamesAllLabel} <span>&rarr;</span></button>
         </div>
         <div class="home-game-grid">
           ${gameCards
-            .map(
-              (game) => `
-                <button
-                  class="home-game-card"
-                  data-action="games"
-                  aria-label="${pickLabel(game.title, locale)}. ${pickLabel(game.text, locale)}."
-                >
-                  <span class="home-game-card__art" aria-hidden="true">
-                    <img
-                      class="home-game-card__image"
-                      src="${gameCardImageSrc(game.image)}"
-                      alt=""
-                      loading="eager"
-                      decoding="async"
-                    />
-                  </span>
-                </button>
-              `
-            )
+            .map((game) => renderHomeGameCard({ game, locale }))
             .join('')}
         </div>
       </section>
@@ -649,6 +703,11 @@ export function bind({ actions, root }) {
 
     if (action === 'games') {
       actions.goTo('games');
+      return;
+    }
+
+    if (action === 'start-game') {
+      actions.startGame(target.dataset.game);
     }
   });
 }

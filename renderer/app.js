@@ -192,6 +192,26 @@ function normalizeName(value) {
   return String(value || '').trim().toLowerCase();
 }
 
+const gameRecipeSlugs = {
+  apple_strudel: 'potica',
+  vegetable_soup: 'goveja-juha-z-rezanci',
+  strawberry_dessert: 'prekmurska-gibanica',
+  honey_breakfast: 'potica',
+  cottage_pancakes: 'struklji',
+  tomato_sauce: 'krompirjev-golaz',
+  salad_bowl: 'ajdova-kasa-z-jurcki',
+  buckwheat_bowl: 'ajdova-kasa-z-jurcki',
+  potato_dish: 'krompirjev-golaz'
+};
+
+function recipeSlugFromGameKey(value) {
+  const key = String(value || '').trim();
+  if (!key) {
+    return '';
+  }
+  return gameRecipeSlugs[key] || key.replace(/_/g, '-');
+}
+
 function resetIdleTimer() {
   window.clearTimeout(idleTimer);
   idleTimer = window.setTimeout(() => {
@@ -462,6 +482,35 @@ const actions = {
   async selectRecipeById(recipeId) {
     await actions.showAllRecipes();
     actions.selectRecipe(recipeId);
+  },
+  async selectRecipeBySlug(recipeSlug) {
+    const slug = recipeSlugFromGameKey(recipeSlug);
+    if (!slug) {
+      return;
+    }
+
+    state.selectedIngredients = new Set();
+    state.preferences = defaultPreferences();
+    state.resultsMode = 'all';
+    state.resultIngredientFilter = null;
+    state.activeRecipeCategory = 'all';
+    state.recipeSearch = '';
+    state.recipeShare = null;
+    await computeResults();
+    state.currentRecipe =
+      state.results.find((item) => item.slug === slug) ||
+      state.results[0] ||
+      null;
+    state.screen = state.currentRecipe ? 'detail' : 'results';
+    render();
+  },
+  async openGameRecipe(recipeSlug) {
+    gamesScreen.cleanup?.();
+    state.activeGame = null;
+    state.gameScore = 0;
+    state.gameQuestionIndex = 0;
+    state.gameAnswered = null;
+    await actions.selectRecipeBySlug(recipeSlug);
   },
   startGame(gameKey) {
     state.activeGame = gameKey;

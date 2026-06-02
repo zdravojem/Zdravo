@@ -45,6 +45,15 @@ function iconSvg(path) {
   `;
 }
 
+function leafSvg(className) {
+  return `
+    <svg class="${className}" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path d="M19.5 5.2c-5.9 0-10.6 4.4-10.6 9.8 0 2.6 2.1 4.8 4.8 4.8 6.1 0 10.8-5.7 10.8-12.2 0-1.6-1.2-2.4-2.7-2.4-1.2 0-1.7 0-2.3 0z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+      <path d="M8.2 18.2c3-1.4 6.3-4.7 8.7-9.1" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+    </svg>
+  `;
+}
+
 function amountText(state, item) {
   return [item.quantity, state.ui.translateUnit(item.quantity, item.unit)]
     .filter(Boolean)
@@ -152,7 +161,7 @@ export function render({ state }) {
             </svg>
           </button>
           <span>${state.ui.copy.homeNavRecipes}</span>
-          <strong><span class="brand-leaf"></span>${state.ui.copy.appTitle.toUpperCase()}</strong>
+          <strong>${leafSvg('brand-leaf')}${state.ui.copy.appTitle.toUpperCase()}</strong>
         </header>
 
         <div class="recipe-sheet__scroll">
@@ -170,7 +179,7 @@ export function render({ state }) {
               <h1>${recipeCopy.title}</h1>
               <p>${recipeCopy.description}</p>
             </div>
-            <span class="recipe-leaf-mark" aria-hidden="true"></span>
+            <span class="recipe-leaf-mark" aria-hidden="true">${leafSvg('recipe-leaf-mark__icon')}</span>
           </section>
 
           <div class="recipe-pill-row">
@@ -181,7 +190,7 @@ export function render({ state }) {
           <section class="recipe-share-panel">
             <div class="recipe-section-title">
               <h2>${state.ui.locale === 'en' ? 'Send yourself the recipe' : 'Po&#353;lji si recept'}</h2>
-              <span></span>
+              <span aria-hidden="true">${leafSvg('recipe-section-leaf')}</span>
             </div>
             <p>${state.ui.locale === 'en' ? 'Choose a way to keep the recipe with you.' : 'Izberi na&#269;in in imej recept vedno pri sebi.'}</p>
             <div class="recipe-share-grid">

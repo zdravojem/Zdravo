@@ -362,13 +362,13 @@ const recipes = [
     ]
   },
   {
-    name_sl: 'Ajdova kaša z jurčki',
-    description_sl: 'Ajdova kaša z gozdnimi jurčki.',
+    name_sl: 'Ajdova skleda z zelenjavo',
+    description_sl: 'Hitra, barvita in hranljiva ajdova skleda z zelenjavo.',
     prep_time_min: 15,
-    cook_time_min: 25,
+    cook_time_min: 20,
     servings: 3,
-    difficulty: 2,
-    season: 'jesen',
+    difficulty: 1,
+    season: 'vse',
     is_vegetarian: 1,
     is_vegan: 1,
     is_gluten_free: 1,
@@ -377,17 +377,20 @@ const recipes = [
     is_quick: 1,
     slug: 'ajdova-kasa-z-jurcki',
     steps: [
-      'Ajdo speremo in skuhamo do mehkega.',
-      'Na čebuli popražimo jurčke in česen.',
-      'Kašo zmešamo z jurčki in začinimo.',
-      'Postrežemo s peteršiljem.'
+      'Ajdo speremo in skuhamo v osoljeni vodi.',
+      'Korenje, papriko, paradižnik in koruzo na hitro prepražimo.',
+      'Dodamo ajdo, peteršilj in meto ter vse skupaj premešamo.',
+      'Začinimo z oljčnim oljem, soljo in poprom ter postrežemo.'
     ],
     ingredients: [
       { name_sl: 'Ajda', quantity: '200', unit: 'g' },
-      { name_sl: 'Jurčki', quantity: '150', unit: 'g' },
-      { name_sl: 'Čebula', quantity: '1', unit: 'kos' },
-      { name_sl: 'Česen', quantity: '1', unit: 'strok' },
-      { name_sl: 'Peteršilj', quantity: '1', unit: 'šopek' }
+      { name_sl: 'Korenje', quantity: '2', unit: 'kos' },
+      { name_sl: 'Paprika', quantity: '1', unit: 'kos' },
+      { name_sl: 'Paradižnik', quantity: '2', unit: 'kos' },
+      { name_sl: 'Koruza', quantity: '100', unit: 'g' },
+      { name_sl: 'Oljčno olje', quantity: '30', unit: 'ml' },
+      { name_sl: 'Peteršilj', quantity: '1', unit: 'šopek' },
+      { name_sl: 'Meta', quantity: '1', unit: 'šopek' }
     ]
   },
   {
