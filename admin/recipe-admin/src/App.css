@@ -396,6 +396,28 @@ tr:last-child td {
   font-weight: 700;
 }
 
+.serving-fieldset {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding: 14px;
+}
+
+.serving-fieldset legend {
+  color: var(--text-strong);
+  font-size: 14px;
+  font-weight: 700;
+  padding: 0 6px;
+}
+
+.serving-fields {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: minmax(120px, 0.7fr) minmax(180px, 1fr);
+}
+
 input,
 select,
 textarea {
@@ -589,6 +611,7 @@ textarea:focus {
   .checkbox-grid,
   .ingredient-picker,
   .ingredient-item,
+  .serving-fields,
   .step-row {
     grid-template-columns: 1fr;
   }

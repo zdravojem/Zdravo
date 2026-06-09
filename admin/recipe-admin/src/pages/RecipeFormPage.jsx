@@ -9,33 +9,27 @@ import {
   supabaseConfigError,
   uploadImage,
 } from '../lib/supabase'
-
-const difficultyOptions = ['1', '2', '3']
-const seasonOptions = ['pomlad', 'poletje', 'jesen', 'zima', 'vse']
-const flagOptions = [
-  ['is_vegetarian', 'Vegetarian'],
-  ['is_vegan', 'Vegan'],
-  ['is_gluten_free', 'Gluten-free'],
-  ['is_lactose_free', 'Lactose-free'],
-  ['is_heart_healthy', 'Heart-healthy'],
-  ['is_quick', 'Quick'],
-]
+import {
+  normalizeRecipeDifficulty,
+  normalizeRecipeServingUnit,
+  parseRecipeTags,
+  recipeDifficultyOptions,
+  recipeServingUnitOptions,
+  recipeTagOptions,
+  serializeRecipeTags,
+} from '../lib/recipeOptions'
 
 const emptyRecipeForm = {
   name_sl: '',
   slug: '',
   description_sl: '',
-  prep_time_min: '',
-  cook_time_min: '',
-  servings: '',
-  difficulty: '1',
-  season: 'vse',
-  is_vegetarian: false,
-  is_vegan: false,
-  is_gluten_free: false,
-  is_lactose_free: false,
-  is_heart_healthy: false,
-  is_quick: false,
+  time_min: '',
+  servings_quantity: '',
+  servings_unit: recipeServingUnitOptions[0],
+  difficulty: recipeDifficultyOptions[0],
+  tags: [],
+  nacin_priprave: '',
+  dodatni_nasvet: '',
 }
 
 const emptyIngredientDraft = {
@@ -158,17 +152,13 @@ function RecipeFormPage() {
           name_sl: recipe.name_sl ?? '',
           slug: recipe.slug ?? '',
           description_sl: recipe.description_sl ?? '',
-          prep_time_min: recipe.prep_time_min ?? '',
-          cook_time_min: recipe.cook_time_min ?? '',
-          servings: recipe.servings ?? '',
-          difficulty: String(recipe.difficulty ?? '1'),
-          season: recipe.season ?? 'vse',
-          is_vegetarian: Number(recipe.is_vegetarian) === 1,
-          is_vegan: Number(recipe.is_vegan) === 1,
-          is_gluten_free: Number(recipe.is_gluten_free) === 1,
-          is_lactose_free: Number(recipe.is_lactose_free) === 1,
-          is_heart_healthy: Number(recipe.is_heart_healthy) === 1,
-          is_quick: Number(recipe.is_quick) === 1,
+          time_min: recipe.time_min ?? '',
+          servings_quantity: recipe.servings_quantity ?? recipe.servings ?? '',
+          servings_unit: normalizeRecipeServingUnit(recipe.servings_unit),
+          difficulty: normalizeRecipeDifficulty(recipe.difficulty),
+          tags: parseRecipeTags(recipe.tags),
+          nacin_priprave: recipe.nacin_priprave ?? '',
+          dodatni_nasvet: recipe.dodatni_nasvet ?? '',
         })
         setSlugEdited(Boolean(recipe.slug && recipe.slug !== generatedSlug))
         setSteps(parseSteps(recipe.steps_sl))
@@ -245,9 +235,18 @@ function RecipeFormPage() {
     setForm((current) => ({ ...current, slug: slugify(current.slug) }))
   }
 
-  function updateFlag(event) {
-    const { name, checked } = event.target
-    setForm((current) => ({ ...current, [name]: checked }))
+  function updateTag(event) {
+    const { value, checked } = event.target
+    setForm((current) => {
+      const tags = checked
+        ? [...current.tags, value]
+        : current.tags.filter((tag) => tag !== value)
+
+      return {
+        ...current,
+        tags,
+      }
+    })
   }
 
   function updateStep(index, value) {
@@ -412,23 +411,20 @@ function RecipeFormPage() {
       }
 
       const stepsToSave = steps.map((step) => step.trim()).filter(Boolean)
+      const servingsQuantity = parseInteger(form.servings_quantity)
       const payload = {
         name_sl: nameSl,
         slug: recipeSlug,
         description_sl: form.description_sl.trim() || null,
-        prep_time_min: parseInteger(form.prep_time_min),
-        cook_time_min: parseInteger(form.cook_time_min),
-        servings: parseInteger(form.servings),
-        difficulty: parseInteger(form.difficulty),
-        season: form.season,
-        is_vegetarian: form.is_vegetarian ? 1 : 0,
-        is_vegan: form.is_vegan ? 1 : 0,
-        is_gluten_free: form.is_gluten_free ? 1 : 0,
-        is_lactose_free: form.is_lactose_free ? 1 : 0,
-        is_heart_healthy: form.is_heart_healthy ? 1 : 0,
-        is_quick: form.is_quick ? 1 : 0,
+        time_min: parseInteger(form.time_min),
+        servings_quantity: servingsQuantity,
+        servings_unit: servingsQuantity === null ? null : form.servings_unit || null,
+        difficulty: form.difficulty || null,
+        tags: serializeRecipeTags(form.tags),
         steps_sl: JSON.stringify(stepsToSave),
         image_path: nextImagePath || null,
+        nacin_priprave: form.nacin_priprave.trim() || null,
+        dodatni_nasvet: form.dodatni_nasvet.trim() || null,
         updated_at: new Date().toISOString(),
       }
 
@@ -533,55 +529,49 @@ function RecipeFormPage() {
               </label>
 
               <label className="field">
-                <span>Prep Time</span>
+                <span>Prep/Cook Time</span>
                 <input
                   type="number"
                   min="0"
-                  name="prep_time_min"
-                  value={form.prep_time_min}
+                  name="time_min"
+                  value={form.time_min}
                   onChange={updateField}
                 />
               </label>
 
-              <label className="field">
-                <span>Cook Time</span>
-                <input
-                  type="number"
-                  min="0"
-                  name="cook_time_min"
-                  value={form.cook_time_min}
-                  onChange={updateField}
-                />
-              </label>
+              <fieldset className="serving-fieldset span-2">
+                <legend>Number of serving</legend>
+                <div className="serving-fields">
+                  <label className="field">
+                    <span>Quantity</span>
+                    <input
+                      type="number"
+                      min="0"
+                      name="servings_quantity"
+                      value={form.servings_quantity}
+                      onChange={updateField}
+                    />
+                  </label>
 
-              <label className="field">
-                <span>Servings</span>
-                <input
-                  type="number"
-                  min="0"
-                  name="servings"
-                  value={form.servings}
-                  onChange={updateField}
-                />
-              </label>
+                  <label className="field">
+                    <span>Unit</span>
+                    <select name="servings_unit" value={form.servings_unit} onChange={updateField}>
+                      {recipeServingUnitOptions.map((unit) => (
+                        <option key={unit} value={unit}>
+                          {unit}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                </div>
+              </fieldset>
 
               <label className="field">
                 <span>Difficulty</span>
                 <select name="difficulty" value={form.difficulty} onChange={updateField}>
-                  {difficultyOptions.map((difficulty) => (
+                  {recipeDifficultyOptions.map((difficulty) => (
                     <option key={difficulty} value={difficulty}>
                       {difficulty}
-                    </option>
-                  ))}
-                </select>
-              </label>
-
-              <label className="field">
-                <span>Season</span>
-                <select name="season" value={form.season} onChange={updateField}>
-                  {seasonOptions.map((season) => (
-                    <option key={season} value={season}>
-                      {season}
                     </option>
                   ))}
                 </select>
@@ -590,17 +580,43 @@ function RecipeFormPage() {
           </section>
 
           <section className="form-section">
-            <h2>Flags</h2>
+            <h2>Method</h2>
+            <div className="form-grid">
+              <label className="field span-2">
+                <span>Način priprave</span>
+                <textarea
+                  name="nacin_priprave"
+                  value={form.nacin_priprave}
+                  onChange={updateField}
+                  rows="5"
+                />
+              </label>
+
+              <label className="field span-2">
+                <span>Additional advice / Dodatni nasvet</span>
+                <textarea
+                  name="dodatni_nasvet"
+                  value={form.dodatni_nasvet}
+                  onChange={updateField}
+                  rows="4"
+                />
+              </label>
+            </div>
+          </section>
+
+          <section className="form-section">
+            <h2>Tags</h2>
             <div className="checkbox-grid">
-              {flagOptions.map(([key, label]) => (
-                <label className="checkbox-field" key={key}>
+              {recipeTagOptions.map((tag) => (
+                <label className="checkbox-field" key={tag}>
                   <input
                     type="checkbox"
-                    name={key}
-                    checked={form[key]}
-                    onChange={updateFlag}
+                    name="tags"
+                    value={tag}
+                    checked={form.tags.includes(tag)}
+                    onChange={updateTag}
                   />
-                  <span>{label}</span>
+                  <span>{tag}</span>
                 </label>
               ))}
             </div>

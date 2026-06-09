@@ -7,24 +7,20 @@ import {
   supabase,
   supabaseConfigError,
 } from '../lib/supabase'
-
-const flags = [
-  ['is_vegetarian', 'Vegetarian'],
-  ['is_vegan', 'Vegan'],
-  ['is_gluten_free', 'Gluten-free'],
-  ['is_lactose_free', 'Lactose-free'],
-  ['is_heart_healthy', 'Heart-healthy'],
-  ['is_quick', 'Quick'],
-]
+import { parseRecipeTags } from '../lib/recipeOptions'
 
 function recipeImageUrl(path) {
   return path ? getPublicUrl('recipe-images', path) : ''
 }
 
-function difficultyStars(difficulty) {
-  const count = Number(difficulty) || 0
+function servingsText(recipe) {
+  const quantity = recipe.servings_quantity ?? recipe.servings
 
-  return count ? '\u2b50'.repeat(count) : '-'
+  if (quantity === undefined || quantity === null || quantity === '') {
+    return '-'
+  }
+
+  return [quantity, recipe.servings_unit].filter(Boolean).join(' ')
 }
 
 function RecipesPage() {
@@ -128,22 +124,23 @@ function RecipesPage() {
               <th>Image</th>
               <th>Name</th>
               <th>Difficulty</th>
-              <th>Season</th>
-              <th>Flags</th>
+              <th>Time</th>
+              <th>Servings</th>
+              <th>Tags</th>
               <th className="actions-column">Actions</th>
             </tr>
           </thead>
           <tbody>
             {loading ? (
               <tr>
-                <td colSpan="6" className="empty-cell">
+                <td colSpan="7" className="empty-cell">
                   Loading recipes...
                 </td>
               </tr>
             ) : recipes.length ? (
               recipes.map((recipe) => {
                 const imageUrl = recipeImageUrl(recipe.image_path)
-                const activeFlags = flags.filter(([key]) => Number(recipe[key]) === 1)
+                const tags = parseRecipeTags(recipe.tags)
 
                 return (
                   <tr key={recipe.id}>
@@ -155,14 +152,15 @@ function RecipesPage() {
                       )}
                     </td>
                     <td className="strong-cell">{recipe.name_sl}</td>
-                    <td>{difficultyStars(recipe.difficulty)}</td>
-                    <td>{recipe.season || '-'}</td>
+                    <td>{recipe.difficulty || '-'}</td>
+                    <td>{recipe.time_min ? `${recipe.time_min} min` : '-'}</td>
+                    <td>{servingsText(recipe)}</td>
                     <td>
                       <div className="badge-list">
-                        {activeFlags.length ? (
-                          activeFlags.map(([key, label]) => (
-                            <span className="flag-badge" key={key}>
-                              {label}
+                        {tags.length ? (
+                          tags.map((tag) => (
+                            <span className="flag-badge" key={tag}>
+                              {tag}
                             </span>
                           ))
                         ) : (
@@ -190,7 +188,7 @@ function RecipesPage() {
               })
             ) : (
               <tr>
-                <td colSpan="6" className="empty-cell">
+                <td colSpan="7" className="empty-cell">
                   No recipes found.
                 </td>
               </tr>
