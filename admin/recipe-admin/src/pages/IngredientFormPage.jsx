@@ -7,6 +7,7 @@ import {
   slugify,
   supabase,
   supabaseConfigError,
+  syncRecipeQr,
   uploadImage,
 } from '../lib/supabase'
 import {
@@ -17,7 +18,6 @@ import {
 const emptyForm = {
   name_sl: '',
   category: ingredientCategories[0].value,
-  emoji: '',
 }
 
 function storagePathForFile(file) {
@@ -71,7 +71,6 @@ function IngredientFormPage() {
         setForm({
           name_sl: data.name_sl ?? '',
           category: normalizeIngredientCategory(data.category, data.name_sl),
-          emoji: data.emoji ?? '',
         })
         setImagePath(data.image_path ?? '')
       }
@@ -159,12 +158,11 @@ function IngredientFormPage() {
       const payload = {
         name_sl: nameSl,
         category: form.category,
-        emoji: form.emoji.trim() || null,
         image_path: nextImagePath || null,
         updated_at: new Date().toISOString(),
       }
 
-      const { error: saveError } = isEditing
+      const { data: savedIngredient, error: saveError } = isEditing
         ? await supabase
             .from('ingredients')
             .update(payload)
@@ -176,6 +174,13 @@ function IngredientFormPage() {
       if (saveError) {
         throw saveError
       }
+
+      await syncRecipeQr({
+        record: { id: savedIngredient.id },
+        schema: 'public',
+        table: 'ingredients',
+        type: isEditing ? 'UPDATE' : 'INSERT',
+      })
 
       navigate('/ingredients')
     } catch (submitError) {
@@ -220,17 +225,6 @@ function IngredientFormPage() {
                 </option>
               ))}
             </select>
-          </label>
-
-          <label className="field">
-            <span>Emoji</span>
-            <input
-              type="text"
-              name="emoji"
-              value={form.emoji}
-              onChange={updateField}
-              maxLength="8"
-            />
           </label>
 
           <label className="field">

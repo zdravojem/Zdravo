@@ -7,6 +7,7 @@ import {
   slugify,
   supabase,
   supabaseConfigError,
+  syncRecipeQr,
   uploadImage,
 } from '../lib/supabase'
 import {
@@ -111,7 +112,7 @@ function RecipeFormPage() {
     async function loadFormData() {
       const ingredientsRequest = supabase
         .from('ingredients')
-        .select('id, name_sl, emoji')
+        .select('id, name_sl')
         .order('name_sl', { ascending: true })
 
       const requests = isEditing
@@ -202,7 +203,7 @@ function RecipeFormPage() {
     )
 
     return allIngredients.filter((ingredient) => {
-      const label = `${ingredient.emoji || ''} ${ingredient.name_sl}`.toLowerCase()
+      const label = ingredient.name_sl.toLowerCase()
 
       return !selectedIds.has(String(ingredient.id)) && label.includes(query)
     })
@@ -469,6 +470,13 @@ function RecipeFormPage() {
         }
       }
 
+      await syncRecipeQr({
+        record: { id: recipeId },
+        schema: 'public',
+        table: 'recipes',
+        type: isEditing ? 'UPDATE' : 'INSERT',
+      })
+
       navigate('/recipes')
     } catch (submitError) {
       setError(submitError.message || 'Recipe could not be saved.')
@@ -698,7 +706,6 @@ function RecipeFormPage() {
                   <option value="">Select ingredient</option>
                   {filteredIngredients.map((ingredient) => (
                     <option key={ingredient.id} value={ingredient.id}>
-                      {ingredient.emoji ? `${ingredient.emoji} ` : ''}
                       {ingredient.name_sl}
                     </option>
                   ))}
@@ -748,7 +755,6 @@ function RecipeFormPage() {
                   return (
                     <div className="ingredient-item" key={`${ingredient.ingredient_id}-${index}`}>
                       <div className="ingredient-name">
-                        <span>{ingredientDetails?.emoji || ''}</span>
                         <strong>{ingredientDetails?.name_sl || ingredient.ingredient_id}</strong>
                       </div>
                       <label className="compact-field">

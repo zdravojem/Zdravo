@@ -2,6 +2,7 @@ import { createClient } from '@supabase/supabase-js'
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
+const recipeQrWebhookSecret = import.meta.env.VITE_RECIPE_QR_WEBHOOK_SECRET
 
 export const hasSupabaseConfig = Boolean(supabaseUrl && supabaseAnonKey)
 export const supabaseConfigError =
@@ -76,4 +77,35 @@ export async function deleteImage(bucket, path) {
   }
 
   return data
+}
+
+export async function syncRecipeQr(payload) {
+  const client = requireSupabaseClient()
+  const { data: sessionData } = await client.auth.getSession()
+  const accessToken = sessionData?.session?.access_token || supabaseAnonKey
+
+  const headers = {
+    apikey: supabaseAnonKey,
+    authorization: `Bearer ${accessToken}`,
+    'content-type': 'application/json',
+  }
+
+  if (recipeQrWebhookSecret) {
+    headers['x-zdravo-webhook-secret'] = recipeQrWebhookSecret
+  }
+
+  const response = await fetch(`${supabaseUrl.replace(/\/+$/, '')}/functions/v1/recipe-qr-sync`, {
+    body: JSON.stringify(payload),
+    headers,
+    method: 'POST',
+  })
+
+  const text = await response.text()
+  const body = text ? JSON.parse(text) : null
+
+  if (!response.ok) {
+    throw new Error(body?.error || `Recipe QR sync failed (${response.status})`)
+  }
+
+  return body
 }

@@ -116,14 +116,13 @@ function IngredientsPage() {
               <th>Image</th>
               <th>Name</th>
               <th>Category</th>
-              <th>Emoji</th>
               <th className="actions-column">Actions</th>
             </tr>
           </thead>
           <tbody>
             {loading ? (
               <tr>
-                <td colSpan="5" className="empty-cell">
+                <td colSpan="4" className="empty-cell">
                   Loading ingredients...
                 </td>
               </tr>
@@ -142,13 +141,12 @@ function IngredientsPage() {
                         />
                       ) : (
                         <span className="thumbnail placeholder">
-                          {ingredient.emoji || '-'}
+                          -
                         </span>
                       )}
                     </td>
                     <td className="strong-cell">{ingredient.name_sl}</td>
                     <td>{ingredientCategoryLabel(ingredient.category, ingredient.name_sl)}</td>
-                    <td>{ingredient.emoji || '-'}</td>
                     <td>
                       <div className="row-actions">
                         <Link className="button ghost" to={`/ingredients/${ingredient.id}/edit`}>

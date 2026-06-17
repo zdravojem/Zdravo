@@ -4,7 +4,6 @@ export const recipeServingUnitOptions = [
   'porcije',
   'hlebec',
   'potica',
-  'ocvirkovka',
   'cmoki',
   'kosi',
   'zavitek',
