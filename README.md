@@ -41,8 +41,14 @@ To reset data, delete database/zdravo-jem.db and restart the app.
 - Footer logos are stored in assets/logos/.
 
 ## Packaging for Windows
-1. npm run dist
-2. The installer is written to dist/.
+1. Run `npm run dist:client`.
+2. Copy `dist/Zdravo-Jem-Installer-1.0.0.exe` into `github-release/`.
+3. Upload only `github-release/Zdravo-Jem-Installer-1.0.0.exe` to GitHub Releases.
+
+Do not share or run `dist/win-unpacked/Zdravo Jem.exe` by itself. That file depends on
+the DLLs next to it, including `ffmpeg.dll`; running it without the full
+`win-unpacked` folder causes a Windows "ffmpeg.dll was not found" error. If you need
+to use the unpacked build, zip and copy the whole `dist/win-unpacked` folder.
 
 ## Kiosk Behavior
 - Fullscreen kiosk mode enabled in main.js

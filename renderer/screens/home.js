@@ -1,97 +1,137 @@
-import { ingredientImageSrc } from '../ingredient-images.js';
 import { gameCardImageSrc } from '../game-card-images.js';
 import { recipeImageSrc } from '../recipe-images.js';
+import {
+  difficultyClass,
+  recipeServingsText,
+  recipeTimeMinutes
+} from '../recipe-meta.js';
 
 const heroImageSrc = '../assets/images/home-hero.png';
 
-const categoryCards = [
-  {
-    label: { sl: 'Meso', en: 'Meat' },
-    subtitle: { sl: 'Sve&#382;e meso in perutnina', en: 'Fresh meat and poultry' },
-    image: 'Govedina',
-    categoryKey: 'meso_ribe',
-    accent: '#b54d2e',
-    icon: 'meat'
-  },
-  {
-    label: { sl: 'Zelenjava', en: 'Vegetables' },
-    subtitle: { sl: 'Sve&#382;a sezonska zelenjava', en: 'Fresh seasonal vegetables' },
-    image: 'Korenje',
-    categoryKey: 'zelenjava',
-    accent: '#cf7a1d',
-    icon: 'carrot'
-  },
-  {
-    label: { sl: 'Sadje', en: 'Fruit' },
-    subtitle: { sl: 'Sladko in so&#269;no sadje', en: 'Sweet and juicy fruit' },
-    image: 'Jabolka',
-    categoryKey: 'sadje',
+const categoryImageOrder = [
+  'sadje',
+  'zelenjava',
+  'meso_in_mesni_izdelki',
+  'ribe',
+  'jajca',
+  'mlecni_izdelki',
+  'strocnice',
+  'gobe',
+  'vlozena_kisana_zelenjava',
+  'zita_kase_zdrobi',
+  'moka',
+  'pekovski_izdelki_testo_kvas',
+  'olja_in_mascobe',
+  'zacimbe_in_zelisca',
+  'omake_kis_dodatki',
+  'sladila',
+  'juhe_in_osnove',
+  'semena',
+  'pijace_alkohol_za_kuhanje'
+];
+
+const categoryImageByKey = new Map(
+  categoryImageOrder.map((categoryKey, index) => [categoryKey, index + 1])
+);
+
+const categoryCarouselCopies = 3;
+const categoryCarouselMiddleCopy = 1;
+
+const categoryCardDetails = {
+  sadje: {
+    subtitle: { sl: 'Sladko in sezonsko', en: 'Sweet and seasonal' },
     accent: '#b14844',
     icon: 'apple'
   },
-  {
-    label: { sl: '&#381;ita in stro&#269;nice', en: 'Grains and pulses' },
-    subtitle: { sl: 'Polno hranil in energije', en: 'Full of nutrients and energy' },
-    image: 'Ajda',
-    categoryKey: 'zita',
+  zelenjava: {
+    subtitle: { sl: 'Sve&#382;a zelenjava', en: 'Fresh vegetables' },
+    accent: '#cf7a1d',
+    icon: 'carrot'
+  },
+  meso_in_mesni_izdelki: {
+    subtitle: { sl: 'Meso in doma&#269;i izdelki', en: 'Meat and local goods' },
+    accent: '#b54d2e',
+    icon: 'meat'
+  },
+  ribe: {
+    subtitle: { sl: 'Re&#269;ne in sve&#382;e ribe', en: 'River and fresh fish' },
+    accent: '#2f84a6',
+    icon: 'fish'
+  },
+  jajca: {
+    subtitle: { sl: 'Sve&#382;a jajca', en: 'Fresh eggs' },
+    accent: '#c78b22',
+    icon: 'egg'
+  },
+  mlecni_izdelki: {
+    subtitle: { sl: 'Mleko, skuta in sir', en: 'Milk, curd and cheese' },
+    accent: '#6c92b8',
+    icon: 'dairy'
+  },
+  strocnice: {
+    subtitle: { sl: 'Fi&#382;ol in grah', en: 'Beans and peas' },
+    accent: '#7c8f2e',
+    icon: 'beans'
+  },
+  gobe: {
+    subtitle: { sl: 'Sve&#382;e in suhe gobe', en: 'Fresh and dried mushrooms' },
+    accent: '#8b6b45',
+    icon: 'mushroom'
+  },
+  vlozena_kisana_zelenjava: {
+    subtitle: { sl: 'Kisana zelenjava', en: 'Pickled vegetables' },
+    accent: '#718d30',
+    icon: 'pickled'
+  },
+  zita_kase_zdrobi: {
+    subtitle: { sl: '&#381;ita, ka&#353;e in zdrobi', en: 'Grains and porridges' },
     accent: '#8c632f',
     icon: 'grains'
   },
-  {
-    label: { sl: 'Med in izdelki', en: 'Honey and goods' },
-    subtitle: { sl: 'Naravno in lokalno', en: 'Natural and local' },
-    image: 'Med',
-    categoryKey: 'zacimbe',
+  moka: {
+    subtitle: { sl: 'Moke za kruh in testo', en: 'Flours for bread and dough' },
+    accent: '#a8793f',
+    icon: 'flour'
+  },
+  pekovski_izdelki_testo_kvas: {
+    subtitle: { sl: 'Kruh, testo in kvas', en: 'Bread, dough and yeast' },
+    accent: '#b77938',
+    icon: 'bread'
+  },
+  olja_in_mascobe: {
+    subtitle: { sl: 'Olja in ma&#353;&#269;obe', en: 'Oils and fats' },
+    accent: '#b78a19',
+    icon: 'oil'
+  },
+  zacimbe_in_zelisca: {
+    subtitle: { sl: 'Za&#269;imbe in zeli&#353;&#269;a', en: 'Spices and herbs' },
+    accent: '#7b972d',
+    icon: 'herbs'
+  },
+  omake_kis_dodatki: {
+    subtitle: { sl: 'Omake, kis in dodatki', en: 'Sauces and additions' },
+    accent: '#a95d34',
+    icon: 'sauce'
+  },
+  sladila: {
+    subtitle: { sl: 'Med, sladkor in sladila', en: 'Honey, sugar and sweeteners' },
     accent: '#c58b19',
     icon: 'honey'
   },
-  {
-    label: { sl: 'Zeli&#353;&#269;a', en: 'Herbs' },
-    subtitle: { sl: 'Sve&#382;a zeli&#353;&#269;a in za&#269;imbe', en: 'Fresh herbs and spices' },
-    image: 'Timijan',
-    categoryKey: 'zacimbe',
-    accent: '#7b972d',
-    icon: 'herbs'
-  }
-];
-
-const featuredRecipes = [
-  { id: 13, slug: 'ajdova-kasa-z-jurcki' },
-  { id: 12, slug: 'postrv-na-zaru' },
-  { id: 11, slug: 'krompirjev-golaz' },
-  { id: 7, slug: 'ajdovi-zganci-s-skuto' },
-  { id: 4, slug: 'kranjska-juha' },
-  { id: 10, slug: 'goveja-juha-z-rezanci' },
-  { id: 3, slug: 'prekmurska-gibanica' },
-  { id: 6, slug: 'potica' },
-  { id: 8, slug: 'struklji' },
-  { id: 15, slug: 'flancati' }
-];
-
-const recipeTitles = {
-  sl: {
-    3: 'Prekmurska gibanica',
-    4: 'Kranjska juha',
-    6: 'Potica',
-    7: 'Ajdovi &#382;ganci s skuto',
-    8: 'Struklji',
-    10: 'Goveja juha z rezanci',
-    11: 'Krompirjev gola&#382;',
-    12: 'Postrv na &#382;aru',
-    13: 'Ajdova skleda z zelenjavo',
-    15: 'Flancati'
+  juhe_in_osnove: {
+    subtitle: { sl: 'Juhe in osnove', en: 'Soups and stocks' },
+    accent: '#6b8f3a',
+    icon: 'soup'
   },
-  en: {
-    3: 'Prekmurje Layer Cake',
-    4: 'Carniolan Soup',
-    6: 'Potica',
-    7: 'Buckwheat Zganci',
-    8: 'Struklji',
-    10: 'Beef Noodle Soup',
-    11: 'Potato Goulash',
-    12: 'Grilled Trout',
-    13: 'Buckwheat Bowl with Vegetables',
-    15: 'Flancati'
+  semena: {
+    subtitle: { sl: 'Semena za jedi', en: 'Seeds for dishes' },
+    accent: '#88992e',
+    icon: 'seeds'
+  },
+  pijace_alkohol_za_kuhanje: {
+    subtitle: { sl: 'Pija&#269;e za kuhanje', en: 'Drinks for cooking' },
+    accent: '#8b5aa3',
+    icon: 'drink'
   }
 };
 
@@ -134,11 +174,50 @@ const recipeMetaIcons = {
       <path d="M4.8 19c.4-3 3-5.2 6-5.2s5.6 2.2 6 5.2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
       <path d="M13.5 19c.2-1.8 1.7-3.1 3.5-3.1 1.7 0 3.1 1.3 3.4 3.1" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
     </svg>
+  `,
+  difficulty: `
+    <svg class="home-recipe-card__meta-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path d="M5 19v-6.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+      <path d="M12 19V8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+      <path d="M19 19V5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+    </svg>
   `
 };
 
 function pickLabel(value, locale) {
   return value[locale] || value.sl;
+}
+
+function chunkArray(items, size) {
+  const chunks = [];
+  for (let index = 0; index < items.length; index += size) {
+    chunks.push(items.slice(index, index + size));
+  }
+  return chunks;
+}
+
+function categoryImageSrc(categoryKey) {
+  const index = categoryImageByKey.get(categoryKey);
+
+  return index ? `../assets/images/categories/ordered/${index}.png` : '';
+}
+
+function buildCategoryCards(state) {
+  return state.ui.categories.map((category) => ({
+    ...categoryCardDetails[category.key],
+    categoryKey: category.key,
+    label: category.label
+  }));
+}
+
+function categoryTitle(category, locale) {
+  return typeof category.label === 'string'
+    ? category.label
+    : pickLabel(category.label, locale);
+}
+
+function categorySubtitle(category, locale) {
+  return category.subtitle ? pickLabel(category.subtitle, locale) : '';
 }
 
 function renderHomeLeafIcon() {
@@ -150,13 +229,66 @@ function renderHomeLeafIcon() {
   `;
 }
 
-function renderHomeGamepadIcon() {
+const homeNavIcons = {
+  home: `
+    <svg class="home-nav__icon" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" />
+    </svg>
+  `,
+  items: `
+    <svg class="home-nav__icon" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M6 7h12l-1 12H7L6 7z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" />
+      <path d="M9 7a3 3 0 0 1 6 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+    </svg>
+  `,
+  recipes: `
+    <svg class="home-nav__icon" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M6 4h12v16H6z" fill="none" stroke="currentColor" stroke-width="2" />
+      <path d="M9 8h6M9 12h6M9 16h4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+    </svg>
+  `,
+  games: `
+    <svg class="home-nav__icon" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M6 9h12a3 3 0 0 1 3 3v3a3 3 0 0 1-3 3h-2l-2-2h-4l-2 2H6a3 3 0 0 1-3-3v-3a3 3 0 0 1 3-3z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" />
+      <path d="M8 13h3M9.5 11.5v3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+      <circle cx="16.5" cy="12.5" r="1" fill="currentColor" />
+      <circle cx="18.5" cy="14.5" r="1" fill="currentColor" />
+    </svg>
+  `
+};
+
+function renderHomeNav(state) {
+  const items = [
+    ['home', state.ui.copy.homeNavHome],
+    ['items', state.ui.copy.homeNavItems],
+    ['recipes', state.ui.copy.homeNavRecipes],
+    ['games', state.ui.copy.homeNavGames]
+  ];
+
   return `
-    <svg class="home-games-title-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-      <path d="M6.2 9.2h11.6c2 0 3.6 1.6 3.6 3.6v2.5c0 1.8-1.4 3.2-3.2 3.2h-1.7l-1.9-2.1H9.4l-1.9 2.1H5.8c-1.8 0-3.2-1.4-3.2-3.2v-2.5c0-2 1.6-3.6 3.6-3.6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" />
-      <path d="M7.2 13.5h3.6M9 11.7v3.6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
-      <circle cx="15.8" cy="12.7" r="1" fill="currentColor" />
-      <circle cx="18.1" cy="14.7" r="1" fill="currentColor" />
+    <nav class="home-nav home-nav--inline" aria-label="${state.ui.copy.homeNavHome}">
+      ${items
+        .map(
+          ([key, label]) => `
+            <button
+              class="home-nav__item ${key === 'home' ? 'is-active' : ''}"
+              data-shell-action="${key}"
+            >
+              ${homeNavIcons[key]}
+              <span>${label}</span>
+            </button>
+          `
+        )
+        .join('')}
+    </nav>
+  `;
+}
+
+function renderMarketLeafIcon() {
+  return `
+    <svg class="home-market-badge__leaf" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path d="M19.5 5.2c-5.9 0-10.6 4.4-10.6 9.8 0 2.6 2.1 4.8 4.8 4.8 6.1 0 10.8-5.7 10.8-12.2 0-1.6-1.2-2.4-2.7-2.4-1.2 0-1.7 0-2.3 0z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" />
+      <path d="M8.2 18.2c3-1.4 6.3-4.7 8.7-9.1" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" />
     </svg>
   `;
 }
@@ -175,6 +307,41 @@ function renderCategoryCardIcon(kind) {
       <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
         <path d="M8.2 7.2c2.2-2 5.7-2.2 8.2-.4 2.1 1.6 3 4.5 2.1 6.9-.7 1.9-2.3 3.3-4.3 3.8-1.6.4-3.3.3-4.8-.4-1.3-.6-2.4-1.6-3.1-2.9-.8-1.6-.9-3.5-.3-5.1.4-1 1.1-1.8 2.2-2z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" />
         <path d="M15.9 9.3c.4-.8 1.2-1.4 2.1-1.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+      </svg>
+    `,
+    fish: `
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M4 12c2.4-3.2 5.1-4.8 8.2-4.8 3 0 5.6 1.6 7.8 4.8-2.2 3.2-4.8 4.8-7.8 4.8C9.1 16.8 6.4 15.2 4 12z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" />
+        <path d="M4 12 2.5 8.8M4 12l-1.5 3.2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+        <circle cx="15.8" cy="10.8" r="0.9" fill="currentColor" />
+      </svg>
+    `,
+    egg: `
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M12 3.8c3.3 3.1 5 6 5 9.4 0 3.5-2.1 5.8-5 5.8s-5-2.3-5-5.8c0-3.4 1.7-6.3 5-9.4z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" />
+      </svg>
+    `,
+    dairy: `
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M9 4.5h6l1.2 3V20H7.8V7.5L9 4.5z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" />
+        <path d="M8 9h8M10 4.5V3h4v1.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+      </svg>
+    `,
+    beans: `
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M8.4 8.2c1.6-1.7 4.5-.8 4.9 1.5.4 2.2-1.5 4.2-3.6 3.8-2.4-.4-3.2-3.4-1.3-5.3zM14.2 13.4c1.4-1.5 3.9-.7 4.3 1.3.3 1.9-1.3 3.7-3.2 3.3-2.1-.4-2.8-2.9-1.1-4.6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" />
+      </svg>
+    `,
+    mushroom: `
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M5 11.4C5.6 7.3 8.4 5 12 5s6.4 2.3 7 6.4H5z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" />
+        <path d="M10 11.4c0 2.5-.6 4.9-1.8 7.1h7.6c-1.2-2.2-1.8-4.6-1.8-7.1" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" />
+      </svg>
+    `,
+    pickled: `
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M8.5 4.5h7M9.5 7h5l1.5 2.2V20H8V9.2L9.5 7z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" />
+        <path d="M10 13.5h4M10 16h4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
       </svg>
     `,
     carrot: `
@@ -202,6 +369,47 @@ function renderCategoryCardIcon(kind) {
         <path d="M10 11.3h4M10 14h4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
       </svg>
     `,
+    flour: `
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M8 6.2h8l1.2 4.2V20H6.8v-9.6L8 6.2z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" />
+        <path d="M9 6.2V4h6v2.2M9.5 13h5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+      </svg>
+    `,
+    bread: `
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M5 12c0-3.3 3.1-5.8 7-5.8s7 2.5 7 5.8v6H5v-6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" />
+        <path d="M9 10.5v5M12 9.8v5.7M15 10.5v5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+      </svg>
+    `,
+    oil: `
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M10 4.5h4l1.2 2.8V20H8.8V7.3L10 4.5z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" />
+        <path d="M10 4.5V3h4v1.5M12 10.5c1.4 1.5 2.1 2.7 2.1 3.8 0 1.2-.8 2-2.1 2s-2.1-.8-2.1-2c0-1.1.7-2.3 2.1-3.8z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    `,
+    sauce: `
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M7.5 5h9l-1 14h-7L7.5 5z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" />
+        <path d="M8 9h8M9 14h6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+      </svg>
+    `,
+    soup: `
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M5 11h14l-1.2 7H6.2L5 11z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" />
+        <path d="M8 8c-.7-.8-.7-1.5 0-2.2M12 8c-.7-.8-.7-1.5 0-2.2M16 8c-.7-.8-.7-1.5 0-2.2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+      </svg>
+    `,
+    seeds: `
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M12 5c2.1 2.1 3.1 4 3.1 5.9 0 1.9-1.2 3.1-3.1 3.1s-3.1-1.2-3.1-3.1C8.9 9 9.9 7.1 12 5zM7.5 12.4c1.5 1.6 2.2 3.1 2.2 4.4 0 1.4-.9 2.2-2.2 2.2s-2.2-.8-2.2-2.2c0-1.3.7-2.8 2.2-4.4zM16.5 12.4c1.5 1.6 2.2 3.1 2.2 4.4 0 1.4-.9 2.2-2.2 2.2s-2.2-.8-2.2-2.2c0-1.3.7-2.8 2.2-4.4z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" />
+      </svg>
+    `,
+    drink: `
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M8 4h8l-1 7.5a4 4 0 0 1-8 0L8 4zM12 15.5V20M9.5 20h5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+        <path d="M8.5 8h7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+      </svg>
+    `,
     herbs: `
       <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
         <path d="M12 19.2V5.1" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
@@ -221,8 +429,136 @@ function renderCategoryChevronIcon() {
   `;
 }
 
+function renderCategoryCheckIcon() {
+  return `
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path d="M5.5 12.5l4.1 4.1 8.9-9.2" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+    </svg>
+  `;
+}
+
 function categoryAriaLabel(category, locale) {
-  return `${pickLabel(category.label, locale)}. ${pickLabel(category.subtitle, locale)}.`;
+  return `${categoryTitle(category, locale)}. ${categorySubtitle(category, locale)}.`;
+}
+
+function renderHomeCategoryCard({ category, isSelected, locale }) {
+  return `
+    <button
+      class="home-category-card ${isSelected ? 'is-selected' : ''}"
+      data-action="category"
+      data-category="${category.categoryKey}"
+      style="--card-accent: ${category.accent};"
+      aria-label="${categoryAriaLabel(category, locale)}"
+      aria-pressed="${isSelected}"
+    >
+      <span class="home-category-card__thumb">
+        <img
+          class="home-category-card__img"
+          src="${categoryImageSrc(category.categoryKey)}"
+          alt=""
+          loading="lazy"
+        />
+        ${isSelected ? `<span class="home-category-card__check">${renderCategoryCheckIcon()}</span>` : ''}
+      </span>
+      <span class="home-category-card__name">${categoryTitle(category, locale)}</span>
+    </button>
+  `;
+}
+
+// Paged category carousel (no looping): just remember/restore the scroll
+// position so selecting a category does not jump the user back to the first page.
+function setupCategoryCarousel(carousel, state, actions) {
+  if (!carousel) {
+    return;
+  }
+
+  window.requestAnimationFrame(() => {
+    const saved = Number(state.homeCategoryScrollLeft);
+    if (Number.isFinite(saved) && saved > 0) {
+      carousel.scrollLeft = saved;
+    }
+  });
+
+  carousel.addEventListener('scroll', () => {
+    actions.rememberHomeCategoryScroll?.(carousel.scrollLeft);
+  }, { passive: true });
+}
+
+// Seamless looping carousel: the track holds three identical copies of the row
+// and the scroll position is kept inside the middle copy so it can be dragged
+// endlessly in either direction.
+function setupInfiniteCarousel(track) {
+  if (!track) {
+    return;
+  }
+
+  let frame = 0;
+  let correcting = false;
+  let loopWidth = 0;
+  let firstStart = 0;
+  let secondStart = 0;
+
+  const measure = () => {
+    const first = track.querySelector('[data-loop="1"]');
+    const second = track.querySelector('[data-loop="2"]');
+
+    if (!first || !second) {
+      return false;
+    }
+
+    firstStart = first.offsetLeft;
+    secondStart = second.offsetLeft;
+    loopWidth = secondStart - firstStart;
+    return loopWidth > 0;
+  };
+
+  const keepCentered = () => {
+    if (!loopWidth && !measure()) {
+      return;
+    }
+
+    const min = firstStart - loopWidth * 0.5;
+    const max = secondStart - loopWidth * 0.5;
+    let nextScrollLeft = track.scrollLeft;
+
+    if (nextScrollLeft < min) {
+      nextScrollLeft += loopWidth;
+    } else if (nextScrollLeft > max) {
+      nextScrollLeft -= loopWidth;
+    }
+
+    if (nextScrollLeft !== track.scrollLeft) {
+      correcting = true;
+      track.scrollLeft = nextScrollLeft;
+      correcting = false;
+    }
+  };
+
+  const scheduleCorrection = () => {
+    if (frame) {
+      return;
+    }
+
+    frame = window.requestAnimationFrame(() => {
+      frame = 0;
+      keepCentered();
+    });
+  };
+
+  window.requestAnimationFrame(() => {
+    if (!measure()) {
+      return;
+    }
+
+    track.scrollLeft = firstStart;
+    keepCentered();
+  });
+
+  track.addEventListener('scroll', () => {
+    if (!correcting) {
+      scheduleCorrection();
+    }
+  }, { passive: true });
 }
 
 function gameTitleLines(title, locale) {
@@ -465,7 +801,7 @@ function renderMagnifierArt(idPrefix = 'magnifier') {
 }
 
 function totalRecipeTime(recipe) {
-  return Number(recipe?.prep_time_min || 0) + Number(recipe?.cook_time_min || 0);
+  return recipeTimeMinutes(recipe);
 }
 
 function formatRecipeTime(minutes) {
@@ -478,56 +814,42 @@ function formatRecipeTime(minutes) {
   return `${total} min`;
 }
 
-function difficultyClass(level) {
-  if (level === 1) {
-    return 'is-easy';
-  }
-  if (level === 3) {
-    return 'is-hard';
-  }
-  return 'is-medium';
-}
+function renderFeaturedRecipeCard({ locale, recipe, state, loopIndex = 0 }) {
+  const translated = state.ui.translateRecipe(recipe);
+  const title = translated?.title || recipe.name_sl || '';
+  const timeMinutes = totalRecipeTime(recipe);
+  const timeLabel = timeMinutes > 0 ? formatRecipeTime(timeMinutes) : '';
+  const servingsLabel = recipeServingsText(recipe, locale);
+  const difficulty = recipe.difficulty || 'Normalna';
+  const difficultyLabel = state.ui.translateDifficulty(difficulty);
 
-function buildRecipeIndex(state) {
-  const index = new Map();
-  Object.values(state.recipesByCategory || {}).forEach((recipes) => {
-    recipes.forEach((recipe) => {
-      if (!index.has(recipe.id)) {
-        index.set(recipe.id, recipe);
-      }
-    });
-  });
-  return index;
-}
+  const metaItems = [
+    timeLabel ? { icon: recipeMetaIcons.time, value: timeLabel } : null,
+    difficultyLabel ? { icon: recipeMetaIcons.difficulty, value: difficultyLabel } : null,
+    servingsLabel ? { icon: recipeMetaIcons.servings, value: servingsLabel } : null
+  ].filter(Boolean);
 
-function renderFeaturedRecipeCard({ locale, recipe, recipeIndex, state }) {
-  const recipeData = recipeIndex.get(recipe.id);
-  const translated = recipeData ? state.ui.translateRecipe(recipeData) : null;
-  const title = translated?.title || recipeTitles[locale][recipe.id];
-  const timeLabel = recipeData ? formatRecipeTime(totalRecipeTime(recipeData)) : '';
-  const servingsLabel = recipeData?.servings ? `${recipeData.servings} ${state.ui.copy.servings.toLowerCase()}` : '';
-  const difficultyLevel = Number(recipeData?.difficulty || 2);
-  const difficultyLabel = state.ui.translateDifficulty(difficultyLevel);
-  const metaHtml = recipeData
+  const metaHtml = metaItems.length
     ? `
         <span class="home-recipe-card__meta">
-          <span class="home-recipe-card__meta-item">
-            ${recipeMetaIcons.time}
-            <span>${timeLabel}</span>
-          </span>
-          <span class="home-recipe-card__meta-item">
-            ${recipeMetaIcons.servings}
-            <span>${servingsLabel}</span>
-          </span>
-          <span class="home-recipe-card__difficulty ${difficultyClass(difficultyLevel)}">${difficultyLabel}</span>
+          ${metaItems
+            .map(
+              (item) => `
+            <span class="home-recipe-card__meta-item">
+              ${item.icon}
+              <span>${item.value}</span>
+            </span>
+          `
+            )
+            .join('')}
         </span>
       `
     : '';
 
   return `
-    <button class="home-recipe-card" data-action="recipe" data-recipe-id="${recipe.id}">
+    <button class="home-recipe-card" data-action="recipe" data-recipe-id="${recipe.id}" data-loop="${loopIndex}">
       <span class="home-recipe-card__photo">
-        <img src="${recipeImageSrc(recipe.slug)}" alt="${title}" loading="lazy" />
+        <img src="${recipeImageSrc(recipe)}" alt="${title}" loading="lazy" />
       </span>
       <span class="home-recipe-card__body">
         <span class="home-recipe-card__title">${title}</span>
@@ -538,27 +860,13 @@ function renderFeaturedRecipeCard({ locale, recipe, recipeIndex, state }) {
 }
 
 function renderHomeGameCard({ game, locale }) {
-  const title = pickLabel(game.title, locale);
-  const badge = pickLabel(game.text, locale);
-  const description = pickLabel(game.description, locale);
-  const cta = pickLabel(game.cta, locale);
-
   return `
     <button
       class="home-game-card home-game-card--${game.key}"
       data-action="start-game"
       data-game="${game.key}"
-      aria-label="${gameTitleText(game.title, locale)}. ${description}."
+      aria-label="${gameTitleText(game.title, locale)}"
     >
-      <span class="home-game-card__copy">
-        <span class="home-game-card__badge">${badge}</span>
-        <span class="home-game-card__title">${title}</span>
-        <span class="home-game-card__text">${description}</span>
-        <span class="home-game-card__cta">
-          <span>${cta}</span>
-          <span class="home-game-card__cta-icon">${renderGameCardArrowIcon()}</span>
-        </span>
-      </span>
       <span class="home-game-card__scene" aria-hidden="true">
         <img
           class="home-game-card__image"
@@ -591,44 +899,38 @@ function heroImage(locale) {
 
 export function render({ state }) {
   const locale = state.ui.locale;
-  const recipeIndex = buildRecipeIndex(state);
+  const categoryCards = buildCategoryCards(state);
+  const homeRecipeIdeas = Array.isArray(state.homeRecipeIdeas) ? state.homeRecipeIdeas : [];
 
   return `
     <section class="screen screen--home">
+      <div class="home-shell">
+      <div class="home-shell__scroll">
       <section class="home-hero">
         <div class="home-hero__art">${heroImage(locale)}</div>
       </section>
 
       <section class="home-section home-section--categories">
-        <div class="home-section__title-row">
-          ${renderHomeLeafIcon()}
-          <h2>${state.ui.copy.homeBrowseTitle}</h2>
+        <div class="home-section__header">
+          <h2>${state.ui.copy.homeMarketTitle}</h2>
+          <span class="home-market-badge">${state.ui.copy.homeMarketBadge}${renderMarketLeafIcon()}</span>
         </div>
-        <div class="home-category-grid">
-          ${categoryCards
+        <div class="home-category-carousel" data-category-carousel>
+          ${chunkArray(categoryCards, 10)
             .map(
-              (category) => `
-                <button
-                  class="home-category-card"
-                  data-action="category"
-                  data-category="${category.categoryKey}"
-                  style="--card-accent: ${category.accent};"
-                  aria-label="${categoryAriaLabel(category, locale)}"
-                >
-                  <span class="home-category-card__media" aria-hidden="true">
-                    <img class="home-category-card__image" src="${ingredientImageSrc(category.image)}" alt="" loading="eager" decoding="async" />
-                    <span class="home-category-card__veil"></span>
-                    <span class="home-category-card__badge">${renderCategoryCardIcon(category.icon)}</span>
-                    <span class="home-category-card__content">
-                      <span class="home-category-card__label-group">
-                        <span class="home-category-card__label">${pickLabel(category.label, locale)}</span>
-                        <span class="home-category-card__subtitle">${pickLabel(category.subtitle, locale)}</span>
-                      </span>
-                    </span>
-                    <span class="home-category-card__chevron">${renderCategoryChevronIcon()}</span>
-                  </span>
-                </button>
-              `
+              (page) => `
+            <div class="home-category-page">
+              ${page
+                .map((category) =>
+                  renderHomeCategoryCard({
+                    category,
+                    isSelected: false,
+                    locale
+                  })
+                )
+                .join('')}
+            </div>
+          `
             )
             .join('')}
         </div>
@@ -637,25 +939,26 @@ export function render({ state }) {
       <section class="home-section home-section--recipes">
         <div class="home-section__header">
           <h2>${state.ui.copy.homeRecipesTitle}</h2>
-          <button class="home-link" data-action="all-recipes">${locale === 'en' ? 'All' : 'Vse'} <span>&rarr;</span></button>
+          <button class="home-link" data-action="all-recipes">${locale === 'en' ? 'View all' : 'Vsi recepti'} <span>&rarr;</span></button>
         </div>
-        <div class="home-recipe-carousel">
-          ${featuredRecipes
-            .map((recipe) => renderFeaturedRecipeCard({ locale, recipe, recipeIndex, state }))
-            .join('')}
+        <div class="home-recipe-carousel" data-recipe-carousel>
+          ${homeRecipeIdeas.length
+            ? Array.from({ length: homeRecipeIdeas.length > 3 ? 3 : 1 }, (_, loopIndex) =>
+                homeRecipeIdeas
+                  .map((recipe) => renderFeaturedRecipeCard({ locale, recipe, state, loopIndex }))
+                  .join('')
+              ).join('')
+            : `<span class="home-recipe-empty">${locale === 'en' ? 'No recipes available yet.' : 'Recepti še niso na voljo.'}</span>`}
         </div>
       </section>
 
       <section class="home-section home-section--games">
         <div class="home-section__header home-games-header">
           <span class="home-games-heading">
-            ${renderHomeGamepadIcon()}
             <span class="home-games-heading__copy">
               <h2>${state.ui.copy.homeGamesTitle}</h2>
-              <span>${state.ui.copy.homeGamesSubtitle}</span>
             </span>
           </span>
-          <button class="home-link" data-action="games">${state.ui.copy.homeGamesAllLabel} <span>&rarr;</span></button>
         </div>
         <div class="home-game-grid">
           ${gameCards
@@ -663,22 +966,61 @@ export function render({ state }) {
             .join('')}
         </div>
       </section>
+      </div>
+
+      ${renderHomeNav(state)}
+      </div>
     </section>
   `;
 }
 
-export function bind({ actions, root }) {
+export function bind({ actions, root, state }) {
   const screen = root.querySelector('.screen--home');
   if (!screen) {
     return;
   }
 
+  const categoryGrid = screen.querySelector('[data-category-carousel]');
+  setupCategoryCarousel(categoryGrid, state, actions);
+  setupInfiniteCarousel(screen.querySelector('[data-recipe-carousel]'));
+
+  // Distinguish a tap from a scroll/drag so the horizontal carousels
+  // (categories, recipe ideas) stay scrollable on touch screens: record the
+  // press, then only fire the action on release if the pointer barely moved
+  // and is still over the same control. A swipe scrolls and opens nothing.
+  const TAP_SLOP = 10;
+  let pressTarget = null;
+  let pressX = 0;
+  let pressY = 0;
+
   screen.addEventListener('pointerdown', (event) => {
-    const target = event.target.closest('[data-action]');
-    if (!target) {
+    pressTarget = event.target.closest('[data-action]');
+    pressX = event.clientX;
+    pressY = event.clientY;
+  });
+
+  screen.addEventListener('pointercancel', () => {
+    pressTarget = null;
+  });
+
+  screen.addEventListener('pointerup', (event) => {
+    const start = pressTarget;
+    pressTarget = null;
+    if (!start) {
       return;
     }
 
+    // Released somewhere else (e.g. after a swipe) — not a tap on this card.
+    if (event.target.closest('[data-action]') !== start) {
+      return;
+    }
+
+    // Moved too far — treat as a scroll, not a tap.
+    if (Math.abs(event.clientX - pressX) > TAP_SLOP || Math.abs(event.clientY - pressY) > TAP_SLOP) {
+      return;
+    }
+
+    const target = start;
     const action = target.dataset.action;
 
     if (action === 'products') {
@@ -687,7 +1029,8 @@ export function bind({ actions, root }) {
     }
 
     if (action === 'category') {
-      actions.openProducts(target.dataset.category);
+      actions.rememberHomeCategoryScroll?.(categoryGrid?.scrollLeft || 0);
+      actions.showRecipesForHomeCategory(target.dataset.category);
       return;
     }
 

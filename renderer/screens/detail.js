@@ -1,34 +1,50 @@
 import { ingredientImageSrc } from '../ingredient-images.js';
+import { recipeImageSrc } from '../recipe-images.js';
+import { parseRecipeTags, recipeServingsText, recipeTimeMinutes } from '../recipe-meta.js';
+import { renderEmailModal } from '../components/EmailModal.js';
+
+// Canonical unit keys for declension lookup — maps any inflected form to its root
+const UNIT_ROOT = {
+  porcija: 'porcija', porcije: 'porcija', porcij: 'porcija',
+  kos: 'kos', kosi: 'kos', kosov: 'kos',
+  cmok: 'cmok', cmoka: 'cmok', cmoki: 'cmok', cmokov: 'cmok',
+  hlebec: 'hlebec', hlebca: 'hlebec', hlebci: 'hlebec', hlebcev: 'hlebec',
+  zavitek: 'zavitek', zavitka: 'zavitek', zavitki: 'zavitek', zavitkov: 'zavitek',
+};
+
+const SL_FORMS = {
+  //              [unused, 1,         2,         3,         4,         5+]
+  porcija: [null, 'porcija', 'porcije', 'porcije', 'porcije', 'porcij'],
+  kos:     [null, 'kos',     'kosi',    'kosi',    'kosi',    'kosov'],
+  cmok:    [null, 'cmok',    'cmoka',   'cmoki',   'cmoki',   'cmokov'],
+  hlebec:  [null, 'hlebec',  'hlebca',  'hlebci',  'hlebci',  'hlebcev'],
+  zavitek: [null, 'zavitek', 'zavitka', 'zavitki', 'zavitki', 'zavitkov'],
+};
+
+const EN_FORMS = {
+  porcija: [null, 'serving',  'servings', 'servings', 'servings', 'servings'],
+  kos:     [null, 'piece',    'pieces',   'pieces',   'pieces',   'pieces'],
+  cmok:    [null, 'dumpling', 'dumplings','dumplings','dumplings','dumplings'],
+  hlebec:  [null, 'loaf',     'loaves',   'loaves',   'loaves',   'loaves'],
+  zavitek: [null, 'strudel',  'strudels', 'strudels', 'strudels', 'strudels'],
+};
+
+function declectUnit(n, unitRaw, locale) {
+  const root = UNIT_ROOT[String(unitRaw).trim().toLowerCase()];
+  if (!root) return String(unitRaw || '');
+  const forms = locale === 'en' ? EN_FORMS[root] : SL_FORMS[root];
+  if (!forms) return String(unitRaw || '');
+  const idx = Math.min(Math.max(Math.round(n), 1), 5);
+  return forms[idx] || forms[5];
+}
 
 function normalizeName(value) {
   return String(value || '').trim().toLowerCase();
 }
 
 function totalTime(recipe) {
-  return (recipe.prep_time_min || 0) + (recipe.cook_time_min || 0);
+  return recipeTimeMinutes(recipe);
 }
-
-const ingredientIcons = {
-  Ajda: '&#127806;',
-  Korenje: '&#129365;',
-  Paprika: '&#129745;',
-  'ParadiÅ¾nik': '&#127813;',
-  Krompir: '&#129364;',
-  Zelje: '&#129388;',
-  Repa: '&#129365;',
-  Pesa: '&#129364;',
-  Brokoli: '&#129382;',
-  'CvetaÄa': '&#129382;',
-  'JurÄki': '&#127812;',
-  Koruza: '&#127805;',
-  Skuta: '&#129472;',
-  Jajca: '&#129370;',
-  Maslo: '&#129480;',
-  Mleko: '&#129371;',
-  Sol: '&#129474;',
-  Poper: '&#127798;',
-  Meta: '&#127807;'
-};
 
 const prepIcons = [
   '<path d="M5 8h14l-1 12H6L5 8zM8 8a4 4 0 0 1 8 0" />',
@@ -54,6 +70,67 @@ function leafSvg(className) {
   `;
 }
 
+function qrGlyphSvg() {
+  const m = 3;
+  const n = 16;
+  const size = n * m;
+  const inFinder = (c, r) =>
+    (c < 7 && r < 7) || (c > n - 8 && r < 7) || (c < 7 && r > n - 8);
+
+  let dots = '';
+  for (let r = 0; r < n; r += 1) {
+    for (let c = 0; c < n; c += 1) {
+      if (inFinder(c, r)) {
+        continue;
+      }
+      if ((c * 7 + r * 13 + c * r) % 3 === 0) {
+        dots += `<rect x="${c * m}" y="${r * m}" width="${m}" height="${m}" fill="#1b1b1b" />`;
+      }
+    }
+  }
+
+  const finder = (gx, gy) => `
+    <rect x="${gx}" y="${gy}" width="${7 * m}" height="${7 * m}" fill="#1b1b1b" />
+    <rect x="${gx + m}" y="${gy + m}" width="${5 * m}" height="${5 * m}" fill="#ffffff" />
+    <rect x="${gx + 2 * m}" y="${gy + 2 * m}" width="${3 * m}" height="${3 * m}" fill="#1b1b1b" />
+  `;
+
+  return `
+    <svg viewBox="0 0 ${size} ${size}" aria-hidden="true" focusable="false">
+      <rect width="${size}" height="${size}" fill="#ffffff" />
+      ${finder(0, 0)}
+      ${finder(size - 7 * m, 0)}
+      ${finder(0, size - 7 * m)}
+      ${dots}
+    </svg>
+  `;
+}
+
+function emailGlyphSvg() {
+  return `
+    <svg viewBox="0 0 48 48" aria-hidden="true" focusable="false">
+      <rect x="6" y="11" width="36" height="26" rx="5" fill="#ffffff" stroke="#e0d8c8" stroke-width="1.5" />
+      <path d="M8 15l16 12 16-12" fill="none" stroke="#d44638" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+      <path d="M8 33l11-9M40 33l-11-9" fill="none" stroke="#d44638" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+    </svg>
+  `;
+}
+
+function escapeHtml(value) {
+  return String(value || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function formatTextBlock(value) {
+  const text = String(value || '').trim();
+
+  return text ? escapeHtml(text).replace(/\r?\n/g, '<br>') : '';
+}
+
 function amountText(state, item) {
   return [item.quantity, state.ui.translateUnit(item.quantity, item.unit)]
     .filter(Boolean)
@@ -61,36 +138,171 @@ function amountText(state, item) {
     .trim();
 }
 
-function recipeTags(state, recipe) {
-  const tags = [];
-  if (recipe.difficulty) {
-    tags.push(state.ui.translateDifficulty(recipe.difficulty));
+function ingredientAmountAttrs(item) {
+  const qty = item.quantity !== undefined && item.quantity !== null ? item.quantity : '';
+  const unit = item.unit || '';
+  return qty !== '' ? ` data-base-qty="${qty}" data-unit="${escapeHtml(unit)}"` : '';
+}
+
+function ingredientCountText(state, count) {
+  if (state.ui.locale === 'en') {
+    return `${count} ingredient${count === 1 ? '' : 's'}`;
   }
-  if (recipe.servings) {
-    tags.push(`${recipe.servings} ${state.ui.copy.servings.toLowerCase()}`);
+
+  const unit = count === 1
+    ? 'sestavina'
+    : count === 2
+      ? 'sestavini'
+      : count === 3 || count === 4
+        ? 'sestavine'
+        : 'sestavin';
+
+  return `${count} ${unit}`;
+}
+
+const recipeTagLabels = {
+  en: {
+    Zajtrk: 'Breakfast',
+    Malica: 'Snack',
+    Kosilo: 'Lunch',
+    'Lahkotno kosilo': 'Light lunch',
+    'Ve\u010derja': 'Dinner',
+    Sladica: 'Dessert',
+    Priloga: 'Side dish',
+    Predjed: 'Starter',
+    'Enolon\u010dnica': 'Stew',
+    'Jed na \u017elico': 'Spoon dish',
+    Prigrizek: 'Snack',
+    'Prazni\u010dna jed': 'Holiday dish'
   }
-  if (recipe.is_gluten_free) {
-    tags.push(state.ui.locale === 'en' ? 'Gluten free' : 'Brez glutena');
+};
+
+function suitabilityLabel(state, tag) {
+  return recipeTagLabels[state.ui.locale]?.[tag] || tag;
+}
+
+function detailLabels(locale) {
+  if (locale === 'en') {
+    return {
+      eyebrow: 'Kitchen recipe',
+      plateBadge: 'Zdravo plate',
+      time: 'Time',
+      difficulty: 'Difficulty',
+      servings: 'Servings',
+      ingredientMatch: 'Ingredient match',
+      available: 'selected',
+      unavailable: 'to gather',
+      sendRecipe: 'Save this recipe',
+      shareText: 'Keep it close for shopping or cooking.',
+      emailTitle: 'Send by email',
+      emailText: 'Recipe to your inbox',
+      qrTitle: 'Scan QR code',
+      qrText: 'Open on your phone'
+    };
   }
-  return tags;
+
+  return {
+    eyebrow: 'Kuhinjski recept',
+    plateBadge: 'Zdravo kro&#382;nik',
+    time: '&#268;as',
+    difficulty: 'Zahtevnost',
+    servings: 'Porcije',
+    ingredientMatch: 'Ujemanje sestavin',
+    available: 'izbranih',
+    unavailable: 'za dodati',
+    sendRecipe: 'Shrani recept',
+    shareText: 'Imej ga pri sebi za tr&#382;nico ali kuhanje.',
+    emailTitle: 'Po&#353;lji na e-po&#353;to',
+    emailText: 'Recept v tvojem nabiralniku',
+    qrTitle: 'Skeniraj QR kodo',
+    qrText: 'Odpri na svojem telefonu'
+  };
+}
+
+function renderStatCard(icon, label, value, modifier = '') {
+  if (!value) {
+    return '';
+  }
+
+  return `
+    <span class="recipe-stat-card ${modifier}">
+      ${iconSvg(icon)}
+      <span class="recipe-stat-card__copy">
+        <small>${label}</small>
+        <strong>${value}</strong>
+      </span>
+    </span>
+  `;
+}
+
+function heartSvg() {
+  return `
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path d="M12 20.5c-4.9-3.4-8-6.3-8-10.2A4.4 4.4 0 0 1 8.4 6c1.5 0 2.8.7 3.6 1.8A4.4 4.4 0 0 1 15.6 6 4.4 4.4 0 0 1 20 10.3c0 3.9-3.1 6.8-8 10.2z" />
+    </svg>
+  `;
+}
+
+function renderSuitabilityStat(state, tag) {
+  if (!tag) {
+    return '';
+  }
+
+  return renderStatCard(
+    '<circle cx="12" cy="12" r="8" /><path d="M8.5 12.5l2.2 2.2 4.8-5.2" />',
+    state.ui.locale === 'en' ? 'Diet' : 'Primerno',
+    suitabilityLabel(state, tag),
+    'recipe-stat-card--tag'
+  );
+}
+
+function formatServingQty(n) {
+  if (!Number.isFinite(n) || n <= 0) return '0';
+  return String(parseFloat(n.toFixed(2)));
+}
+
+function renderServingsCard(recipe, locale, label) {
+  const quantity = recipe?.servings_quantity ?? recipe?.servings;
+  if (quantity === undefined || quantity === null || quantity === '') return '';
+
+  const numQty = Number(quantity);
+  const unit = String(recipe?.servings_unit || '').trim();
+  const displayText = recipeServingsText(recipe, locale);
+
+  return `
+    <span class="recipe-stat-card recipe-stat-card--servings"
+          data-servings-default="${numQty}"
+          data-servings-unit="${escapeHtml(unit)}"
+          data-servings-locale="${locale}">
+      ${iconSvg('<path d="M7 3v8M11 3v8M9 3v18M17 3c1.5 2.2 1.5 5.6 0 8v10" />')}
+      <span class="recipe-stat-card__copy">
+        <small>${label}</small>
+        <span class="recipe-servings-control">
+          <button class="recipe-servings-btn" data-action="serving-dec" aria-label="−" type="button">−</button>
+          <strong class="recipe-servings-val" data-current="${numQty}">${escapeHtml(displayText)}</strong>
+          <button class="recipe-servings-btn" data-action="serving-inc" aria-label="+" type="button">+</button>
+        </span>
+      </span>
+    </span>
+  `;
 }
 
 function shareCopy(locale) {
   if (locale === 'en') {
     return {
       title: 'Scan the QR code',
-      description: 'Scan this code on your phone to open a prefilled email with the recipe.',
+      description: 'Scan this code on your phone to open and save this recipe page.',
       loading: 'Preparing QR code...',
-      openEmail: 'Open email app',
+      openPage: 'Open page',
       close: 'Close'
     };
   }
 
   return {
     title: 'Skeniraj QR kodo',
-    description: 'Skeniraj to kodo na telefonu, da se odpre pripravljen e-mail z receptom.',
+    description: 'Skeniraj to kodo na telefonu, da odpre&#353; stran recepta za shranjevanje.',
     loading: 'Pripravljam QR kodo ...',
-    openEmail: 'Odpri e-pošto',
+    openPage: 'Odpri stran',
     close: 'Zapri'
   };
 }
@@ -118,7 +330,7 @@ function renderShareModal(state) {
         </div>
         ${share.error ? `<p class="recipe-share-modal__error">${share.error}</p>` : ''}
         <div class="recipe-share-modal__actions">
-          <button class="btn btn--outline" data-action="share-email">${copy.openEmail}</button>
+          <button class="btn btn--outline" data-action="open-qr-link">${copy.openPage}</button>
           <button class="btn btn--primary" data-action="close-share">${copy.close}</button>
         </div>
       </div>
@@ -149,7 +361,10 @@ export function render({ state }) {
     selectedNames.has(normalizeName(item.name_sl))
   );
   const marketList = (marketIngredients.length ? marketIngredients : ingredients).slice(0, 5);
-  const tags = recipeTags(state, recipe);
+  const suitabilityTags = parseRecipeTags(recipe.tags);
+  const additionalTip = formatTextBlock(recipe.dodatni_nasvet);
+  const labels = detailLabels(state.ui.locale);
+  const difficulty = recipe.difficulty ? state.ui.translateDifficulty(recipe.difficulty) : '';
 
   return `
     <section class="screen screen--detail">
@@ -161,55 +376,53 @@ export function render({ state }) {
             </svg>
           </button>
           <span>${state.ui.copy.homeNavRecipes}</span>
-          <strong>${leafSvg('brand-leaf')}${state.ui.copy.appTitle.toUpperCase()}</strong>
         </header>
 
         <div class="recipe-sheet__scroll">
-          <div class="recipe-photo">
-            <img src="../${recipe.image_path}" alt="${recipeCopy.title}" />
-            <button class="recipe-favorite" aria-label="Favorite">
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M12 21s-8-5-8-11a5 5 0 0 1 8-3 5 5 0 0 1 8 3c0 6-8 11-8 11z" />
-              </svg>
-            </button>
-          </div>
-
-          <section class="recipe-intro">
-            <div>
+          <section class="recipe-hero">
+            <img class="recipe-hero__image" src="${recipeImageSrc(recipe)}" alt="${recipeCopy.title}" />
+            <div class="recipe-hero__shade" aria-hidden="true"></div>
+            <div class="recipe-hero__badge">
+              ${heartSvg()}
+            </div>
+            <div class="recipe-hero__copy">
+              <span class="recipe-hero__eyebrow">${labels.eyebrow}</span>
               <h1>${recipeCopy.title}</h1>
               <p>${recipeCopy.description}</p>
+              <div class="recipe-stat-grid">
+                ${renderStatCard('<circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" />', labels.time, `${totalTime(recipe)} min`, 'recipe-stat-card--time')}
+                ${renderStatCard('<path d="M12 3l2.2 5.5 5.8.4-4.5 3.7 1.4 5.7L12 15.2 7.1 18.3l1.4-5.7L4 8.9l5.8-.4L12 3z" />', labels.difficulty, difficulty, 'recipe-stat-card--difficulty')}
+                ${renderServingsCard(recipe, state.ui.locale, labels.servings)}
+                ${renderSuitabilityStat(state, suitabilityTags[0])}
+              </div>
             </div>
-            <span class="recipe-leaf-mark" aria-hidden="true">${leafSvg('recipe-leaf-mark__icon')}</span>
           </section>
-
-          <div class="recipe-pill-row">
-            <span>${iconSvg('<circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" />')} ${totalTime(recipe)} min</span>
-            ${tags.map((tag) => `<span>${tag}</span>`).join('')}
-          </div>
 
           <section class="recipe-share-panel">
             <div class="recipe-section-title">
-              <h2>${state.ui.locale === 'en' ? 'Send yourself the recipe' : 'Po&#353;lji si recept'}</h2>
+              <h2>${labels.sendRecipe}</h2>
               <span aria-hidden="true">${leafSvg('recipe-section-leaf')}</span>
             </div>
-            <p>${state.ui.locale === 'en' ? 'Choose a way to keep the recipe with you.' : 'Izberi na&#269;in in imej recept vedno pri sebi.'}</p>
+            <p>${labels.shareText}</p>
             <div class="recipe-share-grid">
-              <button class="recipe-share-card" type="button" data-action="share-email">
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="M4 6h16v12H4z" />
-                  <path d="M4 7l8 6 8-6" />
-                </svg>
-                <span><strong>${state.ui.locale === 'en' ? 'Send by email' : 'Po&#353;lji na e-mail'}</strong>${state.ui.locale === 'en' ? 'Recipe to your inbox' : 'Recept prejme&#353; na svoj e-mail'}</span>
+              <button class="recipe-share-card recipe-share-card--email" type="button" data-action="share-email">
+                <span class="recipe-share-card__icon" aria-hidden="true">${emailGlyphSvg()}</span>
+                <span><strong>${labels.emailTitle}</strong>${labels.emailText}</span>
               </button>
-              <button class="recipe-share-card" type="button" data-action="share-qr">
-                <span class="recipe-qr" aria-hidden="true"></span>
-                <span><strong>${state.ui.locale === 'en' ? 'Scan QR code' : 'Skeniraj QR kodo'}</strong>${state.ui.locale === 'en' ? 'Open on your phone' : 'Odpri recept na svojem telefonu'}</span>
+              <button class="recipe-share-card recipe-share-card--qr" type="button" data-action="share-qr">
+                <span class="recipe-share-card__icon" aria-hidden="true">
+                  <img src="../assets/images/home-games/qrcode.png" alt="" loading="lazy" />
+                </span>
+                <span><strong>${labels.qrTitle}</strong>${labels.qrText}</span>
               </button>
             </div>
           </section>
 
-          <section class="recipe-card-panel">
-            <h2>${state.ui.copy.ingredientsHeading}</h2>
+          <section class="recipe-card-panel recipe-ingredients-panel">
+            <div class="recipe-ingredients-heading">
+              <h2>${state.ui.copy.ingredientsHeading}</h2>
+              <span>${ingredientCountText(state, ingredients.length)}</span>
+            </div>
             <div class="recipe-ingredient-grid">
               ${ingredients
                 .map((item) => {
@@ -218,9 +431,12 @@ export function render({ state }) {
                   return `
                     <div class="recipe-ingredient-tile ${hasIt ? 'is-available' : 'is-missing'}">
                       <span class="recipe-ingredient-photo">
-                        <img src="${ingredientImageSrc(item.name_sl)}" alt="${state.ui.translateIngredient(item.name_sl)}" loading="lazy" />
+                        <img src="${ingredientImageSrc(item)}" alt="${state.ui.translateIngredient(item.name_sl)}" loading="lazy" />
                       </span>
-                      <span><strong>${state.ui.translateIngredient(item.name_sl)}</strong>${amount}</span>
+                      <span class="recipe-ingredient-copy">
+                        <strong>${state.ui.translateIngredient(item.name_sl)}</strong>
+                        ${amount ? `<em${ingredientAmountAttrs(item)}>${amount}</em>` : ''}
+                      </span>
                     </div>
                   `;
                 })
@@ -239,7 +455,7 @@ export function render({ state }) {
                   (item) => `
                     <div class="recipe-market-chip">
                       <span class="recipe-market-chip__photo">
-                        <img src="${ingredientImageSrc(item.name_sl)}" alt="${state.ui.translateIngredient(item.name_sl)}" loading="lazy" />
+                        <img src="${ingredientImageSrc(item)}" alt="${state.ui.translateIngredient(item.name_sl)}" loading="lazy" />
                       </span>
                       ${state.ui.translateIngredient(item.name_sl)}
                     </div>
@@ -257,7 +473,6 @@ export function render({ state }) {
                   (step, index) => `
                     <div class="recipe-prep-step">
                       <span class="recipe-prep-number">${index + 1}</span>
-                      ${iconSvg(prepIcons[index % prepIcons.length])}
                       <p>${step}</p>
                     </div>
                   `
@@ -265,24 +480,86 @@ export function render({ state }) {
                 .join('')}
             </div>
           </section>
+
+          ${additionalTip ? `
+            <section class="recipe-card-panel recipe-tip-panel">
+              <div class="recipe-section-title">
+                <h2>${state.ui.locale === 'en' ? 'Additional advice' : 'Dodatni nasvet'}</h2>
+                <span aria-hidden="true">${leafSvg('recipe-section-leaf')}</span>
+              </div>
+              <p>${additionalTip}</p>
+            </section>
+          ` : ''}
         </div>
       </div>
       ${renderShareModal(state)}
+      ${renderEmailModal({ recipe: recipeCopy, share: state.recipeShare })}
     </section>
   `;
 }
 
+function updateServings(root, newQty) {
+  const card = root.querySelector('.recipe-stat-card--servings');
+  if (!card) return;
+
+  const defaultQty = Number(card.dataset.servingsDefault);
+  const unit = card.dataset.servingsUnit || '';
+  const locale = card.dataset.servingsLocale || 'sl';
+  if (!defaultQty) return;
+
+  const valEl = card.querySelector('.recipe-servings-val');
+  if (valEl) {
+    const label = unit ? declectUnit(newQty, unit, locale) : '';
+    valEl.textContent = [formatServingQty(newQty), label].filter(Boolean).join(' ');
+    valEl.dataset.current = newQty;
+  }
+
+  const decBtn = card.querySelector('[data-action="serving-dec"]');
+  if (decBtn) decBtn.disabled = newQty <= 1;
+
+  // Scale every ingredient quantity
+  const ratio = newQty / defaultQty;
+  root.querySelectorAll('.recipe-ingredient-copy em[data-base-qty]').forEach((el) => {
+    const base = Number(el.dataset.baseQty);
+    if (!base) return;
+    const scaled = base * ratio;
+    const displayQty = formatServingQty(scaled);
+    const unitRaw = el.dataset.unit || '';
+    const unitLabel = unitRaw ? declectUnit(scaled, unitRaw, locale) : '';
+    el.textContent = [displayQty, unitLabel].filter(Boolean).join(' ');
+  });
+}
+
 export function bind({ actions, root }) {
-  root.addEventListener('pointerdown', (event) => {
+  const screen = root.querySelector('.screen--detail');
+  if (!screen) {
+    return;
+  }
+
+  screen.addEventListener('pointerdown', (event) => {
     const target = event.target.closest('[data-action]');
     if (!target) {
       if (event.target.classList.contains('recipe-share-modal-backdrop')) {
+        actions.closeRecipeShare();
+      }
+      if (event.target.dataset.emailModalBackdrop === 'true') {
         actions.closeRecipeShare();
       }
       return;
     }
 
     const action = target.dataset.action;
+
+    if (action === 'serving-dec' || action === 'serving-inc') {
+      event.preventDefault();
+      const valEl = screen.querySelector('.recipe-servings-val');
+      if (!valEl) return;
+      const current = Number(valEl.dataset.current) || 1;
+      const next = action === 'serving-dec' ? Math.max(1, current - 1) : current + 1;
+      if (next !== current) updateServings(screen, next);
+      return;
+    }
+
     if (action === 'home') {
       actions.goHome(true);
       return;
@@ -298,8 +575,23 @@ export function bind({ actions, root }) {
       return;
     }
 
+    if (action === 'send-recipe-email') {
+      actions.sendRecipeEmail();
+      return;
+    }
+
+    if (action === 'close-email-modal') {
+      actions.closeRecipeShare();
+      return;
+    }
+
     if (action === 'share-qr') {
       actions.openRecipeQrShare();
+      return;
+    }
+
+    if (action === 'open-qr-link') {
+      actions.openRecipeShareLink();
       return;
     }
 
@@ -307,4 +599,11 @@ export function bind({ actions, root }) {
       actions.closeRecipeShare();
     }
   });
+
+  const emailInput = screen.querySelector('[data-email-input]');
+  if (emailInput) {
+    emailInput.addEventListener('input', (event) => {
+      actions.setRecipeEmail?.(event.target.value);
+    });
+  }
 }

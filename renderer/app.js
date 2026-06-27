@@ -1,11 +1,12 @@
 import * as welcome from './screens/welcome.js';
 import * as homeScreen from './screens/home.js';
 import * as ingredientsScreen from './screens/ingredients.js';
-import * as preferencesScreen from './screens/preferences.js';
 import * as resultsScreen from './screens/results.js';
 import * as detailScreen from './screens/detail.js';
 import * as gamesScreen from './screens/games.js';
-import { buildUi } from './i18n.js';
+import { buildUi, normalizeCategoryKey } from './i18n.js';
+import { recipeImageSrc } from './recipe-images.js';
+import { recipeServingsText, recipeTimeMinutes } from './recipe-meta.js';
 
 const appRoot = document.getElementById('app');
 const localeStorageKey = 'zdravo.locale';
@@ -30,22 +31,13 @@ function saveLocale(locale) {
 const initialLocale = loadLocale();
 const initialUi = buildUi(initialLocale);
 
-function defaultPreferences() {
-  return {
-    vegetarian: false,
-    vegan: false,
-    glutenFree: false,
-    lactoseFree: false,
-    heartHealthy: false,
-    quick: false
-  };
-}
-
 function shareLocaleLabels(locale) {
   if (locale === 'en') {
     return {
       time: 'Time',
       servings: 'Servings',
+      preparationMethod: 'Preparation method',
+      additionalTip: 'Additional advice',
       ingredients: 'Ingredients',
       steps: 'Steps',
       footer: 'Shared from Zdravo Jem kiosk'
@@ -55,6 +47,8 @@ function shareLocaleLabels(locale) {
   return {
     time: 'Čas',
     servings: 'Porcije',
+    preparationMethod: 'Način priprave',
+    additionalTip: 'Dodatni nasvet',
     ingredients: 'Sestavine',
     steps: 'Koraki',
     footer: 'Deljeno iz kioska Zdravo Jem'
@@ -63,7 +57,8 @@ function shareLocaleLabels(locale) {
 
 function buildRecipeShareBody(state, recipe, recipeCopy) {
   const labels = shareLocaleLabels(state.locale);
-  const totalMinutes = (recipe.prep_time_min || 0) + (recipe.cook_time_min || 0);
+  const totalMinutes = recipeTimeMinutes(recipe);
+  const servings = recipeServingsText(recipe, state.locale);
 
   const ingredientLines = (recipe.ingredients || []).map((item) => {
     const name = state.ui.translateIngredient(item.name_sl);
@@ -81,7 +76,9 @@ function buildRecipeShareBody(state, recipe, recipeCopy) {
     recipeCopy.description,
     '',
     `${labels.time}: ${totalMinutes} min`,
-    recipe.servings ? `${labels.servings}: ${recipe.servings}` : '',
+    servings ? `${labels.servings}: ${servings}` : '',
+    recipe.nacin_priprave ? `${labels.preparationMethod}: ${recipe.nacin_priprave}` : '',
+    recipe.dodatni_nasvet ? `${labels.additionalTip}: ${recipe.dodatni_nasvet}` : '',
     '',
     `${labels.ingredients}:`,
     ...ingredientLines,
@@ -102,17 +99,44 @@ function buildRecipeMailto(state, recipe) {
   return `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 }
 
+function buildRecipeEmailPayload(state, recipe) {
+  const recipeCopy = state.ui.translateRecipe(recipe);
+  const prepMinutes = recipeTimeMinutes(recipe);
+
+  return {
+    id: recipe.id,
+    title: recipeCopy.title,
+    description: recipeCopy.description,
+    image_url: recipe.image_url || recipeImageSrc(recipe),
+    image_path: recipe.image_path || '',
+    prep_time: prepMinutes || '',
+    servings: recipeServingsText(recipe, state.locale),
+    difficulty: recipe.difficulty ? state.ui.translateDifficulty(recipe.difficulty) || recipe.difficulty : '',
+    ingredients: (recipe.ingredients || []).map((item) => {
+      const amount = item.amount ?? item.quantity ?? '';
+      return {
+        name: state.ui.translateIngredient(item.name || item.name_sl || ''),
+        amount,
+        unit: state.ui.translateUnit(amount, item.unit) || item.unit || ''
+      };
+    }),
+    steps: recipeCopy.steps || []
+  };
+}
+
 const state = {
   locale: initialLocale,
   ui: initialUi,
   screen: 'welcome',
-  activeCategory: 'zelenjava',
+  activeCategory: null,
   activeRecipeCategory: 'all',
   recipeSearch: '',
   ingredientsByCategory: {},
   recipesByCategory: {},
+  homeRecipeIdeas: [],
   selectedIngredients: new Set(),
-  preferences: defaultPreferences(),
+  selectedHomeCategories: new Set(),
+  homeCategoryScrollLeft: null,
   results: [],
   resultsMeta: {
     count: 0,
@@ -122,6 +146,7 @@ const state = {
   resultIngredientFilter: null,
   currentRecipe: null,
   recipeShare: null,
+  syncStatus: null,
   activeGame: null,
   gameScore: 0,
   gameQuestionIndex: 0,
@@ -132,7 +157,6 @@ const screens = {
   welcome,
   home: homeScreen,
   ingredients: ingredientsScreen,
-  preferences: preferencesScreen,
   results: resultsScreen,
   detail: detailScreen,
   games: gamesScreen
@@ -224,11 +248,12 @@ document.addEventListener('touchstart', resetIdleTimer, { passive: true });
 
 function resetState() {
   gamesScreen.cleanup?.();
-  state.activeCategory = 'zelenjava';
+  state.activeCategory = null;
   state.activeRecipeCategory = 'all';
   state.recipeSearch = '';
   state.selectedIngredients = new Set();
-  state.preferences = defaultPreferences();
+  state.selectedHomeCategories = new Set();
+  state.homeCategoryScrollLeft = null;
   state.results = [];
   state.resultsMeta = { count: 0, label: state.ui.copy.resultsEmpty };
   state.resultsMode = 'matched';
@@ -243,42 +268,59 @@ function resetState() {
 
 async function loadIngredients() {
   const rows = await window.zdravo.dbQuery(
-    'SELECT name_sl, category, emoji FROM ingredients ORDER BY name_sl'
+    'SELECT id, name_sl, category, emoji, image_path FROM ingredients ORDER BY name_sl'
   );
   const grouped = {};
   rows.forEach((row) => {
-    if (!grouped[row.category]) {
-      grouped[row.category] = [];
+    const category = normalizeCategoryKey(row.category, row.name_sl);
+    if (!grouped[category]) {
+      grouped[category] = [];
     }
-    grouped[row.category].push(row);
+    grouped[category].push({ ...row, category });
   });
   state.ingredientsByCategory = grouped;
 }
 
 async function loadCategoryRecipes() {
   const rows = await window.zdravo.dbQuery(
-    `SELECT DISTINCT i.category, r.*
+    `SELECT DISTINCT i.category, i.name_sl AS ingredient_name_sl, r.*
      FROM recipes r
      JOIN recipe_ingredients ri ON ri.recipe_id = r.id
      JOIN ingredients i ON i.id = ri.ingredient_id
      ORDER BY i.category, r.name_sl`
   );
   const grouped = {};
+  const seenRecipesByCategory = new Set();
   rows.forEach((row) => {
-    if (!grouped[row.category]) {
-      grouped[row.category] = [];
+    const category = normalizeCategoryKey(row.category, row.ingredient_name_sl);
+    const seenKey = `${category}:${row.id}`;
+
+    if (seenRecipesByCategory.has(seenKey)) {
+      return;
     }
-    grouped[row.category].push(row);
+
+    seenRecipesByCategory.add(seenKey);
+
+    if (!grouped[category]) {
+      grouped[category] = [];
+    }
+
+    const recipe = { ...row };
+    delete recipe.ingredient_name_sl;
+    grouped[category].push({ ...recipe, category });
   });
   state.recipesByCategory = grouped;
 }
 
-function buildPreferenceLabel() {
-  const active = state.ui.preferences.filter((pref) => state.preferences[pref.key]);
-  if (!active.length) {
-    return state.ui.copy.resultsEmpty;
-  }
-  return active.map((pref) => pref.label).join(', ');
+async function loadHomeRecipeIdeas() {
+  state.homeRecipeIdeas = await window.zdravo.dbQuery(
+    `SELECT *
+     FROM recipes
+     WHERE name_sl IS NOT NULL
+       AND TRIM(name_sl) <> ''
+     ORDER BY RANDOM()
+     LIMIT 10`
+  );
 }
 
 function currentSortLocale() {
@@ -286,15 +328,8 @@ function currentSortLocale() {
 }
 
 async function computeResults() {
-  const clauses = [];
-  state.ui.preferences.forEach((pref) => {
-    if (state.preferences[pref.key]) {
-      clauses.push(`${pref.db} = 1`);
-    }
-  });
-  const where = clauses.length ? `WHERE ${clauses.join(' AND ')}` : '';
   const recipes = await window.zdravo.dbQuery(
-    `SELECT * FROM recipes ${where} ORDER BY name_sl`
+    'SELECT * FROM recipes ORDER BY name_sl'
   );
 
   const ids = recipes.map((recipe) => recipe.id);
@@ -302,7 +337,7 @@ async function computeResults() {
   if (ids.length) {
     const placeholders = ids.map(() => '?').join(', ');
     ingredientRows = await window.zdravo.dbQuery(
-      `SELECT ri.recipe_id, i.name_sl, ri.quantity, ri.unit, ri.is_optional
+      `SELECT ri.recipe_id, i.id, i.name_sl, i.image_path, ri.quantity, ri.unit, ri.is_optional
        FROM recipe_ingredients ri
        JOIN ingredients i ON i.id = ri.ingredient_id
        WHERE ri.recipe_id IN (${placeholders})`,
@@ -323,6 +358,13 @@ async function computeResults() {
   );
   const hasSelectedIngredients = selectedNormalized.size > 0;
   const filterNormalized = normalizeName(state.resultIngredientFilter);
+  const sortByTranslatedTitle = (a, b) => {
+    const translatedA = state.ui.translateRecipe(a).title;
+    const translatedB = state.ui.translateRecipe(b).title;
+    return translatedA.localeCompare(translatedB, currentSortLocale(), {
+      sensitivity: 'base'
+    });
+  };
 
   const scored = recipes.map((recipe) => {
     const ingredients = ingredientMap.get(recipe.id) || [];
@@ -341,6 +383,24 @@ async function computeResults() {
       missingPreview: missing.slice(0, 3)
     };
   });
+
+  if (state.resultsMode === 'categories') {
+    const selectedRecipeIds = new Set();
+    Array.from(state.selectedHomeCategories || []).forEach((categoryKey) => {
+      (state.recipesByCategory[categoryKey] || []).forEach((recipe) => {
+        selectedRecipeIds.add(recipe.id);
+      });
+    });
+
+    state.results = scored
+      .filter((recipe) => selectedRecipeIds.has(recipe.id))
+      .sort(sortByTranslatedTitle);
+    state.resultsMeta = {
+      count: state.results.length,
+      label: state.ui.copy.resultsEmpty
+    };
+    return;
+  }
 
   if (state.resultsMode === 'ingredient' && filterNormalized) {
     state.results = scored.filter((item) =>
@@ -370,17 +430,13 @@ async function computeResults() {
     if (b.matchCount !== a.matchCount) {
       return b.matchCount - a.matchCount;
     }
-    const translatedA = state.ui.translateRecipe(a).title;
-    const translatedB = state.ui.translateRecipe(b).title;
-    return translatedA.localeCompare(translatedB, currentSortLocale(), {
-      sensitivity: 'base'
-    });
+    return sortByTranslatedTitle(a, b);
   });
 
-  state.results = results.slice(0, 6);
+  state.results = results;
   state.resultsMeta = {
     count: state.results.length,
-    label: buildPreferenceLabel()
+    label: state.ui.copy.resultsEmpty
   };
 }
 
@@ -388,6 +444,8 @@ const actions = {
   goHome(reset) {
     if (reset) {
       resetState();
+    } else {
+      state.selectedHomeCategories = new Set();
     }
     actions.goTo('home');
   },
@@ -431,23 +489,34 @@ const actions = {
     }
     render();
   },
-  togglePreference(key) {
-    state.resultsMode = 'matched';
+  async showRecipesForHomeCategory(categoryKey) {
+    const key = String(categoryKey || '').trim();
+    if (!key) {
+      return;
+    }
+
+    state.selectedHomeCategories = new Set([key]);
+    state.selectedIngredients = new Set();
+    state.resultsMode = 'categories';
     state.resultIngredientFilter = null;
     state.activeRecipeCategory = 'all';
     state.recipeSearch = '';
-    state.preferences[key] = !state.preferences[key];
-    render();
+    await actions.goTo('results');
+  },
+  rememberHomeCategoryScroll(scrollLeft) {
+    const value = Number(scrollLeft);
+    if (Number.isFinite(value)) {
+      state.homeCategoryScrollLeft = value;
+    }
   },
   openProducts(categoryKey) {
     state.resultsMode = 'matched';
     state.resultIngredientFilter = null;
-    state.activeCategory = categoryKey || 'all';
+    state.activeCategory = categoryKey || null;
     actions.goTo('ingredients');
   },
   async showAllRecipes() {
     state.selectedIngredients = new Set();
-    state.preferences = defaultPreferences();
     state.resultsMode = 'all';
     state.resultIngredientFilter = null;
     state.activeRecipeCategory = 'all';
@@ -463,7 +532,6 @@ const actions = {
   },
   async showRecipesForIngredient(name) {
     state.selectedIngredients = new Set([name]);
-    state.preferences = defaultPreferences();
     state.resultsMode = 'ingredient';
     state.resultIngredientFilter = name;
     state.activeRecipeCategory = 'all';
@@ -490,7 +558,6 @@ const actions = {
     }
 
     state.selectedIngredients = new Set();
-    state.preferences = defaultPreferences();
     state.resultsMode = 'all';
     state.resultIngredientFilter = null;
     state.activeRecipeCategory = 'all';
@@ -550,14 +617,78 @@ const actions = {
       return;
     }
 
-    const mailto = buildRecipeMailto(state, state.currentRecipe);
-    state.recipeShare = null;
+    state.recipeShare = {
+      mode: 'email',
+      toEmail: '',
+      loading: false,
+      success: false,
+      error: ''
+    };
+    render();
+  },
+  setRecipeEmail(toEmail) {
+    if (!state.recipeShare || state.recipeShare.mode !== 'email') {
+      return;
+    }
+
+    state.recipeShare.toEmail = toEmail;
+
+    if (state.recipeShare.error) {
+      state.recipeShare.error = '';
+      render();
+    }
+  },
+  async sendRecipeEmail() {
+    if (!state.currentRecipe || !state.recipeShare || state.recipeShare.mode !== 'email') {
+      return;
+    }
+
+    if (state.recipeShare.loading) {
+      return;
+    }
+
+    const toEmail = String(state.recipeShare.toEmail || '').trim();
+    if (!toEmail.includes('@')) {
+      state.recipeShare.error = 'Vnesite veljaven e-po\u0161tni naslov.';
+      render();
+      return;
+    }
+
+    state.recipeShare.loading = true;
+    state.recipeShare.error = '';
+    state.recipeShare.success = false;
     render();
 
     try {
-      await window.zdravo.openExternal(mailto);
+      if (!window.zdravo.sendRecipeEmail) {
+        throw new Error('Po\u0161iljanje e-po\u0161te ni na voljo.');
+      }
+
+      const result = await window.zdravo.sendRecipeEmail(
+        toEmail,
+        buildRecipeEmailPayload(state, state.currentRecipe)
+      );
+
+      if (!state.recipeShare || state.recipeShare.mode !== 'email') {
+        return;
+      }
+
+      state.recipeShare.loading = false;
+      if (result?.success) {
+        state.recipeShare.success = true;
+        state.recipeShare.error = '';
+      } else {
+        state.recipeShare.error = result?.error || 'Recepta ni bilo mogo\u010de poslati.';
+      }
+      render();
     } catch (error) {
-      console.warn('Failed to open mail client', error);
+      if (!state.recipeShare || state.recipeShare.mode !== 'email') {
+        return;
+      }
+      console.warn('Failed to send recipe email', error);
+      state.recipeShare.loading = false;
+      state.recipeShare.error = error.message || 'Recepta ni bilo mogo\u010de poslati.';
+      render();
     }
   },
   async openRecipeQrShare() {
@@ -565,10 +696,9 @@ const actions = {
       return;
     }
 
-    const mailto = buildRecipeMailto(state, state.currentRecipe);
     state.recipeShare = {
       mode: 'qr',
-      mailto,
+      url: '',
       qrSvg: '',
       loading: true,
       error: ''
@@ -576,7 +706,39 @@ const actions = {
     render();
 
     try {
-      const qrSvg = await window.zdravo.generateQrSvg(mailto, {
+      if (navigator.onLine !== false) {
+        await syncWithSupabase('qr-open');
+      }
+
+      if (!state.currentRecipe) {
+        throw new Error('Recipe no longer exists');
+      }
+
+      const shareOptions = {
+        locale: state.locale,
+        selectedIngredients: Array.from(state.selectedIngredients)
+      };
+
+      let shareUrl;
+      try {
+        shareUrl = await window.zdravo.getRecipeShareUrl(state.currentRecipe.id, shareOptions);
+      } catch (shareError) {
+        // The recipe's qr_url can be missing locally if an earlier incremental
+        // sync skipped it. Force a full re-sync once to recover, then retry.
+        if (navigator.onLine === false) {
+          throw shareError;
+        }
+
+        await syncWithSupabase('qr-open-force', { force: true });
+
+        if (!state.currentRecipe) {
+          throw new Error('Recipe no longer exists');
+        }
+
+        shareUrl = await window.zdravo.getRecipeShareUrl(state.currentRecipe.id, shareOptions);
+      }
+
+      const qrSvg = await window.zdravo.generateQrSvg(shareUrl, {
         margin: 2,
         scale: 8,
         errorCorrectionLevel: 'M'
@@ -584,6 +746,7 @@ const actions = {
       if (!state.recipeShare || state.recipeShare.mode !== 'qr') {
         return;
       }
+      state.recipeShare.url = shareUrl;
       state.recipeShare.qrSvg = qrSvg;
       state.recipeShare.loading = false;
       render();
@@ -595,9 +758,21 @@ const actions = {
       state.recipeShare.loading = false;
       state.recipeShare.error =
         state.locale === 'en'
-          ? 'Unable to generate the QR code.'
-          : 'QR kode ni bilo mogoče ustvariti.';
+          ? 'Recipe QR page is not ready yet. Please try again after sync finishes.'
+          : 'QR stran se se pripravlja. Poskusite znova po sinhronizaciji.';
       render();
+    }
+  },
+  async openRecipeShareLink() {
+    const url = state.recipeShare?.url;
+    if (!url) {
+      return;
+    }
+
+    try {
+      await window.zdravo.openExternal(url);
+    } catch (error) {
+      console.warn('Failed to open recipe share page', error);
     }
   },
   closeRecipeShare() {
@@ -611,7 +786,7 @@ const actions = {
 };
 
 function activeShellNav() {
-  if (state.screen === 'ingredients' || state.screen === 'preferences') {
+  if (state.screen === 'ingredients') {
     return 'items';
   }
   if (state.screen === 'results' || state.screen === 'detail') {
@@ -625,6 +800,12 @@ function activeShellNav() {
 
 function renderShellNav() {
   if (state.screen === 'welcome' || (state.screen === 'games' && state.activeGame)) {
+    return '';
+  }
+
+  // The home screen renders its own nav inside the portrait panel (after the
+  // games section), so the shared bottom bar is suppressed there.
+  if (state.screen === 'home') {
     return '';
   }
 
@@ -676,6 +857,63 @@ async function handleShellNav(action) {
   }
 }
 
+async function refreshLocalDataAfterSync() {
+  await loadIngredients();
+  await loadCategoryRecipes();
+  await loadHomeRecipeIdeas();
+
+  if (state.screen === 'results') {
+    await computeResults();
+  }
+
+  if (state.screen === 'detail' && state.currentRecipe) {
+    const [refreshed, refreshedIngredients] = await Promise.all([
+      window.zdravo.dbQuery(
+        'SELECT * FROM recipes WHERE id = ? LIMIT 1',
+        [state.currentRecipe.id]
+      ),
+      window.zdravo.dbQuery(
+        `SELECT ri.recipe_id, i.id, i.name_sl, i.image_path, ri.quantity, ri.unit, ri.is_optional
+         FROM recipe_ingredients ri
+         JOIN ingredients i ON i.id = ri.ingredient_id
+         WHERE ri.recipe_id = ?`,
+        [state.currentRecipe.id]
+      )
+    ]);
+
+    if (refreshed[0]) {
+      state.currentRecipe = {
+        ...state.currentRecipe,
+        ...refreshed[0],
+        ingredients: refreshedIngredients
+      };
+    } else {
+      state.currentRecipe = null;
+    }
+  }
+
+  render();
+}
+
+async function syncWithSupabase(trigger = 'manual', options = {}) {
+  if (!window.zdravo.syncWithSupabase) {
+    return null;
+  }
+
+  try {
+    const result = await window.zdravo.syncWithSupabase(trigger, options);
+
+    if (result?.ok && result.changed) {
+      await refreshLocalDataAfterSync();
+    }
+
+    return result;
+  } catch (error) {
+    console.warn('Supabase sync failed', error);
+    return null;
+  }
+}
+
 actions.setLocale = async function setLocale(locale) {
   const normalizedLocale = locale === 'en' ? 'en' : 'sl';
   if (normalizedLocale === state.locale) {
@@ -694,8 +932,40 @@ actions.setLocale = async function setLocale(locale) {
   render();
 };
 
+function captureFocus() {
+  const el = document.activeElement;
+  if (!el || !el.dataset || el.dataset.focusKey == null) {
+    return null;
+  }
+  const snapshot = { key: el.dataset.focusKey };
+  if (typeof el.selectionStart === 'number') {
+    snapshot.selectionStart = el.selectionStart;
+    snapshot.selectionEnd = el.selectionEnd;
+  }
+  return snapshot;
+}
+
+function restoreFocus(snapshot) {
+  if (!snapshot) {
+    return;
+  }
+  const el = appRoot.querySelector(`[data-focus-key="${snapshot.key}"]`);
+  if (!el) {
+    return;
+  }
+  el.focus({ preventScroll: true });
+  if (typeof snapshot.selectionStart === 'number' && typeof el.setSelectionRange === 'function') {
+    try {
+      el.setSelectionRange(snapshot.selectionStart, snapshot.selectionEnd);
+    } catch (error) {
+      /* selection range not supported for this input type */
+    }
+  }
+}
+
 function render() {
   const screenModule = screens[state.screen];
+  const focusSnapshot = captureFocus();
   document.documentElement.lang = state.locale;
   document.title = state.ui.copy.appTitle;
   appRoot.innerHTML = `
@@ -722,6 +992,7 @@ function render() {
   document.body.dataset.screen = state.screen;
   document.body.dataset.gameActive = state.screen === 'games' && state.activeGame ? 'true' : 'false';
   screenModule.bind({ state, actions, root: appRoot });
+  restoreFocus(focusSnapshot);
   resetIdleTimer();
   window.scrollTo(0, 0);
 }
@@ -730,7 +1001,21 @@ async function init() {
   fitAppScale();
   await loadIngredients();
   await loadCategoryRecipes();
+  await loadHomeRecipeIdeas();
   document.documentElement.lang = state.locale;
+  window.addEventListener('online', () => {
+    syncWithSupabase('online');
+  });
+  window.addEventListener('offline', () => {
+    state.syncStatus = { state: 'offline', message: 'Offline mode' };
+  });
+  window.zdravo.onSyncStatus?.((status) => {
+    state.syncStatus = status;
+
+    if (status?.state === 'synced' && status.changed) {
+      refreshLocalDataAfterSync();
+    }
+  });
   appRoot.addEventListener('pointerdown', (event) => {
     const shellButton = event.target.closest('[data-shell-action]');
     if (shellButton) {
@@ -746,6 +1031,9 @@ async function init() {
     actions.setLocale(button.dataset.locale);
   });
   render();
+  if (navigator.onLine !== false) {
+    syncWithSupabase('renderer-startup');
+  }
 }
 
 init();

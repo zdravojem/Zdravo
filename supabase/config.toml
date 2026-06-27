@@ -1,0 +1,2 @@
+[functions.recipe-qr-sync]
+verify_jwt = false

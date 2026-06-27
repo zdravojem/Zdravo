@@ -1,48 +1,79 @@
+const legacyCategoryMap = {
+  meso_ribe: 'meso_in_mesni_izdelki',
+  mlecni: 'mlecni_izdelki',
+  zita: 'zita_kase_zdrobi',
+  zacimbe: 'zacimbe_in_zelisca'
+};
+
+const categoryEmoji = {
+  sadje: '🍎',
+  zelenjava: '🥬',
+  meso_in_mesni_izdelki: '🥩',
+  ribe: '🐟',
+  jajca: '🥚',
+  mlecni_izdelki: '🧀',
+  strocnice: '🫘',
+  gobe: '🍄',
+  vlozena_kisana_zelenjava: '🥬',
+  zita_kase_zdrobi: '🌾',
+  moka: '🌾',
+  pekovski_izdelki_testo_kvas: '🍞',
+  olja_in_mascobe: '🫒',
+  zacimbe_in_zelisca: '🌿',
+  omake_kis_dodatki: '🍶',
+  sladila: '🍯',
+  juhe_in_osnove: '🥣',
+  semena: '🌻',
+  pijace_alkohol_za_kuhanje: '🍷'
+};
+
+export function normalizeCategoryKey(category) {
+  return legacyCategoryMap[category] || category || 'sadje';
+}
+
 const categoryLabels = {
   sl: {
-    zelenjava: 'Zelenjava',
-    meso_ribe: 'Meso & Ribe',
-    mlecni: 'Mlečni',
-    zita: 'Žita',
     sadje: 'Sadje',
-    zacimbe: 'Začimbe'
+    zelenjava: 'Zelenjava',
+    meso_in_mesni_izdelki: 'Meso in mesni izdelki',
+    ribe: 'Ribe',
+    jajca: 'Jajca',
+    mlecni_izdelki: 'Mlečni izdelki',
+    strocnice: 'Stročnice',
+    gobe: 'Gobe',
+    vlozena_kisana_zelenjava: 'Vložena / kisana zelenjava',
+    zita_kase_zdrobi: 'Žita, kaše in zdrobi',
+    moka: 'Moka',
+    pekovski_izdelki_testo_kvas: 'Pekovski izdelki, testo, kvas',
+    olja_in_mascobe: 'Olja in maščobe',
+    zacimbe_in_zelisca: 'Začimbe in zelišča',
+    omake_kis_dodatki: 'Omake, kis in dodatki',
+    sladila: 'Sladila',
+    juhe_in_osnove: 'Juhe in osnove',
+    semena: 'Semena',
+    pijace_alkohol_za_kuhanje: 'Pijače / alkohol (za kuhanje)'
   },
   en: {
-    zelenjava: 'Vegetables',
-    meso_ribe: 'Meat & Fish',
-    mlecni: 'Dairy',
-    zita: 'Grains',
     sadje: 'Fruit',
-    zacimbe: 'Herbs & Spices'
+    zelenjava: 'Vegetables',
+    meso_in_mesni_izdelki: 'Meat and meat products',
+    ribe: 'Fish',
+    jajca: 'Eggs',
+    mlecni_izdelki: 'Dairy products',
+    strocnice: 'Legumes',
+    gobe: 'Mushrooms',
+    vlozena_kisana_zelenjava: 'Pickled / fermented vegetables',
+    zita_kase_zdrobi: 'Grains, porridges and semolina',
+    moka: 'Flour',
+    pekovski_izdelki_testo_kvas: 'Bakery, dough and yeast',
+    olja_in_mascobe: 'Oils and fats',
+    zacimbe_in_zelisca: 'Spices and herbs',
+    omake_kis_dodatki: 'Sauces, vinegar and additions',
+    sladila: 'Sweeteners',
+    juhe_in_osnove: 'Soups and stocks',
+    semena: 'Seeds',
+    pijace_alkohol_za_kuhanje: 'Drinks / alcohol for cooking'
   }
-};
-
-const preferenceLabels = {
-  sl: {
-    vegetarian: 'Vegetarijansko',
-    vegan: 'Vegansko',
-    glutenFree: 'Brez glutena',
-    lactoseFree: 'Brez laktoze',
-    heartHealthy: 'Zdravo srce',
-    quick: 'Hitri recepti'
-  },
-  en: {
-    vegetarian: 'Vegetarian',
-    vegan: 'Vegan',
-    glutenFree: 'Gluten free',
-    lactoseFree: 'Lactose free',
-    heartHealthy: 'Heart healthy',
-    quick: 'Quick recipes'
-  }
-};
-
-const preferenceDb = {
-  vegetarian: 'is_vegetarian',
-  vegan: 'is_vegan',
-  glutenFree: 'is_gluten_free',
-  lactoseFree: 'is_lactose_free',
-  heartHealthy: 'is_heart_healthy',
-  quick: 'is_quick'
 };
 
 const languageNames = {
@@ -50,33 +81,22 @@ const languageNames = {
   en: 'English'
 };
 
-const seasons = {
-  sl: {
-    pomlad: 'Pomlad',
-    poletje: 'Poletje',
-    jesen: 'Jesen',
-    zima: 'Zima',
-    vse: 'Vse leto'
-  },
-  en: {
-    pomlad: 'Spring',
-    poletje: 'Summer',
-    jesen: 'Autumn',
-    zima: 'Winter',
-    vse: 'All year'
-  }
-};
-
 const difficulties = {
   sl: {
-    1: 'Enostavno',
-    2: 'Srednje',
-    3: 'Zahtevno'
+    1: 'Enostavna',
+    2: 'Normalna',
+    3: 'Zahtevna',
+    Enostavna: 'Enostavna',
+    Normalna: 'Normalna',
+    Zahtevna: 'Zahtevna'
   },
   en: {
-    1: 'Easy',
-    2: 'Medium',
-    3: 'Challenging'
+    1: 'Enostavna',
+    2: 'Normalna',
+    3: 'Zahtevna',
+    Enostavna: 'Enostavna',
+    Normalna: 'Normalna',
+    Zahtevna: 'Zahtevna'
   }
 };
 
@@ -104,123 +124,6 @@ const units = {
     pinch: 'pinch',
     teaspoon: 'teaspoon',
     tbsp: 'tablespoon'
-  }
-};
-
-const ingredients = {
-  sl: {
-    Krompir: 'Krompir',
-    Korenje: 'Korenje',
-    Čebula: 'Čebula',
-    Česen: 'Česen',
-    Zelje: 'Zelje',
-    Bučke: 'Bučke',
-    Paprika: 'Paprika',
-    Paradižnik: 'Paradižnik',
-    Por: 'Por',
-    Repa: 'Repa',
-    Pesa: 'Pesa',
-    Šparglji: 'Šparglji',
-    Brokoli: 'Brokoli',
-    Cvetača: 'Cvetača',
-    Špinača: 'Špinača',
-    Jurčki: 'Jurčki',
-    Govedina: 'Govedina',
-    Svinjina: 'Svinjina',
-    Piščanec: 'Piščanec',
-    Postrv: 'Postrv',
-    'Kranjska klobasa': 'Kranjska klobasa',
-    Slanina: 'Slanina',
-    'Telečje meso': 'Telečje meso',
-    Jagnjetina: 'Jagnjetina',
-    Mleko: 'Mleko',
-    Jajca: 'Jajca',
-    'Sir (Tolminc)': 'Sir (Tolminc)',
-    'Kisla smetana': 'Kisla smetana',
-    Maslo: 'Maslo',
-    Jogurt: 'Jogurt',
-    Skuta: 'Skuta',
-    Ajda: 'Ajda',
-    Koruza: 'Koruza',
-    'Pšenična moka': 'Pšenična moka',
-    Ječmen: 'Ječmen',
-    Fižol: 'Fižol',
-    Leča: 'Leča',
-    Riž: 'Riž',
-    Kruh: 'Kruh',
-    Jabolka: 'Jabolka',
-    Hruške: 'Hruške',
-    Češnje: 'Češnje',
-    Borovnice: 'Borovnice',
-    Maline: 'Maline',
-    Jagode: 'Jagode',
-    Slive: 'Slive',
-    Sol: 'Sol',
-    Poper: 'Poper',
-    'Lovorov list': 'Lovorov list',
-    Timijan: 'Timijan',
-    Rožmarin: 'Rožmarin',
-    Peteršilj: 'Peteršilj',
-    Drobnjak: 'Drobnjak',
-    Meta: 'Meta',
-    'Oljčno olje': 'Oljčno olje'
-  },
-  en: {
-    Krompir: 'Potato',
-    Korenje: 'Carrot',
-    Čebula: 'Onion',
-    Česen: 'Garlic',
-    Zelje: 'Cabbage',
-    Bučke: 'Zucchini',
-    Paprika: 'Pepper',
-    Paradižnik: 'Tomato',
-    Por: 'Leek',
-    Repa: 'Turnip',
-    Pesa: 'Beetroot',
-    Šparglji: 'Asparagus',
-    Brokoli: 'Broccoli',
-    Cvetača: 'Cauliflower',
-    Špinača: 'Spinach',
-    Jurčki: 'Porcini mushrooms',
-    Govedina: 'Beef',
-    Svinjina: 'Pork',
-    Piščanec: 'Chicken',
-    Postrv: 'Trout',
-    'Kranjska klobasa': 'Carniolan sausage',
-    Slanina: 'Bacon',
-    'Telečje meso': 'Veal',
-    Jagnjetina: 'Lamb',
-    Mleko: 'Milk',
-    Jajca: 'Eggs',
-    'Sir (Tolminc)': 'Cheese (Tolminc)',
-    'Kisla smetana': 'Sour cream',
-    Maslo: 'Butter',
-    Jogurt: 'Yogurt',
-    Skuta: 'Curd cheese',
-    Ajda: 'Buckwheat',
-    Koruza: 'Corn',
-    'Pšenična moka': 'Wheat flour',
-    Ječmen: 'Barley',
-    Fižol: 'Beans',
-    Leča: 'Lentils',
-    Riž: 'Rice',
-    Kruh: 'Bread',
-    Jabolka: 'Apples',
-    Hruške: 'Pears',
-    Češnje: 'Cherries',
-    Borovnice: 'Blueberries',
-    Maline: 'Raspberries',
-    Jagode: 'Strawberries',
-    Slive: 'Plums',
-    Sol: 'Salt',
-    Poper: 'Pepper',
-    'Lovorov list': 'Bay leaf',
-    Timijan: 'Thyme',
-    Rožmarin: 'Rosemary',
-    Peteršilj: 'Parsley',
-    Drobnjak: 'Chives',
-    Meta: 'Mint',
-    'Oljčno olje': 'Olive oil'
   }
 };
 
@@ -538,7 +441,7 @@ const copy = {
     startLabel: 'Dotaknite se zaslona za začetek',
     welcomeSubtitle: 'Kulinarični pomočnik',
     homeIntro: 'Izberi izdelke s tržnice in odkrij, kaj lahko pripraviš.',
-    homeBrowseTitle: 'Brskaj med sestavinami',
+    homeBrowseTitle: 'Izberi kategorijo in poišči recept',
     homeMarketTitle: 'Izberi izdelke',
     homeMarketBadge: 'Na voljo na tržnici',
     homeRecipesTitle: 'Predlogi receptov',
@@ -556,11 +459,9 @@ const copy = {
     findRecipes: 'Poišči recepte →',
     ingredientsTitle: 'Katera živila imate doma?',
     ingredientsSubtitle: 'Izberite sestavine, ki jih želite uporabiti',
-    preferencesTitle: 'Vaše prehranske preference',
-    preferencesSubtitle: 'Izberite, kar velja za vas (neobvezno)',
     resultsTitle: 'Predlagani recepti za vas',
     resultsEmpty: 'Brez omejitev',
-    resultsNoMatches: 'Ni receptov, ki bi ustrezali izbranim sestavinam in preferencam.',
+    resultsNoMatches: 'Ni receptov, ki bi ustrezali izbranim sestavinam ali oznakam.',
     resultsFound: (count) => `Najdenih ${count} receptov`,
     selectedCount: (count) => {
       const label = count === 1 ? 'sestavina' : count === 2 ? 'sestavini' : count === 3 || count === 4 ? 'sestavine' : 'sestavin';
@@ -601,11 +502,9 @@ const copy = {
     findRecipes: 'Find recipes →',
     ingredientsTitle: 'What ingredients do you have at home?',
     ingredientsSubtitle: 'Select the ingredients you want to use',
-    preferencesTitle: 'Your dietary preferences',
-    preferencesSubtitle: 'Choose what applies to you (optional)',
     resultsTitle: 'Suggested recipes for you',
     resultsEmpty: 'No restrictions',
-    resultsNoMatches: 'No recipes match the selected ingredients and preferences.',
+    resultsNoMatches: 'No recipes match the selected ingredients or tags.',
     resultsFound: (count) => `${count} recipes found`,
     selectedCount: (count) => `${count} ingredient${count === 1 ? '' : 's'} selected`,
     missingIngredients: (items) => `Missing: ${items}`,
@@ -678,43 +577,17 @@ export function buildUi(locale) {
     categories: Object.entries(categoryLabels[normalizedLocale]).map(([key, label]) => ({
       key,
       label,
-      emoji: {
-        zelenjava: '🥬',
-        meso_ribe: '🍖',
-        mlecni: '🧀',
-        zita: '🌾',
-        sadje: '🍎',
-        zacimbe: '🌿'
-      }[key]
-    })),
-    preferences: Object.entries(preferenceLabels[normalizedLocale]).map(([key, label]) => ({
-      key,
-      label,
-      db: preferenceDb[key],
-      emoji: {
-        vegetarian: '🌿',
-        vegan: '🌱',
-        glutenFree: '🚫🌾',
-        lactoseFree: '🥛',
-        heartHealthy: '❤️',
-        quick: '⚡'
-      }[key]
+      emoji: categoryEmoji[key]
     })),
     copy: localeCopy,
     translateCategory(key) {
-      return categoryLabels[normalizedLocale][key] || key;
-    },
-    translatePreference(key) {
-      return preferenceLabels[normalizedLocale][key] || key;
-    },
-    translateSeason(season) {
-      return seasons[normalizedLocale][season] || season;
+      return categoryLabels[normalizedLocale][normalizeCategoryKey(key)] || key;
     },
     translateDifficulty(level) {
       return difficulties[normalizedLocale][level] || '';
     },
     translateIngredient(name) {
-      return ingredients[normalizedLocale][name] || name;
+      return name;
     },
     translateUnit(quantity, unit) {
       return countUnit(quantity, unit, normalizedLocale);

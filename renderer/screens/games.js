@@ -3,49 +3,30 @@
 // Puzzle: "Od kmetije do krožnika"   Detective: "Tržnični detektiv"
 // ============================================================================
 
+import { ingredientImageSrc as iImg } from '../ingredient-images.js';
+
 // ---------------------------------------------------------------------------
-// Image map (Unsplash URLs)
+// Image map (game assets only — ingredient images use iImg() directly)
 // ---------------------------------------------------------------------------
 const IMGS = {
-  apple:           'https://images.unsplash.com/photo-1567306226416-28f0efdc88ce?w=200&h=200&fit=crop',
-  carrot:          'https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?w=200&h=200&fit=crop',
-  buckwheat:       'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=200&h=200&fit=crop',
-  milk:            'https://images.unsplash.com/photo-1550583724-b2692b85b150?w=200&h=200&fit=crop',
-  honey:           'https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=200&h=200&fit=crop',
-  potato:          'https://images.unsplash.com/photo-1518977676601-b53f82aba655?w=200&h=200&fit=crop',
-  strawberry:      'https://images.unsplash.com/photo-1464965911861-746a04b4bca6?w=200&h=200&fit=crop',
-  herbs:           'https://images.unsplash.com/photo-1466637574441-749b8f19452f?w=200&h=200&fit=crop',
-  lettuce:         'https://images.unsplash.com/photo-1622206151226-18ca2c9ab4a1?w=200&h=200&fit=crop',
-  tomato:          'https://images.unsplash.com/photo-1546094096-0df4bcaaa337?w=200&h=200&fit=crop',
-  farm:            'https://images.unsplash.com/photo-1500651230702-0e2d8a49d4ad?w=200&h=200&fit=crop',
-  market:          'https://images.unsplash.com/photo-1488459716781-31db52582fe9?w=200&h=200&fit=crop',
-  cooking:         'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=200&h=200&fit=crop',
-  plate:           'https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=200&h=200&fit=crop',
-  seed:            'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=200&h=200&fit=crop',
-  harvest:         'https://images.unsplash.com/photo-1500076656116-558758f991c1?w=200&h=200&fit=crop',
-  bee:             'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=200&h=200&fit=crop',
-  flower:          'https://images.unsplash.com/photo-1490750967868-88df5691cc47?w=200&h=200&fit=crop',
-  cow:             'https://images.unsplash.com/photo-1570042225831-d98fa7577f1e?w=200&h=200&fit=crop',
-  pancakes:        'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=200&h=200&fit=crop',
-  bread:           'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=200&h=200&fit=crop',
-  salad:           'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=200&h=200&fit=crop',
-  soup:            'https://images.unsplash.com/photo-1547592180-85f173990554?w=200&h=200&fit=crop',
-  lemon:           'https://images.unsplash.com/photo-1598487559178-daa14f4a0df1?w=200&h=200&fit=crop',
-  pumpkin:         'https://images.unsplash.com/photo-1570586437263-ab629fccc818?w=200&h=200&fit=crop',
-  chocolate:       'https://images.unsplash.com/photo-1548907040-4baa42d10919?w=200&h=200&fit=crop',
-  olive_oil:       'https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=200&h=200&fit=crop',
-  cottage_cheese:  'https://images.unsplash.com/photo-1559561853-08451507cbe7?w=200&h=200&fit=crop',
-  puzzle_banner:   '../assets/images/games/puzzle-banner.png',
-  detective_banner:'../assets/images/games/detective-banner.png',
-  farm_plate_1:    '../assets/images/games/1.png',
-  farm_plate_2:    '../assets/images/games/2.png',
-  farm_plate_3:    '../assets/images/games/3.png',
-  farm_plate_4:    '../assets/images/games/4.png',
-  farm_plate_5:    '../assets/images/games/5.png',
-  farm_plate_6:    '../assets/images/games/6.png',
-  farm_plate_7:    '../assets/images/games/7.png',
-  farm_plate_8:    '../assets/images/games/8.png',
-  farm_plate_9:    '../assets/images/games/9.png',
+  logo: '../assets/images/home-games/zdravojem.png',
+  puzzle_banner: '../assets/images/games/puzzle-banner.png',
+  detective_banner: '../assets/images/games/detective-banner.png',
+  detective_header: '../assets/images/games/detective/header.png',
+  detective_leaf: '../assets/images/games/detective/leaf-left.png',
+  detective_divider: '../assets/images/games/detective/divider.png',
+  detective_mascot: '../assets/images/games/detective/mascot.png',
+  detective_reward: '../assets/images/games/detective/reward.png',
+  puzzle_header:   '../assets/images/games/header.png',
+  farm_plate_1: '../assets/images/games/1.png',
+  farm_plate_2: '../assets/images/games/2.png',
+  farm_plate_3: '../assets/images/games/3.png',
+  farm_plate_4: '../assets/images/games/4.png',
+  farm_plate_5: '../assets/images/games/5.png',
+  farm_plate_6: '../assets/images/games/6.png',
+  farm_plate_7: '../assets/images/games/7.png',
+  farm_plate_8: '../assets/images/games/8.png',
+  farm_plate_9: '../assets/images/games/9.png',
   strawberry_plate_1: '../assets/images/games/strawberry-journey-1.png',
   strawberry_plate_2: '../assets/images/games/strawberry-journey-2.png',
   strawberry_plate_3: '../assets/images/games/strawberry-journey-3.png',
@@ -61,9 +42,9 @@ const IMGS = {
 // Difficulty config
 // ---------------------------------------------------------------------------
 const DIFF_CONFIG = {
-  easy:   { time: 120, puzzlePrePlaced: 2, distractors: 0, qAnswers: 3, pCorrect: 50,  pCorrect2: 25, pWrong: -5,  pHint: -10, hintCost: '10' },
-  medium: { time: 90,  puzzlePrePlaced: 0, distractors: 0, qAnswers: 4, pCorrect: 100, pCorrect2: 60, pWrong: -20, pHint: -30, hintCost: '30' },
-  hard:   { time: 60,  puzzlePrePlaced: 0, distractors: 2, qAnswers: 4, pCorrect: 150, pCorrect2: 80, pWrong: -30, pHint: -50, hintCost: '50' }
+  easy: { time: 120, puzzlePrePlaced: 2, distractors: 0, qAnswers: 3, pCorrect: 50, pCorrect2: 25, pWrong: -5, pHint: -10, hintCost: '10' },
+  medium: { time: 90, puzzlePrePlaced: 0, distractors: 0, qAnswers: 4, pCorrect: 100, pCorrect2: 60, pWrong: -20, pHint: -30, hintCost: '30' },
+  hard: { time: 60, puzzlePrePlaced: 0, distractors: 2, qAnswers: 4, pCorrect: 150, pCorrect2: 80, pWrong: -30, pHint: -50, hintCost: '50' }
 };
 
 // ---------------------------------------------------------------------------
@@ -71,90 +52,90 @@ const DIFF_CONFIG = {
 // ---------------------------------------------------------------------------
 const GL = {
   sl: {
-    correctMsg:    (pts) => `Odlično! +${pts} točk ⭐`,
-    wrongMsg:      'Skoraj! Poskusi znova. 🤔',
-    hintToast:     'Namig: poišči označen košček! 💡',
-    snapGood:      (pts) => `+${pts} točk! 🎉`,
-    snapBad:       'Poskusi znova! 🤔',
-    distractor:    'Ta košček ne spada v sliko. 🚫',
-    noHints:       'Ni več namigov',
-    hintUsed:      'Namig porabljen',
-    combo:         '🔥 Combo +100 točk!',
-    revealAnswer:  'Pravilen odgovor je označen. 💡',
-    recipeToast:   (r) => `Recept: ${r} 📖`,
-    endMsg0:       'Dobro si poskusil! Poskusi znova.',
-    endSub0:       '',
-    endMsg40:      'Bravo! Dobro ti gre.',
-    endSub40:      '',
-    endMsg75:      'Odlično! Pravi tržnični mojster.',
-    endSub75:      '',
-    pointsLabel:   'točk',
-    pieces:        'Koščki',
-    placed:        'koščkov sestavljenih',
-    hint:          'Namig',
-    restart:       'Znova',
-    diffLabel:     'Izberi težavnost:',
-    easy:          '🟢 Lahko',
-    medium:        '🟡 Srednje',
-    hard:          '🔴 Težje',
-    startBtn:      'Začni igro 🚀',
-    missionTitle:  '— Detektivske misije —',
-    totalPoints:   'Skupaj točk',
-    playAgain:     'Igraj znova',
-    viewRecipe:    'Poglej povezan recept',
-    backToGames:   'Nazaj na igrice',
-    leaveGame:     'Zapusti igro?',
-    leaveMsg:      'Ali želiš zapustiti igro? Napredek ne bo shranjen.',
-    leaveConfirm:  'Zapusti igro',
+    correctMsg: (pts) => `Odlično! +${pts} točk`,
+    wrongMsg: 'Skoraj! Poskusi znova.',
+    hintToast: 'Namig: poišči označen košček!',
+    snapGood: (pts) => `+${pts} točk!`,
+    snapBad: 'Poskusi znova!',
+    distractor: 'Ta košček ne spada v sliko.',
+    noHints: 'Ni več namigov',
+    hintUsed: 'Namig porabljen',
+    combo: 'Combo +100 točk!',
+    revealAnswer: 'Pravilen odgovor je označen.',
+    recipeToast: (r) => `Recept: ${r}`,
+    endMsg0: 'Dobro si poskusil! Poskusi znova.',
+    endSub0: '',
+    endMsg40: 'Bravo! Dobro ti gre.',
+    endSub40: '',
+    endMsg75: 'Odlično! Pravi tržnični mojster.',
+    endSub75: '',
+    pointsLabel: 'točk',
+    pieces: 'Koščki',
+    placed: 'koščkov sestavljenih',
+    hint: 'Namig',
+    restart: 'Znova',
+    diffLabel: 'Izberi težavnost:',
+    easy: 'Lahko',
+    medium: 'Srednje',
+    hard: 'Težje',
+    startBtn: 'Začni igro',
+    missionTitle: '— Detektivske misije —',
+    totalPoints: 'Skupaj točk',
+    playAgain: 'Igraj znova',
+    viewRecipe: 'Poglej povezan recept',
+    backToGames: 'Nazaj na igrice',
+    leaveGame: 'Zapusti igro?',
+    leaveMsg: 'Ali želiš zapustiti igro? Napredek ne bo shranjen.',
+    leaveConfirm: 'Zapusti igro',
     leaveContinue: 'Nadaljuj igro',
-    restartGame:   'Začni znova?',
-    restartMsg:    'Ali želiš začeti znova? Trenutni rezultat bo izgubljen.',
-    restartConfirm:'Začni znova',
+    restartGame: 'Začni znova?',
+    restartMsg: 'Ali želiš začeti znova? Trenutni rezultat bo izgubljen.',
+    restartConfirm: 'Začni znova',
     restartCancel: 'Nadaljuj igro',
     puzzleComplete: 'Sestavljanka je končana!',
     puzzleCompleteTitle: 'Končano',
     puzzleCompleteEmpty: 'Vsi koščki so že na mestu.'
   },
   en: {
-    correctMsg:    (pts) => `Excellent! +${pts} points ⭐`,
-    wrongMsg:      'Almost! Try again. 🤔',
-    hintToast:     'Hint: find the highlighted piece! 💡',
-    snapGood:      (pts) => `+${pts} points! 🎉`,
-    snapBad:       'Try again! 🤔',
-    distractor:    "This piece doesn't belong here. 🚫",
-    noHints:       'No more hints',
-    hintUsed:      'Hint used',
-    combo:         '🔥 Combo +100 points!',
-    revealAnswer:  'Correct answer is highlighted. 💡',
-    recipeToast:   (r) => `Recipe: ${r} 📖`,
-    endMsg0:       'Good try! Try again.',
-    endSub0:       '',
-    endMsg40:      'Bravo! You are doing well.',
-    endSub40:      '',
-    endMsg75:      'Excellent! A true market master.',
-    endSub75:      '',
-    pointsLabel:   'points',
-    pieces:        'Pieces',
-    placed:        'pieces placed',
-    hint:          'Hint',
-    restart:       'Restart',
-    diffLabel:     'Choose difficulty:',
-    easy:          '🟢 Easy',
-    medium:        '🟡 Medium',
-    hard:          '🔴 Hard',
-    startBtn:      'Start game 🚀',
-    missionTitle:  '— Detective Missions —',
-    totalPoints:   'Total points',
-    playAgain:     'Play again',
-    viewRecipe:    'View related recipe',
-    backToGames:   'Back to games',
-    leaveGame:     'Leave game?',
-    leaveMsg:      'Do you want to leave the game? Progress will not be saved.',
-    leaveConfirm:  'Leave game',
+    correctMsg: (pts) => `Excellent! +${pts} points`,
+    wrongMsg: 'Almost! Try again.',
+    hintToast: 'Hint: find the highlighted piece!',
+    snapGood: (pts) => `+${pts} points!`,
+    snapBad: 'Try again!',
+    distractor: "This piece doesn't belong here.",
+    noHints: 'No more hints',
+    hintUsed: 'Hint used',
+    combo: 'Combo +100 points!',
+    revealAnswer: 'Correct answer is highlighted.',
+    recipeToast: (r) => `Recipe: ${r}`,
+    endMsg0: 'Good try! Try again.',
+    endSub0: '',
+    endMsg40: 'Bravo! You are doing well.',
+    endSub40: '',
+    endMsg75: 'Excellent! A true market master.',
+    endSub75: '',
+    pointsLabel: 'points',
+    pieces: 'Pieces',
+    placed: 'pieces placed',
+    hint: 'Hint',
+    restart: 'Restart',
+    diffLabel: 'Choose difficulty:',
+    easy: 'Easy',
+    medium: 'Medium',
+    hard: 'Hard',
+    startBtn: 'Start game',
+    missionTitle: '— Detective Missions —',
+    totalPoints: 'Total points',
+    playAgain: 'Play again',
+    viewRecipe: 'View related recipe',
+    backToGames: 'Back to games',
+    leaveGame: 'Leave game?',
+    leaveMsg: 'Do you want to leave the game? Progress will not be saved.',
+    leaveConfirm: 'Leave game',
     leaveContinue: 'Continue game',
-    restartGame:   'Start over?',
-    restartMsg:    'Do you want to start again? The current score will be lost.',
-    restartConfirm:'Start again',
+    restartGame: 'Start over?',
+    restartMsg: 'Do you want to start again? The current score will be lost.',
+    restartConfirm: 'Start again',
     restartCancel: 'Continue game',
     puzzleComplete: 'Puzzle complete!',
     puzzleCompleteTitle: 'Done',
@@ -166,308 +147,955 @@ const GL = {
 // Puzzle scenarios
 // ---------------------------------------------------------------------------
 const PUZZLE_SCENARIOS = [
-  { id:'apple', title:{sl:'Od kmetije do krožnika',en:'From Farm to Plate'}, img:IMGS.farm_plate_3, relatedRecipeId:'apple_strudel',
-    edu:{sl:'Sestavi pot jabolk od sadovnjaka do domačega jabolčnega zavitka.',en:'Build the journey of apples from the orchard to homemade apple strudel.'},
-    pieces:[
-      {id:'p1',e:'🌳',img:IMGS.farm_plate_1,l:{sl:'Sadovnjak',en:'Orchard'},      pos:1,easyPre:true},
-      {id:'p2',e:'🧺',img:IMGS.farm_plate_2,l:{sl:'Obiranje', en:'Picking'},      pos:2,easyPre:true},
-      {id:'p3',e:'🍎',img:IMGS.farm_plate_3,l:{sl:'Košara',   en:'Basket'},       pos:3},
-      {id:'p4',e:'🏪',img:IMGS.farm_plate_4,l:{sl:'Stojnica', en:'Market stall'}, pos:4},
-      {id:'p5',e:'🍏',img:IMGS.farm_plate_5,l:{sl:'Jabolka',  en:'Apples'},       pos:5},
-      {id:'p6',e:'🔪',img:IMGS.farm_plate_6,l:{sl:'Rezanje',  en:'Cutting'},      pos:6},
-      {id:'p7',e:'🔥',img:IMGS.farm_plate_7,l:{sl:'Pečenje',  en:'Baking'},       pos:7},
-      {id:'p8',e:'🥧',img:IMGS.farm_plate_8,l:{sl:'Zavitek',  en:'Strudel'},      pos:8},
-      {id:'p9',e:'🍽️',img:IMGS.farm_plate_9,l:{sl:'Krožnik',  en:'Plate'},        pos:9}
+  {
+    id: 'apple', title: { sl: 'Od kmetije do krožnika', en: 'From Farm to Plate' }, img: IMGS.farm_plate_3, relatedRecipeId: 'apple_strudel',
+    edu: { sl: 'Sestavi sliko in odkrij pot hrane.', en: 'Build the journey of apples from the orchard to homemade apple strudel.' },
+    pieces: [
+      { id: 'p1', e: '🌳', img: IMGS.farm_plate_1, l: { sl: 'Sadovnjak', en: 'Orchard' }, pos: 1, easyPre: true },
+      { id: 'p2', e: '🧺', img: IMGS.farm_plate_2, l: { sl: 'Obiranje', en: 'Picking' }, pos: 2, easyPre: true },
+      { id: 'p3', e: '🍎', img: IMGS.farm_plate_3, l: { sl: 'Košara', en: 'Basket' }, pos: 3 },
+      { id: 'p4', e: '🏪', img: IMGS.farm_plate_4, l: { sl: 'Stojnica', en: 'Market stall' }, pos: 4 },
+      { id: 'p5', e: '🍏', img: IMGS.farm_plate_5, l: { sl: 'Jabolka', en: 'Apples' }, pos: 5 },
+      { id: 'p6', e: '🔪', img: IMGS.farm_plate_6, l: { sl: 'Rezanje', en: 'Cutting' }, pos: 6 },
+      { id: 'p7', e: '🔥', img: IMGS.farm_plate_7, l: { sl: 'Pečenje', en: 'Baking' }, pos: 7 },
+      { id: 'p8', e: '🥧', img: IMGS.farm_plate_8, l: { sl: 'Zavitek', en: 'Strudel' }, pos: 8 },
+      { id: 'p9', e: '🍽️', img: IMGS.farm_plate_9, l: { sl: 'Krožnik', en: 'Plate' }, pos: 9 }
     ],
-    distractors:[{id:'d1',e:'🍕',img:IMGS.cooking,l:{sl:'Pizza',en:'Pizza'},isDistractor:true}]
+    distractors: [{ id: 'd1', e: '🍕', img: iImg('sol'), l: { sl: 'Pizza', en: 'Pizza' }, isDistractor: true }]
   },
-  { id:'carrot', title:{sl:'Od korenja do juhe',en:'From Carrot to Soup'}, img:IMGS.carrot, relatedRecipeId:'vegetable_soup',
-    edu:{sl:'Korenje raste na polju in ga dodamo v juho.',en:'Carrots grow in the field and we add them to soup.'},
-    pieces:[
-      {id:'p1',e:'🌱',img:IMGS.seed,    l:{sl:'Seme',     en:'Seed'},      pos:1,easyPre:true},
-      {id:'p2',e:'🚜',img:IMGS.farm,    l:{sl:'Kmetija',  en:'Farm'},      pos:2,easyPre:true},
-      {id:'p3',e:'🥕',img:IMGS.carrot,  l:{sl:'Korenje',  en:'Carrot'},    pos:3},
-      {id:'p4',e:'🧺',img:IMGS.harvest, l:{sl:'Pobiranje',en:'Harvesting'},pos:4},
-      {id:'p5',e:'🏪',img:IMGS.market,  l:{sl:'Tržnica',  en:'Market'},    pos:5},
-      {id:'p6',e:'🛒',img:IMGS.market,  l:{sl:'Nakup',    en:'Shopping'},  pos:6},
-      {id:'p7',e:'🔪',img:IMGS.cooking, l:{sl:'Rezanje',  en:'Cutting'},   pos:7},
-      {id:'p8',e:'🍳',img:IMGS.cooking, l:{sl:'Kuhanje',  en:'Cooking'},   pos:8},
-      {id:'p9',e:'🍲',img:IMGS.soup,    l:{sl:'Juha',     en:'Soup'},      pos:9}
+  {
+    id: 'carrot', title: { sl: 'Od korenja do juhe', en: 'From Carrot to Soup' }, img: iImg('korenje'), relatedRecipeId: 'vegetable_soup',
+    edu: { sl: 'Korenje raste na polju in ga dodamo v juho.', en: 'Carrots grow in the field and we add them to soup.' },
+    pieces: [
+      { id: 'p1', e: '🌱', img: iImg('bučna semena'), l: { sl: 'Seme', en: 'Seed' }, pos: 1, easyPre: true },
+      { id: 'p2', e: '🚜', img: iImg('korenje'), l: { sl: 'Kmetija', en: 'Farm' }, pos: 2, easyPre: true },
+      { id: 'p3', e: '🥕', img: iImg('korenje'), l: { sl: 'Korenje', en: 'Carrot' }, pos: 3 },
+      { id: 'p4', e: '🧺', img: iImg('korenje'), l: { sl: 'Pobiranje', en: 'Harvesting' }, pos: 4 },
+      { id: 'p5', e: '🏪', img: iImg('jušna zelenjava'), l: { sl: 'Tržnica', en: 'Market' }, pos: 5 },
+      { id: 'p6', e: '🛒', img: iImg('jušna zelenjava'), l: { sl: 'Nakup', en: 'Shopping' }, pos: 6 },
+      { id: 'p7', e: '🔪', img: iImg('korenje'), l: { sl: 'Rezanje', en: 'Cutting' }, pos: 7 },
+      { id: 'p8', e: '🍳', img: iImg('jušna zelenjava'), l: { sl: 'Kuhanje', en: 'Cooking' }, pos: 8 },
+      { id: 'p9', e: '🍲', img: iImg('jušna zelenjava'), l: { sl: 'Juha', en: 'Soup' }, pos: 9 }
     ],
-    distractors:[{id:'d1',e:'🍦',img:IMGS.plate,l:{sl:'Sladoled',en:'Ice cream'},isDistractor:true}]
+    distractors: [{ id: 'd1', e: '🍦', img: iImg('sladkor'), l: { sl: 'Sladoled', en: 'Ice cream' }, isDistractor: true }]
   },
-  { id:'strawberry', title:{sl:'Od jagod do sladice',en:'From Strawberries to Dessert'}, img:IMGS.strawberry_plate_9, relatedRecipeId:'strawberry_dessert',
-    edu:{sl:'Sestavi pot jagod od nasada do sladice za družino.',en:'Build the journey of strawberries from the field to a family dessert.'},
-    pieces:[
-      {id:'p1',e:'🌱',img:IMGS.strawberry_plate_1,l:{sl:'Nasad',     en:'Field'},          pos:1,easyPre:true},
-      {id:'p2',e:'🧺',img:IMGS.strawberry_plate_2,l:{sl:'Obiranje',  en:'Picking'},        pos:2,easyPre:true},
-      {id:'p3',e:'🍓',img:IMGS.strawberry_plate_3,l:{sl:'Košara',    en:'Basket'},         pos:3},
-      {id:'p4',e:'🏪',img:IMGS.strawberry_plate_4,l:{sl:'Stojnica',  en:'Market stall'},   pos:4},
-      {id:'p5',e:'🛒',img:IMGS.strawberry_plate_5,l:{sl:'Nakup',     en:'Shopping'},       pos:5},
-      {id:'p6',e:'🥣',img:IMGS.strawberry_plate_6,l:{sl:'Mešanje',   en:'Mixing'},         pos:6},
-      {id:'p7',e:'🧀',img:IMGS.strawberry_plate_7,l:{sl:'Skuta',     en:'Cottage cheese'}, pos:7},
-      {id:'p8',e:'🍨',img:IMGS.strawberry_plate_8,l:{sl:'Sladica',   en:'Dessert'},        pos:8},
-      {id:'p9',e:'🍽️',img:IMGS.strawberry_plate_9,l:{sl:'Družina',   en:'Family table'},   pos:9}
+  {
+    id: 'strawberry', title: { sl: 'Od jagod do sladice', en: 'From Strawberries to Dessert' }, img: IMGS.strawberry_plate_9, relatedRecipeId: 'strawberry_dessert',
+    edu: { sl: 'Sestavi pot jagod od nasada do sladice za družino.', en: 'Build the journey of strawberries from the field to a family dessert.' },
+    pieces: [
+      { id: 'p1', e: '🌱', img: IMGS.strawberry_plate_1, l: { sl: 'Nasad', en: 'Field' }, pos: 1, easyPre: true },
+      { id: 'p2', e: '🧺', img: IMGS.strawberry_plate_2, l: { sl: 'Obiranje', en: 'Picking' }, pos: 2, easyPre: true },
+      { id: 'p3', e: '🍓', img: IMGS.strawberry_plate_3, l: { sl: 'Košara', en: 'Basket' }, pos: 3 },
+      { id: 'p4', e: '🏪', img: IMGS.strawberry_plate_4, l: { sl: 'Stojnica', en: 'Market stall' }, pos: 4 },
+      { id: 'p5', e: '🛒', img: IMGS.strawberry_plate_5, l: { sl: 'Nakup', en: 'Shopping' }, pos: 5 },
+      { id: 'p6', e: '🥣', img: IMGS.strawberry_plate_6, l: { sl: 'Mešanje', en: 'Mixing' }, pos: 6 },
+      { id: 'p7', e: '🧀', img: IMGS.strawberry_plate_7, l: { sl: 'Skuta', en: 'Cottage cheese' }, pos: 7 },
+      { id: 'p8', e: '🍨', img: IMGS.strawberry_plate_8, l: { sl: 'Sladica', en: 'Dessert' }, pos: 8 },
+      { id: 'p9', e: '🍽️', img: IMGS.strawberry_plate_9, l: { sl: 'Družina', en: 'Family table' }, pos: 9 }
     ],
-    distractors:[{id:'d1',e:'🌭',img:IMGS.cooking,l:{sl:'Hot dog',en:'Hot dog'},isDistractor:true}]
+    distractors: [{ id: 'd1', e: '🌭', img: iImg('sol'), l: { sl: 'Hot dog', en: 'Hot dog' }, isDistractor: true }]
   },
-  { id:'honey', title:{sl:'Od čebel do zajtrka',en:'From Bees to Breakfast'}, img:IMGS.honey, relatedRecipeId:'honey_breakfast',
-    edu:{sl:'Čebele zberejo nektar in naredijo med za zajtrk.',en:'Bees collect nectar and make honey for breakfast.'},
-    pieces:[
-      {id:'p1',e:'🌸',img:IMGS.flower,    l:{sl:'Cvetje',   en:'Flowers'},  pos:1,easyPre:true},
-      {id:'p2',e:'🐝',img:IMGS.bee,       l:{sl:'Čebela',   en:'Bee'},      pos:2,easyPre:true},
-      {id:'p3',e:'🍯',img:IMGS.honey,     l:{sl:'Med',      en:'Honey'},    pos:3},
-      {id:'p4',e:'🏚️',img:IMGS.farm,     l:{sl:'Čebelnjak',en:'Beehive'},  pos:4},
-      {id:'p5',e:'🏪',img:IMGS.market,    l:{sl:'Tržnica',  en:'Market'},   pos:5},
-      {id:'p6',e:'🛒',img:IMGS.market,    l:{sl:'Nakup',    en:'Shopping'}, pos:6},
-      {id:'p7',e:'🥛',img:IMGS.milk,      l:{sl:'Jogurt',   en:'Yogurt'},   pos:7},
-      {id:'p8',e:'🫐',img:IMGS.strawberry,l:{sl:'Jagodičje',en:'Berries'},  pos:8},
-      {id:'p9',e:'🥣',img:IMGS.plate,     l:{sl:'Zajtrk',   en:'Breakfast'},pos:9}
+  {
+    id: 'honey', title: { sl: 'Od čebel do zajtrka', en: 'From Bees to Breakfast' }, img: iImg('med'), relatedRecipeId: 'honey_breakfast',
+    edu: { sl: 'Čebele zberejo nektar in naredijo med za zajtrk.', en: 'Bees collect nectar and make honey for breakfast.' },
+    pieces: [
+      { id: 'p1', e: '🌸', img: iImg('med'), l: { sl: 'Cvetje', en: 'Flowers' }, pos: 1, easyPre: true },
+      { id: 'p2', e: '🐝', img: iImg('med'), l: { sl: 'Čebela', en: 'Bee' }, pos: 2, easyPre: true },
+      { id: 'p3', e: '🍯', img: iImg('med'), l: { sl: 'Med', en: 'Honey' }, pos: 3 },
+      { id: 'p4', e: '🏚️', img: iImg('med'), l: { sl: 'Čebelnjak', en: 'Beehive' }, pos: 4 },
+      { id: 'p5', e: '🏪', img: iImg('jušna zelenjava'), l: { sl: 'Tržnica', en: 'Market' }, pos: 5 },
+      { id: 'p6', e: '🛒', img: iImg('jušna zelenjava'), l: { sl: 'Nakup', en: 'Shopping' }, pos: 6 },
+      { id: 'p7', e: '🥛', img: iImg('jogurt'), l: { sl: 'Jogurt', en: 'Yogurt' }, pos: 7 },
+      { id: 'p8', e: '🫐', img: iImg('borovnice'), l: { sl: 'Jagodičje', en: 'Berries' }, pos: 8 },
+      { id: 'p9', e: '🥣', img: iImg('med'), l: { sl: 'Zajtrk', en: 'Breakfast' }, pos: 9 }
     ],
-    distractors:[{id:'d1',e:'🍟',img:IMGS.cooking,l:{sl:'Pomfrit',en:'Fries'},isDistractor:true}]
+    distractors: [{ id: 'd1', e: '🍟', img: iImg('sol'), l: { sl: 'Pomfrit', en: 'Fries' }, isDistractor: true }]
   },
-  { id:'milk', title:{sl:'Od mleka do palačink',en:'From Milk to Pancakes'}, img:IMGS.milk, relatedRecipeId:'cottage_pancakes',
-    edu:{sl:'Krava daje mleko, iz njega naredijo skuto za palačinke.',en:'The cow gives milk, from which cottage cheese is made for pancakes.'},
-    pieces:[
-      {id:'p1',e:'🐄',img:IMGS.cow,           l:{sl:'Krava',  en:'Cow'},           pos:1,easyPre:true},
-      {id:'p2',e:'🥛',img:IMGS.milk,          l:{sl:'Mleko',  en:'Milk'},          pos:2,easyPre:true},
-      {id:'p3',e:'🧀',img:IMGS.cottage_cheese,l:{sl:'Skuta',  en:'Cottage cheese'},pos:3},
-      {id:'p4',e:'🏪',img:IMGS.market,        l:{sl:'Tržnica',en:'Market'},        pos:4},
-      {id:'p5',e:'🛒',img:IMGS.market,        l:{sl:'Nakup',  en:'Shopping'},      pos:5},
-      {id:'p6',e:'🥚',img:IMGS.cooking,       l:{sl:'Jajca',  en:'Eggs'},          pos:6},
-      {id:'p7',e:'🌾',img:IMGS.buckwheat,     l:{sl:'Moka',   en:'Flour'},         pos:7},
-      {id:'p8',e:'🍳',img:IMGS.cooking,       l:{sl:'Pečenje',en:'Baking'},        pos:8},
-      {id:'p9',e:'🥞',img:IMGS.pancakes,      l:{sl:'Palačinke',en:'Pancakes'},    pos:9}
+  {
+    id: 'milk', title: { sl: 'Od mleka do palačink', en: 'From Milk to Pancakes' }, img: iImg('mleko'), relatedRecipeId: 'cottage_pancakes',
+    edu: { sl: 'Krava daje mleko, iz njega naredijo skuto za palačinke.', en: 'The cow gives milk, from which cottage cheese is made for pancakes.' },
+    pieces: [
+      { id: 'p1', e: '🐄', img: iImg('mleko'), l: { sl: 'Krava', en: 'Cow' }, pos: 1, easyPre: true },
+      { id: 'p2', e: '🥛', img: iImg('mleko'), l: { sl: 'Mleko', en: 'Milk' }, pos: 2, easyPre: true },
+      { id: 'p3', e: '🧀', img: iImg('skuta'), l: { sl: 'Skuta', en: 'Cottage cheese' }, pos: 3 },
+      { id: 'p4', e: '🏪', img: iImg('jušna zelenjava'), l: { sl: 'Tržnica', en: 'Market' }, pos: 4 },
+      { id: 'p5', e: '🛒', img: iImg('jušna zelenjava'), l: { sl: 'Nakup', en: 'Shopping' }, pos: 5 },
+      { id: 'p6', e: '🥚', img: iImg('jajca'), l: { sl: 'Jajca', en: 'Eggs' }, pos: 6 },
+      { id: 'p7', e: '🌾', img: iImg('moka'), l: { sl: 'Moka', en: 'Flour' }, pos: 7 },
+      { id: 'p8', e: '🍳', img: iImg('skuta'), l: { sl: 'Pečenje', en: 'Baking' }, pos: 8 },
+      { id: 'p9', e: '🥞', img: iImg('skuta'), l: { sl: 'Palačinke', en: 'Pancakes' }, pos: 9 }
     ],
-    distractors:[{id:'d1',e:'🌮',img:IMGS.cooking,l:{sl:'Takos',en:'Tacos'},isDistractor:true}]
+    distractors: [{ id: 'd1', e: '🌮', img: iImg('sol'), l: { sl: 'Takos', en: 'Tacos' }, isDistractor: true }]
   },
-  { id:'tomato', title:{sl:'Od paradižnika do omake',en:'From Tomato to Sauce'}, img:IMGS.tomato, relatedRecipeId:'tomato_sauce',
-    edu:{sl:'Paradižnik raste na vrtu in ga skuhamo v omako.',en:'Tomatoes grow in the garden and we cook them into sauce.'},
-    pieces:[
-      {id:'p1',e:'🌱',img:IMGS.seed,    l:{sl:'Sadika',    en:'Seedling'}, pos:1,easyPre:true},
-      {id:'p2',e:'☀️',img:IMGS.farm,   l:{sl:'Zorenje',   en:'Ripening'}, pos:2,easyPre:true},
-      {id:'p3',e:'🍅',img:IMGS.tomato,  l:{sl:'Paradižnik',en:'Tomato'},  pos:3},
-      {id:'p4',e:'🧺',img:IMGS.harvest, l:{sl:'Pobiranje', en:'Picking'}, pos:4},
-      {id:'p5',e:'🏪',img:IMGS.market,  l:{sl:'Tržnica',   en:'Market'},  pos:5},
-      {id:'p6',e:'🛒',img:IMGS.market,  l:{sl:'Nakup',     en:'Shopping'},pos:6},
-      {id:'p7',e:'🔪',img:IMGS.cooking, l:{sl:'Sekljanje', en:'Chopping'},pos:7},
-      {id:'p8',e:'🍳',img:IMGS.cooking, l:{sl:'Kuhanje',   en:'Cooking'}, pos:8},
-      {id:'p9',e:'🍝',img:IMGS.soup,    l:{sl:'Omaka',     en:'Sauce'},   pos:9}
+  {
+    id: 'tomato', title: { sl: 'Od paradižnika do omake', en: 'From Tomato to Sauce' }, img: iImg('paradižnik'), relatedRecipeId: 'tomato_sauce',
+    edu: { sl: 'Paradižnik raste na vrtu in ga skuhamo v omako.', en: 'Tomatoes grow in the garden and we cook them into sauce.' },
+    pieces: [
+      { id: 'p1', e: '🌱', img: iImg('paradižnik'), l: { sl: 'Sadika', en: 'Seedling' }, pos: 1, easyPre: true },
+      { id: 'p2', e: '☀️', img: iImg('paradižnik'), l: { sl: 'Zorenje', en: 'Ripening' }, pos: 2, easyPre: true },
+      { id: 'p3', e: '🍅', img: iImg('paradižnik'), l: { sl: 'Paradižnik', en: 'Tomato' }, pos: 3 },
+      { id: 'p4', e: '🧺', img: iImg('paradižnik'), l: { sl: 'Pobiranje', en: 'Picking' }, pos: 4 },
+      { id: 'p5', e: '🏪', img: iImg('jušna zelenjava'), l: { sl: 'Tržnica', en: 'Market' }, pos: 5 },
+      { id: 'p6', e: '🛒', img: iImg('jušna zelenjava'), l: { sl: 'Nakup', en: 'Shopping' }, pos: 6 },
+      { id: 'p7', e: '🔪', img: iImg('paradižnik'), l: { sl: 'Sekljanje', en: 'Chopping' }, pos: 7 },
+      { id: 'p8', e: '🍳', img: iImg('pasiran paradižnik'), l: { sl: 'Kuhanje', en: 'Cooking' }, pos: 8 },
+      { id: 'p9', e: '🍝', img: iImg('pasiran paradižnik'), l: { sl: 'Omaka', en: 'Sauce' }, pos: 9 }
     ],
-    distractors:[{id:'d1',e:'🍦',img:IMGS.plate,l:{sl:'Sladoled',en:'Ice cream'},isDistractor:true}]
+    distractors: [{ id: 'd1', e: '🍦', img: iImg('sladkor'), l: { sl: 'Sladoled', en: 'Ice cream' }, isDistractor: true }]
   },
-  { id:'lettuce', title:{sl:'Od solate do sklede',en:'From Lettuce to Bowl'}, img:IMGS.lettuce, relatedRecipeId:'salad_bowl',
-    edu:{sl:'Solata raste na vrtu spomladi in jo damo v skledo.',en:'Lettuce grows in the garden in spring and we put it in a bowl.'},
-    pieces:[
-      {id:'p1',e:'🌱',img:IMGS.seed,     l:{sl:'Seme',     en:'Seed'},    pos:1,easyPre:true},
-      {id:'p2',e:'💧',img:IMGS.farm,     l:{sl:'Zalivanje',en:'Watering'},pos:2,easyPre:true},
-      {id:'p3',e:'🥬',img:IMGS.lettuce,  l:{sl:'Solata',   en:'Lettuce'}, pos:3},
-      {id:'p4',e:'✂️',img:IMGS.cooking, l:{sl:'Rezanje',  en:'Cutting'}, pos:4},
-      {id:'p5',e:'🏪',img:IMGS.market,   l:{sl:'Tržnica',  en:'Market'},  pos:5},
-      {id:'p6',e:'🛒',img:IMGS.market,   l:{sl:'Nakup',    en:'Shopping'},pos:6},
-      {id:'p7',e:'🍅',img:IMGS.tomato,   l:{sl:'Paradižnik',en:'Tomato'},pos:7},
-      {id:'p8',e:'🫒',img:IMGS.olive_oil,l:{sl:'Olje',     en:'Oil'},     pos:8},
-      {id:'p9',e:'🥗',img:IMGS.salad,    l:{sl:'Solata',   en:'Salad'},   pos:9}
+  {
+    id: 'lettuce', title: { sl: 'Od solate do sklede', en: 'From Lettuce to Bowl' }, img: iImg('kislo zelje'), relatedRecipeId: 'salad_bowl',
+    edu: { sl: 'Solata raste na vrtu spomladi in jo damo v skledo.', en: 'Lettuce grows in the garden in spring and we put it in a bowl.' },
+    pieces: [
+      { id: 'p1', e: '🌱', img: iImg('bučna semena'), l: { sl: 'Seme', en: 'Seed' }, pos: 1, easyPre: true },
+      { id: 'p2', e: '💧', img: iImg('kislo zelje'), l: { sl: 'Zalivanje', en: 'Watering' }, pos: 2, easyPre: true },
+      { id: 'p3', e: '🥬', img: iImg('kislo zelje'), l: { sl: 'Solata', en: 'Lettuce' }, pos: 3 },
+      { id: 'p4', e: '✂️', img: iImg('kislo zelje'), l: { sl: 'Rezanje', en: 'Cutting' }, pos: 4 },
+      { id: 'p5', e: '🏪', img: iImg('jušna zelenjava'), l: { sl: 'Tržnica', en: 'Market' }, pos: 5 },
+      { id: 'p6', e: '🛒', img: iImg('jušna zelenjava'), l: { sl: 'Nakup', en: 'Shopping' }, pos: 6 },
+      { id: 'p7', e: '🍅', img: iImg('paradižnik'), l: { sl: 'Paradižnik', en: 'Tomato' }, pos: 7 },
+      { id: 'p8', e: '🫒', img: iImg('olivno olje'), l: { sl: 'Olje', en: 'Oil' }, pos: 8 },
+      { id: 'p9', e: '🥗', img: iImg('kislo zelje'), l: { sl: 'Solata', en: 'Salad' }, pos: 9 }
     ],
-    distractors:[{id:'d1',e:'🍩',img:IMGS.plate,l:{sl:'Donut',en:'Donut'},isDistractor:true}]
+    distractors: [{ id: 'd1', e: '🍩', img: iImg('sladkor'), l: { sl: 'Donut', en: 'Donut' }, isDistractor: true }]
   }
 ];
 
-const PICTURE_PUZZLE_ROTATION = ['apple', 'strawberry'];
+const PICTURE_PUZZLE_ROTATION = ['apple'];
 
 // ---------------------------------------------------------------------------
 // Detective questions
 // ---------------------------------------------------------------------------
 const QUESTIONS = [
-  { id:'q01', type:{sl:'KDO SEM',en:'WHO AM I'}, diff:'easy',
-    title:{sl:'Kdo sem?',en:'Who am I?'},
-    text:{sl:'Sem rumen in kisel. Iz mene stisnejo sok.',en:'I am yellow and sour. Juice is squeezed from me.'},
-    img:IMGS.lemon,
-    answers:[{l:{sl:'Limona',en:'Lemon'},img:IMGS.lemon,c:true},{l:{sl:'Banana',en:'Banana'},img:IMGS.farm,c:false},{l:{sl:'Korenje',en:'Carrot'},img:IMGS.carrot,c:false}],
-    hint:{sl:'Raste v toplem podnebju in je zelo kisla.',en:'Grows in a warm climate and is very sour.'},
-    explanation:{sl:'Limona je citrično sadje, bogato z vitaminom C.',en:'Lemon is a citrus fruit rich in vitamin C.'},
-    recipe:'salad_bowl'
+  // ===== EASY =====
+  {
+    id: 'L01', type: { sl: 'RECEPT', en: 'RECIPE' }, diff: 'easy',
+    title: { sl: 'Katera je glavna sestavina?', en: 'What is the main ingredient?' },
+    text: { sl: 'Katera sestavina je glavna v jedi »Pečena postrv z zelišči«?', en: 'What is the main ingredient in "Baked trout with herbs"?' },
+    img: iImg('postrv'),
+    answers: [{ l: { sl: 'Postrv', en: 'Trout' }, img: iImg('postrv'), c: true }, { l: { sl: 'Jabolka', en: 'Apples' }, img: iImg('jabolka'), c: false }, { l: { sl: 'Krompir', en: 'Potato' }, img: iImg('krompir'), c: false }, { l: { sl: 'Zelje', en: 'Cabbage' }, img: iImg('zelje'), c: false }],
+    hint: { sl: 'Iščemo ribo, ki se peče z limono in zelišči.', en: 'We are looking for a fish baked with lemon and herbs.' },
+    explanation: { sl: 'Postrv je sladkovodna riba in glavna sestavina te jedi.', en: 'Trout is a freshwater fish and the main ingredient of this dish.' },
+    recipe: 'pecena_postrv'
   },
-  { id:'q02', type:{sl:'KDO SEM',en:'WHO AM I'}, diff:'easy',
-    title:{sl:'Kdo sem?',en:'Who am I?'},
-    text:{sl:'Sem rdeč, rastem na vrtu in me pogosto najdeš v solati.',en:'I am red, I grow in the garden and you often find me in salads.'},
-    img:IMGS.tomato,
-    answers:[{l:{sl:'Paradižnik',en:'Tomato'},img:IMGS.tomato,c:true},{l:{sl:'Jabolko',en:'Apple'},img:IMGS.apple,c:false},{l:{sl:'Jagode',en:'Strawberries'},img:IMGS.strawberry,c:false}],
-    hint:{sl:'Pogosto ga dodamo v omako ali solato.',en:'Often added to sauce or salad.'},
-    explanation:{sl:'Paradižnik je zelenjava, bogata z likopenom.',en:'Tomato is a vegetable rich in lycopene.'},
-    recipe:'tomato_sauce'
+  {
+    id: 'L02', type: { sl: 'RECEPT', en: 'RECIPE' }, diff: 'easy',
+    title: { sl: 'Katera je glavna sestavina?', en: 'What is the main ingredient?' },
+    text: { sl: 'Katera sestavina je glavna v jabolčnem zavitku?', en: 'What is the main ingredient in apple strudel?' },
+    img: iImg('jabolka'),
+    answers: [{ l: { sl: 'Jabolka', en: 'Apples' }, img: iImg('jabolka'), c: true }, { l: { sl: 'Banana', en: 'Banana' }, img: iImg('banana'), c: false }, { l: { sl: 'Borovnice', en: 'Blueberries' }, img: iImg('borovnice'), c: false }, { l: { sl: 'Slive', en: 'Plums' }, img: iImg('slive'), c: false }],
+    hint: { sl: 'Ime jedi ti skoraj pove odgovor.', en: 'The name of the dish almost tells you the answer.' },
+    explanation: { sl: 'Jabolka so glavna sestavina jabolčnega zavitka.', en: 'Apples are the main ingredient of apple strudel.' },
+    recipe: 'jabolcni_zavitek'
   },
-  { id:'q03', type:{sl:'KDO SEM',en:'WHO AM I'}, diff:'easy',
-    title:{sl:'Kdo sem?',en:'Who am I?'},
-    text:{sl:'Sem oranžen, rastem pod zemljo in zajčki me obožujejo.',en:'I am orange, I grow underground and rabbits love me.'},
-    img:IMGS.carrot,
-    answers:[{l:{sl:'Korenje',en:'Carrot'},img:IMGS.carrot,c:true},{l:{sl:'Krompir',en:'Potato'},img:IMGS.potato,c:false},{l:{sl:'Čebula',en:'Onion'},img:IMGS.harvest,c:false}],
-    hint:{sl:'Koreninica, bogata z vitaminom A.',en:'A root vegetable, rich in vitamin A.'},
-    explanation:{sl:'Korenje raste pod zemljo in je odličen vir vitaminov.',en:'Carrots grow underground and are an excellent source of vitamins.'},
-    recipe:'vegetable_soup'
+  {
+    id: 'L03', type: { sl: 'RECEPT', en: 'RECIPE' }, diff: 'easy',
+    title: { sl: 'Katera je glavna sestavina?', en: 'What is the main ingredient?' },
+    text: { sl: 'Katera sestavina je glavna v fižolovi juhi?', en: 'What is the main ingredient in bean soup?' },
+    img: iImg('fižol'),
+    answers: [{ l: { sl: 'Fižol', en: 'Beans' }, img: iImg('fižol'), c: true }, { l: { sl: 'Korenje', en: 'Carrot' }, img: iImg('korenje'), c: false }, { l: { sl: 'Mleko', en: 'Milk' }, img: iImg('mleko'), c: false }, { l: { sl: 'Jajca', en: 'Eggs' }, img: iImg('jajca'), c: false }],
+    hint: { sl: 'Gre za stročnico, ki jo pogosto namakamo pred kuhanjem.', en: 'It is a legume that we often soak before cooking.' },
+    explanation: { sl: 'Fižol je stročnica in osnova fižolove juhe.', en: 'Beans are a legume and the main ingredient of bean soup.' },
+    recipe: 'fizolova_juha'
   },
-  { id:'q04', type:{sl:'KJE RASTEM',en:'WHERE DO I GROW'}, diff:'easy',
-    title:{sl:'Kje rastem?',en:'Where do I grow?'},
-    text:{sl:'Med raste...',en:'Honey comes from...'},
-    img:IMGS.honey,
-    answers:[{l:{sl:'V čebelnjaku 🐝',en:'In a beehive 🐝'},img:IMGS.bee,c:true},{l:{sl:'Na drevesu',en:'On a tree'},img:IMGS.farm,c:false},{l:{sl:'Pod zemljo',en:'Underground'},img:IMGS.potato,c:false}],
-    hint:{sl:'Čebele ga pridelujejo iz cvetnega prahu.',en:'Bees produce it from pollen.'},
-    explanation:{sl:'Med pridelujejo čebele iz nektarja cvetlic.',en:'Honey is produced by bees from flower nectar.'},
-    recipe:'honey_breakfast'
+  {
+    id: 'L04', type: { sl: 'RECEPT', en: 'RECIPE' }, diff: 'easy',
+    title: { sl: 'Katera je glavna sestavina?', en: 'What is the main ingredient?' },
+    text: { sl: 'Katera sestavina je glavna v bučni juhi?', en: 'What is the main ingredient in pumpkin soup?' },
+    img: iImg('buča hokaido'),
+    answers: [{ l: { sl: 'Buča hokaido', en: 'Hokaido pumpkin' }, img: iImg('buča hokaido'), c: true }, { l: { sl: 'Zelje', en: 'Cabbage' }, img: iImg('zelje'), c: false }, { l: { sl: 'Krompir', en: 'Potato' }, img: iImg('krompir'), c: false }, { l: { sl: 'Paradižnik', en: 'Tomato' }, img: iImg('paradižnik'), c: false }],
+    hint: { sl: 'Juha je oranžne barve in je pripravljena iz buče.', en: 'The soup is orange and made from pumpkin.' },
+    explanation: { sl: 'Buča hokaido je osnovna sestavina te kremne juhe.', en: 'Hokaido pumpkin is the main ingredient of this creamy soup.' },
+    recipe: 'bucna_juha'
   },
-  { id:'q05', type:{sl:'TRŽNICA',en:'MARKET'}, diff:'easy',
-    title:{sl:'Kaj kupimo?',en:'What do we buy?'},
-    text:{sl:'Kateri od teh izdelkov najdemo na lokalni tržnici?',en:'Which of these products do we find at the local market?'},
-    img:IMGS.market,
-    answers:[{l:{sl:'Domači med',en:'Local honey'},img:IMGS.honey,c:true},{l:{sl:'Čips',en:'Chips'},img:IMGS.potato,c:false},{l:{sl:'Kola',en:'Cola'},img:IMGS.cooking,c:false}],
-    hint:{sl:'Tržnica prodaja domače, lokalno pridelane izdelke.',en:'The market sells homemade, locally grown products.'},
-    explanation:{sl:'Domači med je tipičen tržnični izdelek.',en:'Local honey is a typical market product from local beekeepers.'},
-    recipe:'honey_breakfast'
+  {
+    id: 'L05', type: { sl: 'RECEPT', en: 'RECIPE' }, diff: 'easy',
+    title: { sl: 'Katera je glavna sestavina?', en: 'What is the main ingredient?' },
+    text: { sl: 'Katera sestavina je glavna v krompirjevi solati?', en: 'What is the main ingredient in potato salad?' },
+    img: iImg('krompir'),
+    answers: [{ l: { sl: 'Krompir', en: 'Potato' }, img: iImg('krompir'), c: true }, { l: { sl: 'Ajdova kaša', en: 'Buckwheat' }, img: iImg('ajdova kaša'), c: false }, { l: { sl: 'Skuta', en: 'Cottage cheese' }, img: iImg('skuta'), c: false }, { l: { sl: 'Med', en: 'Honey' }, img: iImg('med'), c: false }],
+    hint: { sl: 'Sestavina je že v imenu jedi.', en: 'The ingredient is already in the name of the dish.' },
+    explanation: { sl: 'Krompir je glavna sestavina krompirjeve solate.', en: 'Potato is the main ingredient of potato salad.' },
+    recipe: 'krompirjeva_solata'
   },
-  { id:'q06', type:{sl:'KAJ SKUHAMO',en:'WHAT CAN WE MAKE'}, diff:'easy',
-    title:{sl:'Kaj skuhamo?',en:'What can we make?'},
-    text:{sl:'Kaj lahko pripravimo iz jabolk?',en:'What can we make from apples?'},
-    img:IMGS.apple,
-    answers:[{l:{sl:'Jabolčni zavitek',en:'Apple strudel'},img:IMGS.bread,c:true},{l:{sl:'Paradižnikova juha',en:'Tomato soup'},img:IMGS.soup,c:false},{l:{sl:'Ajdova kaša',en:'Buckwheat porridge'},img:IMGS.buckwheat,c:false}],
-    hint:{sl:'Jabolka so sladka in odlična za pecivo.',en:'Apples are sweet and great for pastries.'},
-    explanation:{sl:'Iz jabolk lahko naredimo zavitek, sok ali kompot.',en:'From apples we can make strudel, juice or compote.'},
-    recipe:'apple_strudel'
+  {
+    id: 'L06', type: { sl: 'RECEPT', en: 'RECIPE' }, diff: 'easy',
+    title: { sl: 'Katera je osnova namaza?', en: 'What is the base of the spread?' },
+    text: { sl: 'Katera sestavina je osnova skutnega namaza?', en: 'What is the base ingredient of cottage cheese spread?' },
+    img: iImg('skuta'),
+    answers: [{ l: { sl: 'Skuta', en: 'Cottage cheese' }, img: iImg('skuta'), c: true }, { l: { sl: 'Mleko', en: 'Milk' }, img: iImg('mleko'), c: false }, { l: { sl: 'Sladkor', en: 'Sugar' }, img: iImg('sladkor'), c: false }, { l: { sl: 'Maslo', en: 'Butter' }, img: iImg('maslo'), c: false }],
+    hint: { sl: 'Gre za belo mlečno sestavino, ki jo namažemo na kruh.', en: 'It is a white dairy ingredient that we spread on bread.' },
+    explanation: { sl: 'Skuta je osnova tega svežega namaza z zelišči.', en: 'Cottage cheese is the base of this fresh herb spread.' },
+    recipe: 'skutni_namaz'
   },
-  { id:'q07', type:{sl:'KAJ NE SPADA',en:'ODD ONE OUT'}, diff:'medium',
-    title:{sl:'Kaj ne spada?',en:"What doesn't belong?"},
-    text:{sl:'Katera sestavina NE spada v zelenjavno juho?',en:'Which ingredient does NOT belong in vegetable soup?'},
-    img:IMGS.soup,
-    answers:[{l:{sl:'Korenje',en:'Carrot'},img:IMGS.carrot,c:false},{l:{sl:'Čokolada',en:'Chocolate'},img:IMGS.chocolate,c:true},{l:{sl:'Krompir',en:'Potato'},img:IMGS.potato,c:false},{l:{sl:'Čebula',en:'Onion'},img:IMGS.harvest,c:false}],
-    hint:{sl:'Juha je slana, ne sladka jed.',en:'Soup is a savoury dish, not a sweet one.'},
-    explanation:{sl:'Čokolada je sladica in ne spada v zelenjavno juho.',en:'Chocolate is a dessert and does not belong in vegetable soup.'},
-    recipe:'vegetable_soup'
+  {
+    id: 'L07', type: { sl: 'KAJ NE SPADA', en: 'ODD ONE OUT' }, diff: 'easy',
+    title: { sl: 'Kaj ne spada zraven?', en: "What doesn't belong?" },
+    text: { sl: 'Katera sestavina se NE postreže kot običajna priloga k domačim klobasam?', en: 'Which ingredient is NOT served as a typical side with homemade sausages?' },
+    img: iImg('domače klobase'),
+    answers: [{ l: { sl: 'Hren', en: 'Horseradish' }, img: iImg('hren'), c: false }, { l: { sl: 'Gorčica', en: 'Mustard' }, img: iImg('gorčica'), c: false }, { l: { sl: 'Svež kruh', en: 'Fresh bread' }, img: iImg('svež kruh'), c: false }, { l: { sl: 'Mleko', en: 'Milk' }, img: iImg('mleko'), c: true }],
+    hint: { sl: 'Tri možnosti so običajne priloge h klobasam, ena pa ne spada zraven.', en: 'Three options are typical sides for sausages, one does not belong.' },
+    explanation: { sl: 'Mleko ni tipična priloga k klobasam, medtem ko so hren, gorčica in kruh.', en: 'Milk is not a typical side for sausages, whereas horseradish, mustard and bread are.' },
+    recipe: 'domace_klobase'
   },
-  { id:'q08', type:{sl:'KAJ MANJKA',en:'MISSING INGREDIENT'}, diff:'medium',
-    title:{sl:'Kaj manjka?',en:"What's missing?"},
-    text:{sl:'Ajdova skleda ima ajdo, korenje in peteršilj. Kaj dodamo za okus?',en:'The buckwheat bowl has buckwheat, carrot and parsley. What do we add for taste?'},
-    img:IMGS.buckwheat,
-    answers:[{l:{sl:'Olivno olje',en:'Olive oil'},img:IMGS.olive_oil,c:true},{l:{sl:'Sladkor',en:'Sugar'},img:IMGS.honey,c:false},{l:{sl:'Kečap',en:'Ketchup'},img:IMGS.tomato,c:false},{l:{sl:'Čokolado',en:'Chocolate'},img:IMGS.chocolate,c:false}],
-    hint:{sl:'Ta sestavina je zdrava maščoba.',en:'This ingredient is a healthy fat.'},
-    explanation:{sl:'Olivno olje je zdravo in doda skledi bogat okus.',en:'Olive oil is healthy and adds a rich flavour to the bowl.'},
-    recipe:'buckwheat_bowl'
+  {
+    id: 'L08', type: { sl: 'RECEPT', en: 'RECIPE' }, diff: 'easy',
+    title: { sl: 'Katera sestavina osladi?', en: 'Which ingredient sweetens?' },
+    text: { sl: 'Katera sestavina naravno osladi pečena jabolka?', en: 'Which ingredient naturally sweetens baked apples?' },
+    img: iImg('med'),
+    answers: [{ l: { sl: 'Med', en: 'Honey' }, img: iImg('med'), c: true }, { l: { sl: 'Sol', en: 'Salt' }, img: iImg('sol'), c: false }, { l: { sl: 'Kis', en: 'Vinegar' }, img: iImg('kis'), c: false }, { l: { sl: 'Česen', en: 'Garlic' }, img: iImg('česen'), c: false }],
+    hint: { sl: 'To sladilo pridelujejo čebele.', en: 'This sweetener is produced by bees.' },
+    explanation: { sl: 'Med je naravno sladilo, ki ga pridelajo čebele.', en: 'Honey is a natural sweetener produced by bees.' },
+    recipe: 'pecena_jabolka'
   },
-  { id:'q09', type:{sl:'SEZONA',en:'SEASONAL'}, diff:'medium',
-    title:{sl:'Sezonski detektiv',en:'Seasonal detective'},
-    text:{sl:'Kateri pridelek je tipičen za poletno tržnico?',en:'Which produce is typical for a summer market?'},
-    img:IMGS.strawberry,
-    answers:[{l:{sl:'Jagode',en:'Strawberries'},img:IMGS.strawberry,c:true},{l:{sl:'Buča',en:'Pumpkin'},img:IMGS.pumpkin,c:false},{l:{sl:'Jabolka',en:'Apples'},img:IMGS.apple,c:false},{l:{sl:'Kostanj',en:'Chestnuts'},img:IMGS.harvest,c:false}],
-    hint:{sl:'To rdeče sadje dozori poleti.',en:'This red fruit ripens in summer.'},
-    explanation:{sl:'Jagode so tipičen poletni pridelek junija in julija.',en:'Strawberries are a typical summer crop in June and July.'},
-    recipe:'strawberry_dessert'
+  {
+    id: 'L09', type: { sl: 'RECEPT', en: 'RECIPE' }, diff: 'easy',
+    title: { sl: 'Katera je tekočina?', en: 'What is the liquid?' },
+    text: { sl: 'Katera sestavina se uporabi kot tekočina pri proseni kaši?', en: 'Which ingredient is used as the liquid in millet porridge?' },
+    img: iImg('mleko'),
+    answers: [{ l: { sl: 'Mleko', en: 'Milk' }, img: iImg('mleko'), c: true }, { l: { sl: 'Belo vino', en: 'White wine' }, img: iImg('belo vino'), c: false }, { l: { sl: 'Kis', en: 'Vinegar' }, img: iImg('kis'), c: false }, { l: { sl: 'Olje', en: 'Oil' }, img: iImg('olje'), c: false }],
+    hint: { sl: 'Jed je mlečna in primerna za zajtrk.', en: 'The dish is dairy-based and suitable for breakfast.' },
+    explanation: { sl: 'Mleko doda proseni kaši kremasto teksturo.', en: 'Milk adds a creamy texture to millet porridge.' },
+    recipe: 'prosena_kasa'
   },
-  { id:'q10', type:{sl:'KJE RASTEM',en:'WHERE DO I GROW'}, diff:'medium',
-    title:{sl:'Kje rastem?',en:'Where do I grow?'},
-    text:{sl:'Kje raste krompir?',en:'Where does the potato grow?'},
-    img:IMGS.potato,
-    answers:[{l:{sl:'Pod zemljo',en:'Underground'},img:IMGS.seed,c:true},{l:{sl:'Na drevesu',en:'On a tree'},img:IMGS.farm,c:false},{l:{sl:'Na grmu',en:'On a bush'},img:IMGS.herbs,c:false},{l:{sl:'V morju',en:'In the sea'},img:IMGS.lettuce,c:false}],
-    hint:{sl:'Kopljemo ga iz tal.',en:'We dig it from the ground.'},
-    explanation:{sl:'Krompir je gomolj, ki raste pod površino zemlje.',en:'The potato is a tuber that grows below the soil surface.'},
-    recipe:'potato_dish'
+  {
+    id: 'L10', type: { sl: 'RECEPT', en: 'RECIPE' }, diff: 'easy',
+    title: { sl: 'Katera je osnova omake?', en: 'What is the base of the sauce?' },
+    text: { sl: 'Katera sestavina je osnova omake pri polnjenih paprikah?', en: 'What is the base of the sauce in stuffed peppers?' },
+    img: iImg('pasiran paradižnik'),
+    answers: [{ l: { sl: 'Pasiran paradižnik', en: 'Strained tomatoes' }, img: iImg('pasiran paradižnik'), c: true }, { l: { sl: 'Bučno olje', en: 'Pumpkin oil' }, img: iImg('bučno olje'), c: false }, { l: { sl: 'Kisla repa', en: 'Sour turnip' }, img: iImg('kisla repa'), c: false }, { l: { sl: 'Mleko', en: 'Milk' }, img: iImg('mleko'), c: false }],
+    hint: { sl: 'V imenu jedi se skriva, kakšna omaka spremlja paprike.', en: 'The name of the dish hints at what sauce accompanies the peppers.' },
+    explanation: { sl: 'Pasiran paradižnik je osnova omake pri polnjenih paprikah.', en: 'Strained tomatoes are the base of the sauce in stuffed peppers.' },
+    recipe: 'polnjene_paprike'
   },
-  { id:'q11', type:{sl:'KDO SEM',en:'WHO AM I'}, diff:'medium',
-    title:{sl:'Kdo sem?',en:'Who am I?'},
-    text:{sl:'Sem bela, tekoča in polna kalcija. Otroci me pijejo za močne kosti.',en:'I am white, liquid and full of calcium. Children drink me for strong bones.'},
-    img:IMGS.milk,
-    answers:[{l:{sl:'Mleko',en:'Milk'},img:IMGS.milk,c:true},{l:{sl:'Voda',en:'Water'},img:IMGS.farm,c:false},{l:{sl:'Jogurt',en:'Yogurt'},img:IMGS.cottage_cheese,c:false},{l:{sl:'Sok',en:'Juice'},img:IMGS.lemon,c:false}],
-    hint:{sl:'Prihaja od krave in je osnova za sir.',en:'It comes from the cow and is the base for cheese.'},
-    explanation:{sl:'Mleko je bogat vir kalcija in osnova za mlečne izdelke.',en:'Milk is a rich source of calcium and the basis for dairy products.'},
-    recipe:'cottage_pancakes'
+  {
+    id: 'L11', type: { sl: 'RECEPT', en: 'RECIPE' }, diff: 'easy',
+    title: { sl: 'Katera daje domač okus?', en: 'Which gives a homemade taste?' },
+    text: { sl: 'Katera sestavina daje kruhu značilen domač okus?', en: 'Which ingredient gives bread its characteristic homemade taste?' },
+    img: iImg('ocvirki'),
+    answers: [{ l: { sl: 'Ocvirki', en: 'Cracklings' }, img: iImg('ocvirki'), c: true }, { l: { sl: 'Jabolka', en: 'Apples' }, img: iImg('jabolka'), c: false }, { l: { sl: 'Jogurt', en: 'Yogurt' }, img: iImg('jogurt'), c: false }, { l: { sl: 'Slive', en: 'Plums' }, img: iImg('slive'), c: false }],
+    hint: { sl: 'To so hrustljavi koščki, povezani s svinjsko mastjo.', en: 'These are crispy pieces associated with lard.' },
+    explanation: { sl: 'Ocvirki so hrustljavi in dajo kruhu bogat domač okus.', en: 'Cracklings are crispy and give bread a rich homemade flavour.' },
+    recipe: 'kruh_z_ocvirki'
   },
-  { id:'q12', type:{sl:'KAJ SKUHAMO',en:'WHAT CAN WE MAKE'}, diff:'medium',
-    title:{sl:'Kaj skuhamo?',en:'What can we make?'},
-    text:{sl:'Iz česa naredimo skutne palačinke?',en:'What do we use to make cottage cheese pancakes?'},
-    img:IMGS.pancakes,
-    answers:[{l:{sl:'Skuta + moka',en:'Cottage cheese + flour'},img:IMGS.cottage_cheese,c:true},{l:{sl:'Samo moka',en:'Flour only'},img:IMGS.buckwheat,c:false},{l:{sl:'Jajca + sladkor',en:'Eggs + sugar'},img:IMGS.cooking,c:false},{l:{sl:'Mleko + med',en:'Milk + honey'},img:IMGS.honey,c:false}],
-    hint:{sl:'Skuta je bela mlečna sestavina.',en:'Cottage cheese is a white dairy ingredient.'},
-    explanation:{sl:'Skutne palačinke se delajo iz skute, moke in jajc.',en:'Cottage cheese pancakes are made from cottage cheese, flour and eggs.'},
-    recipe:'cottage_pancakes'
+  {
+    id: 'L12', type: { sl: 'RECEPT', en: 'RECIPE' }, diff: 'easy',
+    title: { sl: 'Katera je tipična priloga?', en: 'What is the typical side dish?' },
+    text: { sl: 'Katera sestavina se pri tej jedi postreže s pečenico?', en: 'Which ingredient is served alongside roast pork in this dish?' },
+    img: iImg('kislo zelje'),
+    answers: [{ l: { sl: 'Kislo zelje', en: 'Sauerkraut' }, img: iImg('kislo zelje'), c: true }, { l: { sl: 'Med', en: 'Honey' }, img: iImg('med'), c: false }, { l: { sl: 'Ajdova kaša', en: 'Buckwheat' }, img: iImg('ajdova kaša'), c: false }, { l: { sl: 'Skuta', en: 'Cottage cheese' }, img: iImg('skuta'), c: false }],
+    hint: { sl: 'Gre za kisano zelenjavo, pogosto zimsko prilogo.', en: 'It is a fermented vegetable, often a winter side dish.' },
+    explanation: { sl: 'Kislo zelje je tipična zimska priloga k pečenici.', en: 'Sauerkraut is a typical winter side dish served with roast pork.' },
+    recipe: 'pecenica_s_kislim_zeljem'
   },
-  { id:'q15', type:{sl:'SEZONA',en:'SEASONAL'}, diff:'hard',
-    title:{sl:'Jesenski detektiv',en:'Autumn detective'},
-    text:{sl:'Katero sadje dozori jeseni in je v jabolčnem zavitku?',en:'Which fruit ripens in autumn and is used in apple strudel?'},
-    img:IMGS.apple,
-    answers:[{l:{sl:'Jabolka',en:'Apples'},img:IMGS.apple,c:true},{l:{sl:'Jagode',en:'Strawberries'},img:IMGS.strawberry,c:false},{l:{sl:'Melona',en:'Melon'},img:IMGS.lemon,c:false},{l:{sl:'Češnje',en:'Cherries'},img:IMGS.strawberry,c:false}],
-    hint:{sl:'Raste na drevesu in je tipično jesensko sadje.',en:'Grows on a tree and is a typical autumn fruit.'},
-    explanation:{sl:'Jabolka dozorijo jeseni in so eno najpogostejših sadij.',en:'Apples ripen in autumn and are one of the most common fruits.'},
-    recipe:'apple_strudel'
+  {
+    id: 'L13', type: { sl: 'RECEPT', en: 'RECIPE' }, diff: 'easy',
+    title: { sl: 'Katera je osnova kaše?', en: 'What is the base of the porridge?' },
+    text: { sl: 'Katera sestavina je osnova ovsene kaše?', en: 'What is the base ingredient of oatmeal?' },
+    img: iImg('ovseni kosmiči'),
+    answers: [{ l: { sl: 'Ovseni kosmiči', en: 'Oat flakes' }, img: iImg('ovseni kosmiči'), c: true }, { l: { sl: 'Krompir', en: 'Potato' }, img: iImg('krompir'), c: false }, { l: { sl: 'Zelje', en: 'Cabbage' }, img: iImg('zelje'), c: false }, { l: { sl: 'Klobase', en: 'Sausages' }, img: iImg('klobase'), c: false }],
+    hint: { sl: 'Pogosto jih jemo za zajtrk z mlekom ali sadjem.', en: 'We often eat them for breakfast with milk or fruit.' },
+    explanation: { sl: 'Ovseni kosmiči so osnova ovsene kaše.', en: 'Oat flakes are the base of oatmeal.' },
+    recipe: 'ovsena_kasa'
   },
-  { id:'q17', type:{sl:'KAJ MANJKA',en:'MISSING INGREDIENT'}, diff:'hard',
-    title:{sl:'Kaj manjka?',en:"What's missing?"},
-    text:{sl:'Paradižnikova juha ima paradižnik, čebulo in baziliko. Kaj doda kremastost?',en:'Tomato soup has tomato, onion and basil. What adds creaminess?'},
-    img:IMGS.soup,
-    answers:[{l:{sl:'Smetana',en:'Cream'},img:IMGS.milk,c:true},{l:{sl:'Jabolčni sok',en:'Apple juice'},img:IMGS.apple,c:false},{l:{sl:'Med',en:'Honey'},img:IMGS.honey,c:false},{l:{sl:'Jajce',en:'Egg'},img:IMGS.cooking,c:false}],
-    hint:{sl:'To je mlečni izdelek, ki naredi juho gladko.',en:'This is a dairy product that makes soup smooth.'},
-    explanation:{sl:'Smetana doda juhi kremasto teksturo.',en:'Cream adds a creamy texture to the soup.'},
-    recipe:'tomato_sauce'
+  {
+    id: 'L14', type: { sl: 'RECEPT', en: 'RECIPE' }, diff: 'easy',
+    title: { sl: 'Katera naredi nadev sočen?', en: 'Which makes the filling juicy?' },
+    text: { sl: 'Katera sestavina naredi nadev v korenčkovi potici bolj sočen?', en: 'Which ingredient makes the filling in carrot potica more juicy?' },
+    img: iImg('korenje'),
+    answers: [{ l: { sl: 'Korenje', en: 'Carrot' }, img: iImg('korenje'), c: true }, { l: { sl: 'Buča', en: 'Pumpkin' }, img: iImg('buča'), c: false }, { l: { sl: 'Jabolka', en: 'Apples' }, img: iImg('jabolka'), c: false }, { l: { sl: 'Slive', en: 'Plums' }, img: iImg('slive'), c: false }],
+    hint: { sl: 'Ime potice ti pomaga najti odgovor.', en: 'The name of the potica helps you find the answer.' },
+    explanation: { sl: 'Korenje naredi nadev v korenčkovi potici sočen in sladkast.', en: 'Carrot makes the filling in carrot potica juicy and slightly sweet.' },
+    recipe: 'korenckova_potica'
   },
-  { id:'q19', type:{sl:'KJE RASTEM',en:'WHERE DO I GROW'}, diff:'hard',
-    title:{sl:'Kje rastem?',en:'Where do I grow?'},
-    text:{sl:'Ajda se prideluje...',en:'Buckwheat is cultivated...'},
-    img:IMGS.buckwheat,
-    answers:[{l:{sl:'Na njivi',en:'In a field'},img:IMGS.farm,c:true},{l:{sl:'V morju',en:'In the sea'},img:IMGS.lettuce,c:false},{l:{sl:'Na drevesu',en:'On a tree'},img:IMGS.apple,c:false},{l:{sl:'V gorah',en:'In the mountains'},img:IMGS.farm,c:false}],
-    hint:{sl:'To je žito, ki ga žanjejo na poljih.',en:'This is a grain crop harvested in fields.'},
-    explanation:{sl:'Ajda je žito, ki uspeva na njivah — tipičen slovenski pridelek.',en:'Buckwheat is a grain that thrives in fields — a typical Slovenian crop.'},
-    recipe:'buckwheat_bowl'
+  {
+    id: 'L15', type: { sl: 'RECEPT', en: 'RECIPE' }, diff: 'easy',
+    title: { sl: 'Katera se skuha v trdo?', en: 'Which is hard-boiled?' },
+    text: { sl: 'Katera sestavina se v tej jedi skuha v trdo?', en: 'Which ingredient is hard-boiled in this dish?' },
+    img: iImg('jajca'),
+    answers: [{ l: { sl: 'Jajca', en: 'Eggs' }, img: iImg('jajca'), c: true }, { l: { sl: 'Krompir', en: 'Potato' }, img: iImg('krompir'), c: false }, { l: { sl: 'Riž', en: 'Rice' }, img: iImg('riž'), c: false }, { l: { sl: 'Buča', en: 'Pumpkin' }, img: iImg('buča'), c: false }],
+    hint: { sl: 'Običajno jih olupimo in prerežemo.', en: 'We usually peel and cut them in half.' },
+    explanation: { sl: 'Jajca se skuhajo v trdo in so tipična sestavina h klobasam s hrenom.', en: 'Eggs are hard-boiled and a typical accompaniment to sausages with horseradish.' },
+    recipe: 'domace_klobase_s_hrenom'
   },
-  { id:'q20', type:{sl:'LOKALNI DETEKTIV',en:'LOCAL DETECTIVE'}, diff:'hard',
-    title:{sl:'Lokalni detektiv',en:'Local detective'},
-    text:{sl:'Katera zelenjava je najpogosteje na tržnici jeseni?',en:'Which vegetable is most common at the market in autumn?'},
-    img:IMGS.pumpkin,
-    answers:[{l:{sl:'Buča',en:'Pumpkin'},img:IMGS.pumpkin,c:true},{l:{sl:'Jagode',en:'Strawberries'},img:IMGS.strawberry,c:false},{l:{sl:'Češnje',en:'Cherries'},img:IMGS.strawberry,c:false},{l:{sl:'Solata',en:'Lettuce'},img:IMGS.lettuce,c:false}],
-    hint:{sl:'To je okrogla, oranžna zelenjava jeseni.',en:'This is a round, orange vegetable in autumn.'},
-    explanation:{sl:'Buča je tipičen jesenski pridelek in osnova za juhe.',en:'Pumpkin is a typical autumn crop and the base for soups.'},
-    recipe:'vegetable_soup'
+
+  // ===== MEDIUM =====
+  {
+    id: 'M01', type: { sl: 'RECEPT', en: 'RECIPE' }, diff: 'medium',
+    title: { sl: 'Katera je žitna osnova?', en: 'What is the grain base?' },
+    text: { sl: 'Katera sestavina je značilna žitna osnova ričeta?', en: 'What is the characteristic grain base of ričet stew?' },
+    img: iImg('ješprenj'),
+    answers: [{ l: { sl: 'Ješprenj', en: 'Pearl barley' }, img: iImg('ješprenj'), c: true }, { l: { sl: 'Prosena kaša', en: 'Millet' }, img: iImg('prosena kaša'), c: false }, { l: { sl: 'Riž', en: 'Rice' }, img: iImg('riž'), c: false }, { l: { sl: 'Ovseni kosmiči', en: 'Oat flakes' }, img: iImg('ovseni kosmiči'), c: false }],
+    hint: { sl: 'Gre za oluščen ječmen, ki se uporablja v enolončnicah.', en: 'It is hulled barley used in one-pot stews.' },
+    explanation: { sl: 'Ješprenj je oluščen ječmen in žitna osnova ričeta.', en: 'Pearl barley is hulled barley and the grain base of ričet stew.' },
+    recipe: 'ricet'
   },
-  { id:'q25', type:{sl:'KDO SEM',en:'WHO AM I'}, diff:'medium',
-    title:{sl:'Kdo sem?',en:'Who am I?'},
-    text:{sl:'Sem sladka, tekoča in zlate barve. Pridelajo me čebele.',en:'I am sweet, liquid and golden. Bees produce me.'},
-    img:IMGS.honey,
-    answers:[{l:{sl:'Med',en:'Honey'},img:IMGS.honey,c:true},{l:{sl:'Sirup',en:'Syrup'},img:IMGS.cooking,c:false},{l:{sl:'Sok',en:'Juice'},img:IMGS.lemon,c:false},{l:{sl:'Maslo',en:'Butter'},img:IMGS.milk,c:false}],
-    hint:{sl:'Čebele ga pridelajo iz cvetnega nektarja.',en:'Bees produce it from flower nectar.'},
-    explanation:{sl:'Med je naravno sladilo, ki ga pridelajo čebele.',en:'Honey is a natural sweetener produced by bees.'},
-    recipe:'honey_breakfast'
+  {
+    id: 'M02', type: { sl: 'RECEPT', en: 'RECIPE' }, diff: 'medium',
+    title: { sl: 'Katera je skupaj s krompirjem?', en: 'What goes alongside potato?' },
+    text: { sl: 'Katera sestavina je skupaj s krompirjem glavna v matevžu?', en: 'Which ingredient is the main one alongside potato in matevž?' },
+    img: iImg('fižol'),
+    answers: [{ l: { sl: 'Fižol', en: 'Beans' }, img: iImg('fižol'), c: true }, { l: { sl: 'Med', en: 'Honey' }, img: iImg('med'), c: false }, { l: { sl: 'Ajdova moka', en: 'Buckwheat flour' }, img: iImg('ajdova moka'), c: false }, { l: { sl: 'Zelje', en: 'Cabbage' }, img: iImg('zelje'), c: false }],
+    hint: { sl: 'Matevž je pretlačena domača jed iz dveh nasitnih sestavin.', en: 'Matevž is a mashed homemade dish made from two filling ingredients.' },
+    explanation: { sl: 'Matevž je pretlačen fižol s krompirjem, tipična slovenska jed.', en: 'Matevž is mashed beans with potato, a typical Slovenian dish.' },
+    recipe: 'matevz'
   },
-  { id:'q29', type:{sl:'KDO SEM',en:'WHO AM I'}, diff:'medium',
-    title:{sl:'Kdo sem?',en:'Who am I?'},
-    text:{sl:'Sem bela in kremasta. Iz mene delajo palačinke in sladice.',en:'I am white and creamy. I am used to make pancakes and desserts.'},
-    img:IMGS.cottage_cheese,
-    answers:[{l:{sl:'Skuta',en:'Cottage cheese'},img:IMGS.cottage_cheese,c:true},{l:{sl:'Moka',en:'Flour'},img:IMGS.buckwheat,c:false},{l:{sl:'Maslo',en:'Butter'},img:IMGS.milk,c:false},{l:{sl:'Jajce',en:'Egg'},img:IMGS.cooking,c:false}],
-    hint:{sl:'Je mlečni izdelek, pridelan iz mleka.',en:'It is a dairy product made from milk.'},
-    explanation:{sl:'Skuta je svež mlečni izdelek in osnova za palačinke.',en:'Cottage cheese is a fresh dairy product and the base for pancakes.'},
-    recipe:'cottage_pancakes'
+  {
+    id: 'M03', type: { sl: 'RECEPT', en: 'RECIPE' }, diff: 'medium',
+    title: { sl: 'Katera dá gozdni okus?', en: 'Which gives a forest flavour?' },
+    text: { sl: 'Katera sestavina daje ajdovi kaši z gobami izrazit gozdni okus?', en: 'Which ingredient gives buckwheat with mushrooms its distinct forest flavour?' },
+    img: iImg('sveže gobe'),
+    answers: [{ l: { sl: 'Sveže gobe', en: 'Fresh mushrooms' }, img: iImg('sveže gobe'), c: true }, { l: { sl: 'Panceta', en: 'Pancetta' }, img: iImg('panceta'), c: false }, { l: { sl: 'Korenje', en: 'Carrot' }, img: iImg('korenje'), c: false }, { l: { sl: 'Por', en: 'Leek' }, img: iImg('por'), c: false }],
+    hint: { sl: 'Iščemo sestavino, ki je povezana z gozdom in jurčki.', en: 'We are looking for an ingredient associated with the forest and porcini.' },
+    explanation: { sl: 'Sveže gobe dajejo ajdovi kaši intenziven, gozdni okus.', en: 'Fresh mushrooms give buckwheat its intense, forest flavour.' },
+    recipe: 'ajdova_kasa_z_gobami'
+  },
+  {
+    id: 'M04', type: { sl: 'RECEPT', en: 'RECIPE' }, diff: 'medium',
+    title: { sl: 'Katera dá lokalno noto?', en: 'Which gives a local character?' },
+    text: { sl: 'Katera sestavina daje golažu lokalno dolenjsko noto?', en: 'Which ingredient gives the goulash a local Dolenjska character?' },
+    img: iImg('cviček'),
+    answers: [{ l: { sl: 'Cviček', en: 'Cviček wine' }, img: iImg('cviček'), c: true }, { l: { sl: 'Mleko', en: 'Milk' }, img: iImg('mleko'), c: false }, { l: { sl: 'Kis', en: 'Vinegar' }, img: iImg('kis'), c: false }, { l: { sl: 'Olje', en: 'Oil' }, img: iImg('olje'), c: false }],
+    hint: { sl: 'Gre za lokalno vino, povezano z Dolenjsko.', en: 'It is a local wine associated with the Dolenjska region.' },
+    explanation: { sl: 'Cviček je lokalno dolenjsko vino, ki golažu doda posebno aromo.', en: 'Cviček is a local Dolenjska wine that adds a special aroma to goulash.' },
+    recipe: 'goveji_golaz'
+  },
+  {
+    id: 'M05', type: { sl: 'RECEPT', en: 'RECIPE' }, diff: 'medium',
+    title: { sl: 'Katera se zmeša s krompirjem?', en: 'Which is mixed with potato?' },
+    text: { sl: 'Katera sestavina se pri krompirjevih žgancih zmeša s krompirjem?', en: 'Which ingredient is mixed with potato in potato žganci?' },
+    img: iImg('moka'),
+    answers: [{ l: { sl: 'Moka', en: 'Flour' }, img: iImg('moka'), c: true }, { l: { sl: 'Med', en: 'Honey' }, img: iImg('med'), c: false }, { l: { sl: 'Jogurt', en: 'Yogurt' }, img: iImg('jogurt'), c: false }, { l: { sl: 'Paradižnik', en: 'Tomato' }, img: iImg('paradižnik'), c: false }],
+    hint: { sl: 'Iz nje nastane gosta masa za žgance.', en: 'It creates the thick dough for žganci.' },
+    explanation: { sl: 'Moka se zmeša s krompirjem in naredi gosto maso za žgance.', en: 'Flour is mixed with potato to create the thick dough for žganci.' },
+    recipe: 'krompirjevi_zganci'
+  },
+  {
+    id: 'M06', type: { sl: 'RECEPT', en: 'RECIPE' }, diff: 'medium',
+    title: { sl: 'Katera dá svežost?', en: 'Which adds freshness?' },
+    text: { sl: 'Katera sestavina se pri pečeni postrvi uporabi za svež okus?', en: 'Which ingredient is used to give baked trout a fresh taste?' },
+    img: iImg('limona'),
+    answers: [{ l: { sl: 'Limona', en: 'Lemon' }, img: iImg('limona'), c: true }, { l: { sl: 'Cimet', en: 'Cinnamon' }, img: iImg('cimet'), c: false }, { l: { sl: 'Med', en: 'Honey' }, img: iImg('med'), c: false }, { l: { sl: 'Mleko', en: 'Milk' }, img: iImg('mleko'), c: false }],
+    hint: { sl: 'Riba se pogosto pokapa ali obloži z njo.', en: 'The fish is often drizzled with or laid on top of it.' },
+    explanation: { sl: 'Limona doda pečeni postrvi svež, kisel okus.', en: 'Lemon adds a fresh, tart taste to baked trout.' },
+    recipe: 'pecena_postrv'
+  },
+  {
+    id: 'M07', type: { sl: 'RECEPT', en: 'RECIPE' }, diff: 'medium',
+    title: { sl: 'Katera se poveže z bučo?', en: 'Which is combined with pumpkin?' },
+    text: { sl: 'Katera sestavina se v nadevu poveže z bučo?', en: 'Which ingredient is combined with pumpkin in the filling?' },
+    img: iImg('skuta'),
+    answers: [{ l: { sl: 'Skuta', en: 'Cottage cheese' }, img: iImg('skuta'), c: true }, { l: { sl: 'Mleto meso', en: 'Minced meat' }, img: iImg('mleto meso'), c: false }, { l: { sl: 'Fižol', en: 'Beans' }, img: iImg('fižol'), c: false }, { l: { sl: 'Kvas', en: 'Yeast' }, img: iImg('kvas'), c: false }],
+    hint: { sl: 'Nadev je bučno-mlečen in kremast.', en: 'The filling is pumpkin-dairy and creamy.' },
+    explanation: { sl: 'Skuta se poveže z bučo in naredi kremast nadev za zavitek.', en: 'Cottage cheese is combined with pumpkin to make a creamy strudel filling.' },
+    recipe: 'bucni_zavitek'
+  },
+  {
+    id: 'M08', type: { sl: 'RECEPT', en: 'RECIPE' }, diff: 'medium',
+    title: { sl: 'Katera doda sladkobo?', en: 'Which adds sweetness?' },
+    text: { sl: 'Katera sestavina rdečemu zelju doda naravno sladkobo?', en: 'Which ingredient adds natural sweetness to red cabbage?' },
+    img: iImg('jabolka'),
+    answers: [{ l: { sl: 'Jabolka', en: 'Apples' }, img: iImg('jabolka'), c: true }, { l: { sl: 'Česen', en: 'Garlic' }, img: iImg('česen'), c: false }, { l: { sl: 'Sol', en: 'Salt' }, img: iImg('sol'), c: false }, { l: { sl: 'Kis', en: 'Vinegar' }, img: iImg('kis'), c: false }],
+    hint: { sl: 'Gre za sadje, ki se pogosto uporablja pri rdečem zelju.', en: 'It is a fruit often used with red cabbage.' },
+    explanation: { sl: 'Jabolka dodajo rdečemu zelju naravno sladkobo in svežino.', en: 'Apples add natural sweetness and freshness to red cabbage.' },
+    recipe: 'duseno_rdece_zelje'
+  },
+  {
+    id: 'M09', type: { sl: 'RECEPT', en: 'RECIPE' }, diff: 'medium',
+    title: { sl: 'Katera je osnova polpetov?', en: 'What is the base of the patties?' },
+    text: { sl: 'Katera sestavina je skupaj s krompirjem osnova teh polpetov?', en: 'Which ingredient is the base of these patties alongside potato?' },
+    img: iImg('bučke'),
+    answers: [{ l: { sl: 'Bučke', en: 'Zucchini' }, img: iImg('bučke'), c: true }, { l: { sl: 'Fižol', en: 'Beans' }, img: iImg('fižol'), c: false }, { l: { sl: 'Mleko', en: 'Milk' }, img: iImg('mleko'), c: false }, { l: { sl: 'Med', en: 'Honey' }, img: iImg('med'), c: false }],
+    hint: { sl: 'Sestavina se nariba in zmeša s krompirjem.', en: 'The ingredient is grated and mixed with potato.' },
+    explanation: { sl: 'Bučke se naribo in zmešajo s krompirjem za osnovo polpetov.', en: 'Zucchini is grated and mixed with potato to form the base of the patties.' },
+    recipe: 'polpeti_iz_bucki'
+  },
+  {
+    id: 'M10', type: { sl: 'RECEPT', en: 'RECIPE' }, diff: 'medium',
+    title: { sl: 'Katera je v nadevu?', en: 'What is in the filling?' },
+    text: { sl: 'Katera sestavina je glavna v nadevu skutnih štrukljev?', en: 'What is the main ingredient in the filling of cottage cheese štruklji?' },
+    img: iImg('skuta'),
+    answers: [{ l: { sl: 'Skuta', en: 'Cottage cheese' }, img: iImg('skuta'), c: true }, { l: { sl: 'Krompir', en: 'Potato' }, img: iImg('krompir'), c: false }, { l: { sl: 'Postrv', en: 'Trout' }, img: iImg('postrv'), c: false }, { l: { sl: 'Riž', en: 'Rice' }, img: iImg('riž'), c: false }],
+    hint: { sl: 'Ime jedi ti pove, kateri nadev je najpomembnejši.', en: 'The name of the dish tells you which filling is most important.' },
+    explanation: { sl: 'Skuta je osnovna sestavina nadeva pri skutnih štrukljih.', en: 'Cottage cheese is the main filling ingredient in cottage cheese štruklji.' },
+    recipe: 'skutni_struklji'
+  },
+  {
+    id: 'M11', type: { sl: 'RECEPT', en: 'RECIPE' }, diff: 'medium',
+    title: { sl: 'Katera doda topel vonj?', en: 'Which adds a warm scent?' },
+    text: { sl: 'Katera sestavina kompotu doda topel sladek vonj?', en: 'Which ingredient adds a warm, sweet scent to the compote?' },
+    img: iImg('cimet'),
+    answers: [{ l: { sl: 'Cimet', en: 'Cinnamon' }, img: iImg('cimet'), c: true }, { l: { sl: 'Kumina', en: 'Cumin' }, img: iImg('kumina'), c: false }, { l: { sl: 'Česen', en: 'Garlic' }, img: iImg('česen'), c: false }, { l: { sl: 'Drobnjak', en: 'Chives' }, img: iImg('drobnjak'), c: false }],
+    hint: { sl: 'Pogosto ga dodajamo jabolčnim sladicam.', en: 'We often add it to apple desserts.' },
+    explanation: { sl: 'Cimet doda kompotu topel, sladkast vonj in okus.', en: 'Cinnamon adds a warm, sweet scent and flavour to the compote.' },
+    recipe: 'jabolcni_kompot'
+  },
+  {
+    id: 'M12', type: { sl: 'RECEPT', en: 'RECIPE' }, diff: 'medium',
+    title: { sl: 'Katera je zelenjavni del?', en: 'What is the vegetable part?' },
+    text: { sl: 'Katera sestavina iz seznama najbolj ustreza zelenjavnemu delu obare?', en: 'Which ingredient from the list best represents the vegetable part of the stew?' },
+    img: iImg('jušna zelenjava'),
+    answers: [{ l: { sl: 'Jušna zelenjava', en: 'Soup vegetables' }, img: iImg('jušna zelenjava'), c: true }, { l: { sl: 'Borovnice', en: 'Blueberries' }, img: iImg('borovnice'), c: false }, { l: { sl: 'Med', en: 'Honey' }, img: iImg('med'), c: false }, { l: { sl: 'Bučno olje', en: 'Pumpkin oil' }, img: iImg('bučno olje'), c: false }],
+    hint: { sl: 'Obaro pripravimo z mesom in zelenjavnim delom.', en: 'The stew is made with meat and a vegetable part.' },
+    explanation: { sl: 'Jušna zelenjava je zelenjavni del obare in doda jedi okus.', en: 'Soup vegetables are the vegetable part of the stew and add flavour.' },
+    recipe: 'telecja_obara'
+  },
+  {
+    id: 'M13', type: { sl: 'RECEPT', en: 'RECIPE' }, diff: 'medium',
+    title: { sl: 'Katera je osnova cmoka?', en: 'What is the base of the dumpling?' },
+    text: { sl: 'Katera sestavina, najbolje starejša oziroma suha, je osnova za kruhove cmoke?', en: 'Which ingredient, ideally older or dried, is the base for bread dumplings?' },
+    img: iImg('kruh'),
+    answers: [{ l: { sl: 'Kruh', en: 'Bread' }, img: iImg('kruh'), c: true }, { l: { sl: 'Slive', en: 'Plums' }, img: iImg('slive'), c: false }, { l: { sl: 'Krompir', en: 'Potato' }, img: iImg('krompir'), c: false }, { l: { sl: 'Krap', en: 'Carp' }, img: iImg('krap'), c: false }],
+    hint: { sl: 'To je dober način uporabe kruha, ki je ostal.', en: 'It is a good way to use leftover bread.' },
+    explanation: { sl: 'Kruh, predvsem starejši, je osnova za kruhove cmoke.', en: 'Bread, especially older bread, is the base for bread dumplings.' },
+    recipe: 'kruhovi_cmoki'
+  },
+  {
+    id: 'M14', type: { sl: 'RECEPT', en: 'RECIPE' }, diff: 'medium',
+    title: { sl: 'Katera je mlečna osnova?', en: 'What is the dairy base?' },
+    text: { sl: 'Katera sestavina je mlečna osnova jogurtove strjenke?', en: 'What is the dairy base of yogurt panna cotta?' },
+    img: iImg('jogurt'),
+    answers: [{ l: { sl: 'Jogurt', en: 'Yogurt' }, img: iImg('jogurt'), c: true }, { l: { sl: 'Čebula', en: 'Onion' }, img: iImg('čebula'), c: false }, { l: { sl: 'Krompir', en: 'Potato' }, img: iImg('krompir'), c: false }, { l: { sl: 'Postrv', en: 'Trout' }, img: iImg('postrv'), c: false }],
+    hint: { sl: 'Ime sladice ti pomaga najti odgovor.', en: 'The name of the dessert helps you find the answer.' },
+    explanation: { sl: 'Jogurt je mlečna osnova strjenke in ji dá svežo kiselkastost.', en: 'Yogurt is the dairy base of the panna cotta and gives it a fresh tanginess.' },
+    recipe: 'jogurtova_strjenka'
+  },
+  {
+    id: 'M15', type: { sl: 'RECEPT', en: 'RECIPE' }, diff: 'medium',
+    title: { sl: 'Katera je glavna v obari?', en: 'What is the main ingredient in the stew?' },
+    text: { sl: 'Katera sestavina je glavna v zajčji obari?', en: 'What is the main ingredient in rabbit stew?' },
+    img: iImg('zajčje meso'),
+    answers: [{ l: { sl: 'Zajčje meso', en: 'Rabbit meat' }, img: iImg('zajčje meso'), c: true }, { l: { sl: 'Piščančje meso', en: 'Chicken meat' }, img: iImg('piščančje meso'), c: false }, { l: { sl: 'Goveje meso', en: 'Beef' }, img: iImg('goveje meso'), c: false }, { l: { sl: 'Krap', en: 'Carp' }, img: iImg('krap'), c: false }],
+    hint: { sl: 'Ime jedi pove, katero meso uporabimo.', en: 'The name of the dish tells you which meat to use.' },
+    explanation: { sl: 'Zajčje meso je glavna sestavina zajčje obare.', en: 'Rabbit meat is the main ingredient of rabbit stew.' },
+    recipe: 'zajcja_obara'
+  },
+
+  // ===== HARD =====
+  {
+    id: 'T01', type: { sl: 'RECEPT', en: 'RECIPE' }, diff: 'hard',
+    title: { sl: 'Katero namočimo pred kuhanjem?', en: 'Which do we soak before cooking?' },
+    text: { sl: 'Katero sestavino pri fižolovi juhi običajno namočimo pred kuhanjem?', en: 'Which ingredient in bean soup do we usually soak before cooking?' },
+    img: iImg('suh fižol'),
+    answers: [{ l: { sl: 'Suh fižol', en: 'Dried beans' }, img: iImg('suh fižol'), c: true }, { l: { sl: 'Ješprenj', en: 'Pearl barley' }, img: iImg('ješprenj'), c: false }, { l: { sl: 'Ajdova kaša', en: 'Buckwheat' }, img: iImg('ajdova kaša'), c: false }, { l: { sl: 'Prosena kaša', en: 'Millet' }, img: iImg('prosena kaša'), c: false }],
+    hint: { sl: 'Suha stročnica se tako hitreje skuha.', en: 'The dried legume cooks faster this way.' },
+    explanation: { sl: 'Suh fižol namočimo, da se hitreje skuha in je lažje prebavljiv.', en: 'Dried beans are soaked so they cook faster and are easier to digest.' },
+    recipe: 'fizolova_juha'
+  },
+  {
+    id: 'T02', type: { sl: 'RECEPT', en: 'RECIPE' }, diff: 'hard',
+    title: { sl: 'Katero najprej poparimo?', en: 'Which do we scald first?' },
+    text: { sl: 'Katero sestavino pri ajdovem kruhu najprej poparimo?', en: 'Which ingredient in buckwheat bread do we scald first?' },
+    img: iImg('ajdova moka'),
+    answers: [{ l: { sl: 'Ajdova moka', en: 'Buckwheat flour' }, img: iImg('ajdova moka'), c: true }, { l: { sl: 'Koruzna moka', en: 'Corn flour' }, img: iImg('koruzna moka'), c: false }, { l: { sl: 'Pšenična moka', en: 'Wheat flour' }, img: iImg('pšenična moka'), c: false }, { l: { sl: 'Ržena moka', en: 'Rye flour' }, img: iImg('ržena moka'), c: false }],
+    hint: { sl: 'To je moka z izrazitim domačim okusom.', en: 'This flour has a distinctive homemade taste.' },
+    explanation: { sl: 'Ajdova moka se popari za boljšo teksturo in okus domačega kruha.', en: 'Buckwheat flour is scalded for better texture and flavour of the bread.' },
+    recipe: 'domaci_ajdov_kruh'
+  },
+  {
+    id: 'T03', type: { sl: 'RECEPT', en: 'RECIPE' }, diff: 'hard',
+    title: { sl: 'Katera je nežna med peko?', en: 'Which is delicate during baking?' },
+    text: { sl: 'Katera sestavina je nežna in jo moramo med peko previdno obračati?', en: 'Which ingredient is delicate and must be carefully turned during baking?' },
+    img: iImg('postrv'),
+    answers: [{ l: { sl: 'Postrv', en: 'Trout' }, img: iImg('postrv'), c: true }, { l: { sl: 'Krap', en: 'Carp' }, img: iImg('krap'), c: false }, { l: { sl: 'Piščančje meso', en: 'Chicken meat' }, img: iImg('piščančje meso'), c: false }, { l: { sl: 'Zajčje meso', en: 'Rabbit meat' }, img: iImg('zajčje meso'), c: false }],
+    hint: { sl: 'Gre za ribo, ki se lahko hitro raztrga.', en: 'It is a fish that can easily fall apart.' },
+    explanation: { sl: 'Postrv je nežna riba, ki jo med peko previdno obračamo.', en: 'Trout is a delicate fish that must be carefully turned during baking.' },
+    recipe: 'pecena_postrv'
+  },
+  {
+    id: 'T04', type: { sl: 'RECEPT', en: 'RECIPE' }, diff: 'hard',
+    title: { sl: 'Katera je ovoj za nadev?', en: 'Which serves as a wrapper?' },
+    text: { sl: 'Katera sestavina pri sarmi služi kot ovoj za nadev?', en: 'Which ingredient in sarma serves as a wrapper for the filling?' },
+    img: iImg('kislo zelje'),
+    answers: [{ l: { sl: 'Kislo zelje', en: 'Sauerkraut' }, img: iImg('kislo zelje'), c: true }, { l: { sl: 'Mleta rdeča paprika', en: 'Ground red pepper' }, img: iImg('mleta rdeča paprika'), c: false }, { l: { sl: 'Vlečeno testo', en: 'Pulled dough' }, img: iImg('vlečeno testo'), c: false }, { l: { sl: 'Bučke', en: 'Zucchini' }, img: iImg('bučke'), c: false }],
+    hint: { sl: 'Pri tej jedi nadev zavijemo v liste.', en: 'In this dish we wrap the filling in leaves.' },
+    explanation: { sl: 'Listi kislega zelja se uporabijo kot ovoj za nadev pri sarmi.', en: 'Sauerkraut leaves are used as a wrapper for the filling in sarma.' },
+    recipe: 'sarma'
+  },
+  {
+    id: 'T05', type: { sl: 'RECEPT', en: 'RECIPE' }, diff: 'hard',
+    title: { sl: 'Katera se napne med kuhanjem?', en: 'Which expands during cooking?' },
+    text: { sl: 'Katera sestavina se v nadevu med kuhanjem napne, zato paprik ne napolnimo do vrha?', en: 'Which ingredient in the filling expands during cooking, so we do not fill the peppers to the top?' },
+    img: iImg('riž'),
+    answers: [{ l: { sl: 'Riž', en: 'Rice' }, img: iImg('riž'), c: true }, { l: { sl: 'Ješprenj', en: 'Pearl barley' }, img: iImg('ješprenj'), c: false }, { l: { sl: 'Prosena kaša', en: 'Millet' }, img: iImg('prosena kaša'), c: false }, { l: { sl: 'Ajdova kaša', en: 'Buckwheat' }, img: iImg('ajdova kaša'), c: false }],
+    hint: { sl: 'Pri kuhanju vpije tekočino in poveča volumen.', en: 'During cooking it absorbs liquid and increases in volume.' },
+    explanation: { sl: 'Riž se pri kuhanju napne in poveča volumen nadeva.', en: 'Rice expands during cooking and increases the volume of the filling.' },
+    recipe: 'polnjene_paprike'
+  },
+  {
+    id: 'T06', type: { sl: 'RECEPT', en: 'RECIPE' }, diff: 'hard',
+    title: { sl: 'Katero pražimo, da porjavi?', en: 'Which do we toast until browned?' },
+    text: { sl: 'Katero sestavino pri prežganki pražimo, da porjavi, vendar se ne zažge?', en: 'Which ingredient in prežganka do we toast until browned but not burnt?' },
+    img: iImg('moka'),
+    answers: [{ l: { sl: 'Moka', en: 'Flour' }, img: iImg('moka'), c: true }, { l: { sl: 'Drobtine', en: 'Breadcrumbs' }, img: iImg('drobtine'), c: false }, { l: { sl: 'Pšenični zdrob', en: 'Wheat semolina' }, img: iImg('pšenični zdrob'), c: false }, { l: { sl: 'Koruzni zdrob / polenta', en: 'Cornmeal / polenta' }, img: iImg('koruzni zdrob / polenta'), c: false }],
+    hint: { sl: 'Če se zažge, je juha grenka.', en: 'If it burns, the soup becomes bitter.' },
+    explanation: { sl: 'Moka se praži do zlato rjave barve in je osnova prežganke.', en: 'Flour is toasted to golden brown and is the base of prežganka soup.' },
+    recipe: 'prezganka'
+  },
+  {
+    id: 'T07', type: { sl: 'RECEPT', en: 'RECIPE' }, diff: 'hard',
+    title: { sl: 'Katera je osnova žgancev?', en: 'What is the base of žganci?' },
+    text: { sl: 'Katera sestavina je glavna osnova ajdovih žgancev?', en: 'What is the main base of buckwheat žganci?' },
+    img: iImg('ajdova moka'),
+    answers: [{ l: { sl: 'Ajdova moka', en: 'Buckwheat flour' }, img: iImg('ajdova moka'), c: true }, { l: { sl: 'Koruzna moka', en: 'Corn flour' }, img: iImg('koruzna moka'), c: false }, { l: { sl: 'Bela moka', en: 'White flour' }, img: iImg('bela moka'), c: false }, { l: { sl: 'Pšenična moka', en: 'Wheat flour' }, img: iImg('pšenična moka'), c: false }],
+    hint: { sl: 'Iz nje nastanejo značilni domači žganci.', en: 'It is used to make the characteristic homemade žganci.' },
+    explanation: { sl: 'Ajdova moka je osnova ajdovih žgancev, tipične slovenske jedi.', en: 'Buckwheat flour is the base of buckwheat žganci, a typical Slovenian dish.' },
+    recipe: 'ajdovi_zganci'
+  },
+  {
+    id: 'T08', type: { sl: 'RECEPT', en: 'RECIPE' }, diff: 'hard',
+    title: { sl: 'Katera se marinira pred peko?', en: 'Which is marinated before baking?' },
+    text: { sl: 'Katera sestavina se pred peko marinira z limono, česnom in začimbami?', en: 'Which ingredient is marinated with lemon, garlic and spices before baking?' },
+    img: iImg('krap'),
+    answers: [{ l: { sl: 'Krap', en: 'Carp' }, img: iImg('krap'), c: true }, { l: { sl: 'Postrv', en: 'Trout' }, img: iImg('postrv'), c: false }, { l: { sl: 'Goveje meso', en: 'Beef' }, img: iImg('goveje meso'), c: false }, { l: { sl: 'Piščančje meso', en: 'Chicken meat' }, img: iImg('piščančje meso'), c: false }],
+    hint: { sl: 'Gre za sladkovodno ribo.', en: 'It is a freshwater fish.' },
+    explanation: { sl: 'Krap se pred peko marinira za boljši okus in mehkobo.', en: 'Carp is marinated before baking for better flavour and tenderness.' },
+    recipe: 'krap_s_krompirjem'
+  },
+  {
+    id: 'T09', type: { sl: 'RECEPT', en: 'RECIPE' }, diff: 'hard',
+    title: { sl: 'Katera je mesni del juhe?', en: 'What is the meat part of the soup?' },
+    text: { sl: 'Katera sestavina je mesni del, ki se kuha v goveji juhi?', en: 'Which ingredient is the meat component cooked in beef soup?' },
+    img: iImg('goveje meso'),
+    answers: [{ l: { sl: 'Goveje meso', en: 'Beef' }, img: iImg('goveje meso'), c: true }, { l: { sl: 'Piščančje meso', en: 'Chicken meat' }, img: iImg('piščančje meso'), c: false }, { l: { sl: 'Zajčje meso', en: 'Rabbit meat' }, img: iImg('zajčje meso'), c: false }, { l: { sl: 'Svinjski vrat', en: 'Pork neck' }, img: iImg('svinjski vrat'), c: false }],
+    hint: { sl: 'Ime juhe ti pomaga najti odgovor.', en: 'The name of the soup helps you find the answer.' },
+    explanation: { sl: 'Goveje meso je mesni del goveje juhe z domačimi rezanci.', en: 'Beef is the meat component of beef soup with homemade noodles.' },
+    recipe: 'goveja_juha'
+  },
+  {
+    id: 'T10', type: { sl: 'RECEPT', en: 'RECIPE' }, diff: 'hard',
+    title: { sl: 'Katera se mora ohladiti?', en: 'Which must cool down first?' },
+    text: { sl: 'Katera sestavina se mora pred dodajanjem jajc nekoliko ohladiti?', en: 'Which ingredient must cool down a little before eggs are added?' },
+    img: iImg('prosena kaša'),
+    answers: [{ l: { sl: 'Prosena kaša', en: 'Millet porridge' }, img: iImg('prosena kaša'), c: true }, { l: { sl: 'Ajdova kaša', en: 'Buckwheat porridge' }, img: iImg('ajdova kaša'), c: false }, { l: { sl: 'Ovseni kosmiči', en: 'Oat flakes' }, img: iImg('ovseni kosmiči'), c: false }, { l: { sl: 'Ješprenj', en: 'Pearl barley' }, img: iImg('ješprenj'), c: false }],
+    hint: { sl: 'Če je prevroča, se jajca lahko prehitro zakrknejo.', en: 'If it is too hot, the eggs can scramble too quickly.' },
+    explanation: { sl: 'Prosena kaša se mora ohladiti, da se jajca ne zakrknejo pri dodajanju.', en: 'Millet porridge must cool so the eggs do not scramble when added.' },
+    recipe: 'pecena_prosena_kasa'
+  },
+  {
+    id: 'T11', type: { sl: 'RECEPT', en: 'RECIPE' }, diff: 'hard',
+    title: { sl: 'Katero je lažje vmešati zmehčano?', en: 'Which is easier to mix when softened?' },
+    text: { sl: 'Katero sestavino je lažje vmešati, če jo najprej nežno zmehčamo?', en: 'Which ingredient is easier to mix in if we first gently soften it?' },
+    img: iImg('med'),
+    answers: [{ l: { sl: 'Med', en: 'Honey' }, img: iImg('med'), c: true }, { l: { sl: 'Sladkor', en: 'Sugar' }, img: iImg('sladkor'), c: false }, { l: { sl: 'Sladilo', en: 'Sweetener' }, img: iImg('sladilo'), c: false }, { l: { sl: 'Vanilija', en: 'Vanilla' }, img: iImg('vanilija'), c: false }],
+    hint: { sl: 'Če je trda, se težje enakomerno poveže z jogurtom.', en: 'If it is hard, it is more difficult to mix evenly with yogurt.' },
+    explanation: { sl: 'Med zmehčamo, da ga lažje enakomerno vmešamo v jogurtovo strjenko.', en: 'Honey is softened so it can be mixed evenly into the yogurt panna cotta.' },
+    recipe: 'jogurtova_strjenka'
+  },
+  {
+    id: 'T12', type: { sl: 'RECEPT', en: 'RECIPE' }, diff: 'hard',
+    title: { sl: 'Katero nadomestimo pri otroški različici?', en: 'Which do we replace for children?' },
+    text: { sl: 'Katero sestavino lahko pri otroški različici nadomestimo z vodo ali jušno osnovo?', en: 'Which ingredient can be replaced with water or stock in the children\'s version?' },
+    img: iImg('rdeče vino'),
+    answers: [{ l: { sl: 'Rdeče vino', en: 'Red wine' }, img: iImg('rdeče vino'), c: true }, { l: { sl: 'Belo vino', en: 'White wine' }, img: iImg('belo vino'), c: false }, { l: { sl: 'Beli vinski kis', en: 'White wine vinegar' }, img: iImg('beli vinski kis'), c: false }, { l: { sl: 'Olje', en: 'Oil' }, img: iImg('olje'), c: false }],
+    hint: { sl: 'Pri otrocih se alkoholna sestavina raje izpusti.', en: 'For children, the alcoholic ingredient is preferably omitted.' },
+    explanation: { sl: 'Rdeče vino se v otroški različici nadomesti z vodo ali jušno osnovo.', en: 'Red wine is replaced with water or stock in the children\'s version.' },
+    recipe: 'duseno_rdece_zelje'
+  },
+  {
+    id: 'T13', type: { sl: 'RECEPT', en: 'RECIPE' }, diff: 'hard',
+    title: { sl: 'Katera je osnova testa?', en: 'What is the base of the dough?' },
+    text: { sl: 'Katera sestavina je osnova testa za domače mlince?', en: 'What is the base ingredient of the dough for homemade mlinci?' },
+    img: iImg('moka'),
+    answers: [{ l: { sl: 'Moka', en: 'Flour' }, img: iImg('moka'), c: true }, { l: { sl: 'Drobtine', en: 'Breadcrumbs' }, img: iImg('drobtine'), c: false }, { l: { sl: 'Pšenični zdrob', en: 'Wheat semolina' }, img: iImg('pšenični zdrob'), c: false }, { l: { sl: 'Koruzni zdrob / polenta', en: 'Cornmeal / polenta' }, img: iImg('koruzni zdrob / polenta'), c: false }],
+    hint: { sl: 'Iz nje zamesimo testo, ki ga razvaljamo in spečemo.', en: 'We knead it into dough that we roll out and bake.' },
+    explanation: { sl: 'Moka je osnova testa za mlince, ki jih razvaljamo in spečemo.', en: 'Flour is the base of mlinci dough that is rolled out and baked.' },
+    recipe: 'domaci_mlinci'
+  },
+  {
+    id: 'T14', type: { sl: 'RECEPT', en: 'RECIPE' }, diff: 'hard',
+    title: { sl: 'Katera je mlečna osnova namaza?', en: 'What is the dairy base of the spread?' },
+    text: { sl: 'Katera sestavina se v namazu pretlači kot glavna mlečna osnova?', en: 'Which ingredient is mashed as the main dairy base of the spread?' },
+    img: iImg('skuta'),
+    answers: [{ l: { sl: 'Skuta', en: 'Cottage cheese' }, img: iImg('skuta'), c: true }, { l: { sl: 'Jogurt', en: 'Yogurt' }, img: iImg('jogurt'), c: false }, { l: { sl: 'Kisla smetana', en: 'Sour cream' }, img: iImg('kisla smetana'), c: false }, { l: { sl: 'Sir', en: 'Cheese' }, img: iImg('sir'), c: false }],
+    hint: { sl: 'Namaz je pripravljen zelo hitro in se namaže na kruh.', en: 'The spread is prepared very quickly and spread on bread.' },
+    explanation: { sl: 'Skuta je pretlačena mlečna osnova skutnega namaza z zelišči.', en: 'Cottage cheese is the mashed dairy base of the herb cottage cheese spread.' },
+    recipe: 'skutni_namaz'
+  },
+  {
+    id: 'T15', type: { sl: 'RECEPT', en: 'RECIPE' }, diff: 'hard',
+    title: { sl: 'Katera je mesna osnova nadeva?', en: 'What is the meat base of the filling?' },
+    text: { sl: 'Katera sestavina je mesna osnova nadeva za polnjene paprike?', en: 'Which ingredient is the meat base of the filling for stuffed peppers?' },
+    img: iImg('mleto meso'),
+    answers: [{ l: { sl: 'Mleto meso', en: 'Minced meat' }, img: iImg('mleto meso'), c: true }, { l: { sl: 'Goveje meso', en: 'Beef' }, img: iImg('goveje meso'), c: false }, { l: { sl: 'Piščančje meso', en: 'Chicken meat' }, img: iImg('piščančje meso'), c: false }, { l: { sl: 'Zajčje meso', en: 'Rabbit meat' }, img: iImg('zajčje meso'), c: false }],
+    hint: { sl: 'Nadev mora biti dovolj droben, da z njim napolnimo paprike.', en: 'The filling must be fine enough to fill the peppers.' },
+    explanation: { sl: 'Mleto meso je mesna osnova nadeva za polnjene paprike.', en: 'Minced meat is the meat base of the filling for stuffed peppers.' },
+    recipe: 'polnjene_paprike'
   }
 ];
 
 const DETECTIVE_EXTRA_ANSWERS = [
-  { l:{sl:'Korenje',en:'Carrot'}, img:IMGS.carrot, c:false },
-  { l:{sl:'Jabolko',en:'Apple'}, img:IMGS.apple, c:false },
-  { l:{sl:'Jagode',en:'Strawberries'}, img:IMGS.strawberry, c:false },
-  { l:{sl:'Krompir',en:'Potato'}, img:IMGS.potato, c:false },
-  { l:{sl:'Solata',en:'Lettuce'}, img:IMGS.lettuce, c:false },
-  { l:{sl:'Med',en:'Honey'}, img:IMGS.honey, c:false }
+  { l: { sl: 'Korenje', en: 'Carrot' }, img: iImg('korenje'), c: false },
+  { l: { sl: 'Jabolko', en: 'Apple' }, img: iImg('jabolka'), c: false },
+  { l: { sl: 'Jagode', en: 'Strawberries' }, img: iImg('jagode'), c: false },
+  { l: { sl: 'Krompir', en: 'Potato' }, img: iImg('krompir'), c: false },
+  { l: { sl: 'Kislo zelje', en: 'Sauerkraut' }, img: iImg('kislo zelje'), c: false },
+  { l: { sl: 'Med', en: 'Honey' }, img: iImg('med'), c: false }
 ];
 
 // ---------------------------------------------------------------------------
 // Module-level game state (lives outside React-style render cycle)
 // ---------------------------------------------------------------------------
 let _gameState = null;   // active game runtime state
-let _timerInt  = null;   // setInterval handle
+let _timerInt = null;   // setInterval handle
 let _toastTimer = null;  // toast hide timer
-let _dragData  = null;   // current drag payload
+let _dragData = null;   // current drag payload
 let _touchActive = false;
 let _touchSlotTarget = null;
 let _rootEl = null;      // bound DOM root
+let _boundRoot = null;
+let _boundPointerHandler = null;
 let _lastPuzzleScenarioId = null;
+let _lastPicturePuzzleSource = null;
 let _lastDetectiveQuestionIds = [];
+let _puzzleStartToken = 0;
 const _lastPuzzlePrePlaceKeys = new Map();
+const PICTURE_PUZZLE_GRIDS = {
+  easy: { rows: 3, cols: 3 },
+  medium: { rows: 3, cols: 3 },
+  hard: { rows: 4, cols: 4 }
+};
+const PICTURE_PUZZLE_CELL_PX = 180;
+const PICTURE_PUZZLE_ASPECT = 338 / 410;
+const FARM_TO_PLATE_PUZZLE_IMAGES = Array.from(
+  { length: 50 },
+  (_, index) => `../assets/images/games/farm-to-plate-puzzle/farm-to-plate-${String(index + 1).padStart(2, '0')}.png`
+);
 
 function _gl(locale) { return GL[locale] || GL.sl; }
 function _lv(obj, locale) { return obj[locale] || obj.sl; }
+
+let _ingredientByName = new Map();
+
+const DETECTIVE_INGREDIENT_ALIASES = new Map([
+  ['jabolko', 'jabolka'],
+  ['solata', 'kislo zelje']
+]);
+
+function _ingredientLookupKey(value) {
+  return String(value || '')
+    .normalize('NFKD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function _rememberGameIngredients(state) {
+  const groups = state && state.ingredientsByCategory ? Object.values(state.ingredientsByCategory) : [];
+  const ingredients = groups.flat().filter(Boolean);
+
+  _ingredientByName = ingredients.reduce((byName, ingredient) => {
+    const name = ingredient.name_sl || ingredient.name;
+    const key = _ingredientLookupKey(name);
+
+    if (key && !byName.has(key)) {
+      byName.set(key, ingredient);
+    }
+
+    return byName;
+  }, new Map());
+}
+
+function _ingredientPageImageSrc(name, fallbackSrc = '') {
+  const key = _ingredientLookupKey(name);
+  const alias = DETECTIVE_INGREDIENT_ALIASES.get(key);
+  const ingredient = _ingredientByName.get(key) || _ingredientByName.get(_ingredientLookupKey(alias));
+
+  if (ingredient) {
+    return iImg(ingredient);
+  }
+
+  return iImg(alias || name) || fallbackSrc;
+}
+
+function _detectiveAnswerImageSrc(answer) {
+  return _ingredientPageImageSrc(answer.ingredientName || _lv(answer.l, 'sl'), answer.img);
+}
+
+function _detectiveQuestionImageSrc(question) {
+  const correctAnswer = question.answers.find((answer) => answer.c) || question.answers[0];
+  return correctAnswer ? _detectiveAnswerImageSrc(correctAnswer) : question.img;
+}
+
+function _puzzleGrid(sc) {
+  const grid = sc && sc.grid ? sc.grid : null;
+  return {
+    rows: Math.max(1, parseInt(grid && grid.rows, 10) || 3),
+    cols: Math.max(1, parseInt(grid && grid.cols, 10) || 3)
+  };
+}
+
+function _puzzleTotal(sc) {
+  const grid = _puzzleGrid(sc);
+  return grid.rows * grid.cols;
+}
+
+function _puzzleGridForDifficulty(difficulty) {
+  return PICTURE_PUZZLE_GRIDS[difficulty] || PICTURE_PUZZLE_GRIDS.medium;
+}
+
+function _pieceLabel(piece, locale) {
+  if (!piece) return '';
+  if (piece.alt) return piece.alt;
+  return _lv(piece.l || { sl: '', en: '' }, locale);
+}
+
+function _escapeHtml(value) {
+  return String(value || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function _slotCornerClass(pos, grid) {
+  const row = Math.floor((pos - 1) / grid.cols);
+  const col = (pos - 1) % grid.cols;
+  const classes = [];
+  if (row === 0 && col === 0) classes.push('gm-slot--corner-tl');
+  if (row === 0 && col === grid.cols - 1) classes.push('gm-slot--corner-tr');
+  if (row === grid.rows - 1 && col === 0) classes.push('gm-slot--corner-bl');
+  if (row === grid.rows - 1 && col === grid.cols - 1) classes.push('gm-slot--corner-br');
+  return classes.join(' ');
+}
+
+function _jigsawImgStyle(piece) {
+  const shape = piece && piece.shape;
+  if (!shape) return '';
+  const left = -(shape.padX / shape.tileW) * 100;
+  const top = -(shape.padY / shape.tileH) * 100;
+  const width = (shape.canvasW / shape.tileW) * 100;
+  const height = (shape.canvasH / shape.tileH) * 100;
+  return ` style="--gm-piece-left:${left}%;--gm-piece-top:${top}%;--gm-piece-width:${width}%;--gm-piece-height:${height}%;"`;
+}
+
+function _renderPieceImage(piece, locale, inSlot) {
+  const cls = piece.shape
+    ? (inSlot ? ' class="gm-jigsaw-img"' : ' class="gm-piece__img gm-piece__img--jigsaw"')
+    : '';
+  const style = inSlot ? _jigsawImgStyle(piece) : '';
+  return `<img${cls} src="${piece.img}" alt="${_escapeHtml(_pieceLabel(piece, locale))}"${style} onerror="this.style.display='none'">`;
+}
+
+function _puzzleTrayPieces(gs, cfg) {
+  const sc = gs.puzzle.scenario;
+  const prePlaceIds = gs.puzzle.prePlaceIds || [];
+  const available = sc.pieces.filter(p => !prePlaceIds.includes(p.id) && !gs.puzzle.placed[p.pos]);
+  const distractors = cfg.distractors > 0 ? (sc.distractors || []).slice(0, cfg.distractors) : [];
+  const pieces = [...available, ...distractors];
+  const key = pieces.map(piece => piece.id).sort().join('|');
+
+  if (gs.puzzle.trayKey !== key) {
+    gs.puzzle.trayOrder = _shuffle(pieces).map(piece => piece.id);
+    gs.puzzle.trayKey = key;
+  }
+
+  const byId = new Map(pieces.map(piece => [piece.id, piece]));
+  return (gs.puzzle.trayOrder || [])
+    .map(id => byId.get(id))
+    .filter(Boolean);
+}
+
+function _drawImageCover(ctx, img, width, height) {
+  const iw = img.naturalWidth || img.width;
+  const ih = img.naturalHeight || img.height;
+  const sourceAspect = iw / ih;
+  const targetAspect = width / height;
+  let sx = 0;
+  let sy = 0;
+  let sw = iw;
+  let sh = ih;
+
+  if (sourceAspect > targetAspect) {
+    sw = ih * targetAspect;
+    sx = (iw - sw) / 2;
+  } else {
+    sh = iw / targetAspect;
+    sy = (ih - sh) / 2;
+  }
+
+  ctx.drawImage(img, sx, sy, sw, sh, 0, 0, width, height);
+}
+
+function _makeJigsawEdges(rows, cols) {
+  const vertical = Array.from({ length: rows }, () =>
+    Array.from({ length: Math.max(0, cols - 1) }, () => (Math.random() > 0.5 ? 1 : -1))
+  );
+  const horizontal = Array.from({ length: Math.max(0, rows - 1) }, () =>
+    Array.from({ length: cols }, () => (Math.random() > 0.5 ? 1 : -1))
+  );
+
+  return Array.from({ length: rows }, (_, row) =>
+    Array.from({ length: cols }, (_, col) => ({
+      top: row === 0 ? 0 : -horizontal[row - 1][col],
+      right: col === cols - 1 ? 0 : vertical[row][col],
+      bottom: row === rows - 1 ? 0 : horizontal[row][col],
+      left: col === 0 ? 0 : -vertical[row][col - 1]
+    }))
+  );
+}
+
+function _drawJigsawEdge(ctx, sx, sy, ex, ey, nx, ny, sign, depth) {
+  if (!sign) {
+    ctx.lineTo(ex, ey);
+    return;
+  }
+
+  const dx = ex - sx;
+  const dy = ey - sy;
+  const point = (t, out) => ({
+    x: sx + dx * t + nx * out,
+    y: sy + dy * t + ny * out
+  });
+  const out = sign * depth;
+  const p0 = point(0.31, 0);
+  const c1 = point(0.38, 0);
+  const c2 = point(0.37, out);
+  const mid = point(0.5, out);
+  const c3 = point(0.63, out);
+  const c4 = point(0.62, 0);
+  const p1 = point(0.69, 0);
+
+  ctx.lineTo(p0.x, p0.y);
+  ctx.bezierCurveTo(c1.x, c1.y, c2.x, c2.y, mid.x, mid.y);
+  ctx.bezierCurveTo(c3.x, c3.y, c4.x, c4.y, p1.x, p1.y);
+  ctx.lineTo(ex, ey);
+}
+
+function _buildJigsawPath(ctx, x, y, width, height, edges, depth) {
+  ctx.beginPath();
+  ctx.moveTo(x, y);
+  _drawJigsawEdge(ctx, x, y, x + width, y, 0, -1, edges.top, depth);
+  _drawJigsawEdge(ctx, x + width, y, x + width, y + height, 1, 0, edges.right, depth);
+  _drawJigsawEdge(ctx, x + width, y + height, x, y + height, 0, 1, edges.bottom, depth);
+  _drawJigsawEdge(ctx, x, y + height, x, y, -1, 0, edges.left, depth);
+  ctx.closePath();
+}
+
+function _loadPuzzleSourceImage(src) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => resolve(img);
+    img.onerror = () => reject(new Error('Unable to load puzzle image'));
+    img.src = src;
+  });
+}
+
+function _cutImageIntoJigsawPieces(img, options) {
+  const grid = options.grid || PICTURE_PUZZLE_GRIDS.medium;
+  const rows = grid.rows;
+  const cols = grid.cols;
+  const targetAspect = Math.max(0.35, Math.min(2.4, options.aspect || 1));
+  const cellAspect = targetAspect * rows / cols;
+  let tileW = PICTURE_PUZZLE_CELL_PX;
+  let tileH = PICTURE_PUZZLE_CELL_PX;
+
+  if (cellAspect >= 1) {
+    tileW = Math.round(tileH * cellAspect);
+  } else {
+    tileH = Math.round(tileW / cellAspect);
+  }
+
+  const puzzleW = tileW * cols;
+  const puzzleH = tileH * rows;
+  const pad = Math.round(Math.min(tileW, tileH) * 0.23);
+  const tabDepth = Math.round(pad * 0.86);
+  const sourceCanvas = document.createElement('canvas');
+  sourceCanvas.width = puzzleW;
+  sourceCanvas.height = puzzleH;
+  _drawImageCover(sourceCanvas.getContext('2d'), img, puzzleW, puzzleH);
+
+  const edges = _makeJigsawEdges(rows, cols);
+  const pieces = [];
+
+  for (let row = 0; row < rows; row++) {
+    for (let col = 0; col < cols; col++) {
+      const pos = row * cols + col + 1;
+      const canvas = document.createElement('canvas');
+      canvas.width = tileW + pad * 2;
+      canvas.height = tileH + pad * 2;
+      const ctx = canvas.getContext('2d');
+      const pieceEdges = edges[row][col];
+
+      ctx.save();
+      _buildJigsawPath(ctx, pad, pad, tileW, tileH, pieceEdges, tabDepth);
+      ctx.clip();
+      ctx.drawImage(sourceCanvas, -col * tileW + pad, -row * tileH + pad);
+      ctx.restore();
+
+      ctx.save();
+      _buildJigsawPath(ctx, pad, pad, tileW, tileH, pieceEdges, tabDepth);
+      ctx.lineJoin = 'round';
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.9)';
+      ctx.lineWidth = Math.max(3, Math.round(Math.min(tileW, tileH) * 0.018));
+      ctx.stroke();
+      ctx.strokeStyle = 'rgba(76, 53, 29, 0.22)';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+      ctx.restore();
+
+      pieces.push({
+        id: `${options.idPrefix || 'piece'}-${pos}`,
+        pos,
+        img: canvas.toDataURL('image/png'),
+        alt: `${options.name || 'Puzzle'} piece ${pos}`,
+        l: { sl: String(pos), en: String(pos) },
+        shape: {
+          tileW,
+          tileH,
+          padX: pad,
+          padY: pad,
+          canvasW: canvas.width,
+          canvasH: canvas.height
+        }
+      });
+    }
+  }
+
+  return {
+    grid,
+    pieces,
+    preview: sourceCanvas.toDataURL('image/png')
+  };
+}
+
+function _pickFarmToPlatePuzzleImage() {
+  const freshImages = FARM_TO_PLATE_PUZZLE_IMAGES.filter((src) => src !== _lastPicturePuzzleSource);
+  const pool = freshImages.length ? freshImages : FARM_TO_PLATE_PUZZLE_IMAGES;
+  const source = pool[Math.floor(Math.random() * pool.length)] || IMGS.puzzle_banner;
+  _lastPicturePuzzleSource = source;
+  return source;
+}
+
+async function _buildPicturePuzzleScenario(sc, difficulty, source) {
+  const grid = _puzzleGridForDifficulty(difficulty);
+  let img;
+
+  try {
+    img = await _loadPuzzleSourceImage(source);
+  } catch (error) {
+    console.warn('Puzzle image failed, falling back to puzzle banner', error);
+    img = await _loadPuzzleSourceImage(IMGS.puzzle_banner);
+  }
+
+  const cut = _cutImageIntoJigsawPieces(img, {
+    aspect: PICTURE_PUZZLE_ASPECT,
+    grid,
+    idPrefix: `${sc.id}-${grid.rows}x${grid.cols}`,
+    name: _lv(sc.title, 'en')
+  });
+
+  return {
+    ...sc,
+    img: cut.preview,
+    pieces: cut.pieces,
+    distractors: [],
+    grid: cut.grid,
+    jigsaw: true
+  };
+}
 
 function _shuffle(items) {
   const shuffled = [...items];
@@ -512,20 +1140,43 @@ function _pickPuzzleScenario() {
 function _pickDetectiveQuestions() {
   const previous = new Set(_lastDetectiveQuestionIds);
   const fresh = QUESTIONS.filter((question) => !previous.has(question.id));
-  const pool = fresh.length >= 5 ? fresh : QUESTIONS;
-  return _shuffle(pool).slice(0, 5);
+  const pool = fresh.length >= 10 ? fresh : QUESTIONS;
+  return _shuffle(pool).slice(0, 10);
 }
 
-function _detectiveAnswers(question) {
+function _detectiveAnswerKey(answer) {
+  return _lv(answer.l, 'sl').toLowerCase();
+}
+
+function _detectiveAnswerPool(question) {
   const answers = [...question.answers];
-  const usedLabels = new Set(answers.map((answer) => _lv(answer.l, 'sl').toLowerCase()));
+  const usedLabels = new Set(answers.map(_detectiveAnswerKey));
   DETECTIVE_EXTRA_ANSWERS.forEach((answer) => {
-    const label = _lv(answer.l, 'sl').toLowerCase();
+    const label = _detectiveAnswerKey(answer);
     if (answers.length < 4 && !usedLabels.has(label)) {
       answers.push({ ...answer });
       usedLabels.add(label);
     }
   });
+  return answers;
+}
+
+function _detectiveAnswers(question) {
+  const answers = _detectiveAnswerPool(question);
+  const det = _gameState && _gameState.det;
+
+  if (det && question && question.id) {
+    if (!det.answerOrders) det.answerOrders = {};
+    if (!det.answerOrders[question.id]) {
+      det.answerOrders[question.id] = _shuffle(answers).slice(0, 4).map(_detectiveAnswerKey);
+    }
+
+    const byKey = new Map(answers.map((answer) => [_detectiveAnswerKey(answer), answer]));
+    return det.answerOrders[question.id]
+      .map((key) => byKey.get(key))
+      .filter(Boolean);
+  }
+
   return _shuffle(answers).slice(0, 4);
 }
 
@@ -550,37 +1201,22 @@ const GM_ICONS = {
       <circle cx="16" cy="16" r="11" fill="none" stroke="currentColor" stroke-width="4" />
       <path d="M16 9v8l6 3" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
     </svg>`,
-  sound: `
-    <svg viewBox="0 0 32 32" aria-hidden="true">
-      <path d="M5 13v6h5l7 6V7l-7 6H5z" />
-      <path d="M21 11c2.1 2.4 2.1 7.6 0 10M24.5 7.5c4.5 5 4.5 12 0 17" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" />
-    </svg>`,
   bulb: `
     <svg viewBox="0 0 32 32" aria-hidden="true">
       <path d="M16 4a8 8 0 0 0-4.8 14.4c1.2.9 1.8 2 1.8 3.6h6c0-1.6.6-2.7 1.8-3.6A8 8 0 0 0 16 4z" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round" />
       <path d="M12.5 25h7M13.5 28h5M16 1.8v2M5.8 7.2l1.5 1.5M26.2 7.2l-1.5 1.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" />
     </svg>`,
   restart: `
-    <svg viewBox="0 0 32 32" aria-hidden="true">
-      <path d="M24.5 12A9 9 0 1 0 26 18" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" />
-      <path d="M24 4v8h-8" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <polyline points="1 4 1 10 7 10" />
+      <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10" />
     </svg>`
 };
 
 function renderPuzzleBrand() {
   return `
     <div class="gm-header__brand" aria-label="Zdravo Jem">
-      <span class="gm-brand-mark" aria-hidden="true">
-        <svg viewBox="0 0 40 40">
-          <path class="gm-brand-mark__heart" d="M20 32.5C10.2 24.8 5.2 19.6 5.2 13.3c0-4.1 3.2-7.3 7.3-7.3 2.4 0 4.8 1.2 6.2 3.1C20.1 7.2 22.5 6 24.9 6c4.1 0 7.3 3.2 7.3 7.3 0 6.3-5 11.5-14.8 19.2z" />
-          <path class="gm-brand-mark__leaf" d="M21.3 20.9C26.5 12.8 32.4 9.4 37 9.4c-.5 5.3-4.2 11.8-13.9 14.2z" />
-          <path class="gm-brand-mark__check" d="M9.5 17.4l7 7.3L30.8 9.8" />
-        </svg>
-      </span>
-      <span class="gm-brand-copy">
-        <strong>ZDRAVO</strong>
-        <span>JEM</span>
-      </span>
+      <img class="gm-brand-logo" src="${IMGS.logo}" alt="Zdravo Jem" draggable="false" onerror="this.style.display='none'">
     </div>`;
 }
 
@@ -592,7 +1228,7 @@ function renderSelect(locale) {
   return `
     <section class="gm-select">
       <div class="gm-select__brand">
-        <img class="gm-select__brand-img" src="${IMGS.puzzle_banner}" alt="" onerror="this.style.display='none'">
+        <img class="gm-select__brand-img" src="${IMGS.logo}" alt="Zdravo Jem" onerror="this.style.display='none'">
         <div>
           <div class="gm-select__brand-title">ZDRAVO JEM</div>
           <div class="gm-select__brand-sub">Tržnica Sevnica</div>
@@ -636,11 +1272,12 @@ function renderIntro(game, locale) {
     ? (locale === 'en' ? "Assemble the picture and discover food's journey from field to table." : 'Sestavi sliko in odkrij pot hrane od polja do mize.')
     : (locale === 'en' ? 'Solve clues and find the right answer about market food!' : 'Reši namige in odkrij pravi odgovor o hrani s tržnice!');
   const diff = _gameState ? _gameState.difficulty : 'medium';
+  const isStarting = !!(_gameState && _gameState.isStarting);
   return `
     <section class="gm-intro">
       <div class="gm-intro__header">
         <button class="gm-back-btn" data-gm-action="select">←</button>
-        <span class="gm-intro__wordmark">ZDRAVO JEM</span>
+        <img class="gm-intro__logo" src="${IMGS.logo}" alt="Zdravo Jem" draggable="false" onerror="this.style.display='none'">
       </div>
       <div class="gm-intro__body">
         <img class="gm-intro__img" src="${isPuzzle ? IMGS.puzzle_banner : IMGS.detective_banner}" alt="${title}" onerror="this.style.display='none'">
@@ -648,11 +1285,11 @@ function renderIntro(game, locale) {
         <p class="gm-intro__desc">${desc}</p>
         <p class="gm-diff-label">${g.diffLabel}</p>
         <div class="gm-diff-btns">
-          <button class="gm-diff-btn ${diff==='easy'?'is-active':''}" data-gm-action="diff" data-diff="easy">${g.easy}</button>
-          <button class="gm-diff-btn ${diff==='medium'?'is-active':''}" data-gm-action="diff" data-diff="medium">${g.medium}</button>
-          <button class="gm-diff-btn ${diff==='hard'?'is-active':''}" data-gm-action="diff" data-diff="hard">${g.hard}</button>
+          <button class="gm-diff-btn ${diff === 'easy' ? 'is-active' : ''}" data-gm-action="diff" data-diff="easy" ${isStarting ? 'disabled' : ''}>${g.easy}</button>
+          <button class="gm-diff-btn ${diff === 'medium' ? 'is-active' : ''}" data-gm-action="diff" data-diff="medium" ${isStarting ? 'disabled' : ''}>${g.medium}</button>
+          <button class="gm-diff-btn ${diff === 'hard' ? 'is-active' : ''}" data-gm-action="diff" data-diff="hard" ${isStarting ? 'disabled' : ''}>${g.hard}</button>
         </div>
-        <button class="gm-start-btn" data-gm-action="start">${g.startBtn}</button>
+        <button class="gm-start-btn ${isStarting ? 'gm-btn--disabled' : ''}" data-gm-action="start" ${isStarting ? 'disabled' : ''}>${g.startBtn}</button>
       </div>
     </section>`;
 }
@@ -665,48 +1302,51 @@ function renderPuzzle(locale) {
   const sc = gs.puzzle.scenario;
   const cfg = DIFF_CONFIG[gs.difficulty];
   const g = _gl(locale);
-  const total = sc.pieces.length;
+  const grid = _puzzleGrid(sc);
+  const total = _puzzleTotal(sc);
   const placed = gs.puzzle.placedCount;
   const pct = Math.round(placed / total * 100);
   const completed = !!gs.puzzle.completed;
+  const isJigsawPuzzle = !!sc.jigsaw;
   const piecesTitle = completed ? g.puzzleCompleteTitle : g.pieces;
   const hintLabel = completed ? g.puzzleCompleteTitle : g.hint;
-  const puzzleTitle = locale === 'en'
-    ? { line1: 'FROM FARM', line2: 'TO PLATE' }
-    : { line1: 'OD KMETIJE', line2: 'DO KRO&#381;NIKA' };
   const puzzleSubtitle = _lv(sc.edu, locale);
 
   // Build board slots HTML
   let boardHtml = '';
-  for (let i = 1; i <= 9; i++) {
+  for (let i = 1; i <= total; i++) {
     const placedId = gs.puzzle.placed[i];
     const piece = placedId ? sc.pieces.find(p => p.id === placedId) : null;
+    const cornerClass = _slotCornerClass(i, grid);
+    const slotClasses = [
+      'gm-slot',
+      `gm-slot--pos-${i}`,
+      cornerClass,
+      isJigsawPuzzle ? 'gm-slot--jigsaw' : ''
+    ].filter(Boolean).join(' ');
     if (piece) {
       boardHtml += `
-        <div class="gm-slot gm-slot--pos-${i} gm-slot--filled gm-slot--correct" data-pos="${i}">
-          <img src="${piece.img}" alt="${_lv(piece.l, locale)}" onerror="this.style.display='none'">
-          <div class="gm-slot__label">${_lv(piece.l, locale)}</div>
+        <div class="${slotClasses} gm-slot--filled gm-slot--correct" data-pos="${i}">
+          ${_renderPieceImage(piece, locale, true)}
+          <div class="gm-slot__label">${_escapeHtml(_pieceLabel(piece, locale))}</div>
         </div>`;
     } else {
-      boardHtml += `<div class="gm-slot gm-slot--pos-${i}" data-pos="${i}" data-gm-drop="${i}"><span class="gm-slot__num">${i}</span></div>`;
+      boardHtml += `<div class="${slotClasses}" data-pos="${i}" data-gm-drop="${i}"><span class="gm-slot__num">${i}</span></div>`;
     }
   }
 
   // Build available pieces
-  const prePlaceIds = gs.puzzle.prePlaceIds || [];
-  const available = sc.pieces.filter(p => !prePlaceIds.includes(p.id) && !gs.puzzle.placed[p.pos]);
-  const distractors = cfg.distractors > 0 ? sc.distractors.slice(0, cfg.distractors) : [];
-  const allPieces = [...available, ...distractors].sort(() => Math.random() - 0.5);
+  const allPieces = _puzzleTrayPieces(gs, cfg);
   const hasRemainingPieces = allPieces.length > 0;
 
   let piecesHtml = hasRemainingPieces
     ? allPieces.map(p => `
-      <div class="gm-piece gm-piece--pos-${p.pos || 0}${p.isDistractor ? ' gm-piece--distractor' : ''}"
+      <div class="gm-piece gm-piece--pos-${p.pos || 0}${p.shape ? ' gm-piece--jigsaw' : ''}${p.isDistractor ? ' gm-piece--distractor' : ''}"
            data-piece-id="${p.id}"
            data-is-dist="${!!p.isDistractor}"
            draggable="true">
-        <img src="${p.img}" alt="${_lv(p.l, locale)}" onerror="this.style.display='none'">
-        <span class="gm-piece__label">${_lv(p.l, locale)}</span>
+        ${_renderPieceImage(p, locale, false)}
+        <span class="gm-piece__label">${_escapeHtml(_pieceLabel(p, locale))}</span>
       </div>`).join('')
     : (completed ? `<div class="gm-pieces-empty">${g.puzzleCompleteEmpty}</div>` : '');
 
@@ -718,7 +1358,7 @@ function renderPuzzle(locale) {
   }).join('');
 
   return `
-    <section class="gm-puzzle">
+    <section class="gm-puzzle${isJigsawPuzzle ? ' gm-puzzle--jigsaw' : ''}${grid.cols === 4 ? ' gm-puzzle--grid-4' : ''}">
       <div class="gm-header">
         ${renderPuzzleBrand()}
         <div class="gm-header__controls">
@@ -734,25 +1374,14 @@ function renderPuzzle(locale) {
           <span class="gm-header__icon gm-header__icon--clock">${GM_ICONS.clock}</span>
           <span id="gm-time">${_formatTime(gs.timeLeft)}</span>
         </div>
-        <button class="gm-header__sound" aria-label="${locale === 'en' ? 'Sound' : 'Zvok'}">
-          ${GM_ICONS.sound}
-        </button>
         </div>
       </div>
       <div class="gm-puzzle__content">
-        <div class="gm-puzzle-title" aria-label="${_lv(sc.title, locale)}">
-          <span class="gm-puzzle-title__line gm-puzzle-title__line--green">${puzzleTitle.line1}</span>
-          <span class="gm-puzzle-title__line gm-puzzle-title__line--orange">${puzzleTitle.line2}</span>
-        </div>
-        <div class="gm-puzzle-title__ornament" aria-hidden="true">
-          <span></span>
-          <b></b>
-          <span></span>
-        </div>
+<img class="gm-puzzle-banner" src="${IMGS.puzzle_header}" alt="${_lv(sc.title, locale)}" draggable="false" onerror="this.style.display='none'">
         <p class="gm-puzzle__subtitle">${puzzleSubtitle}</p>
         ${completed ? `<div class="gm-puzzle__complete">${g.puzzleComplete}</div>` : ''}
         <div class="gm-puzzle__area">
-          <div class="gm-board" id="gm-board">${boardHtml}</div>
+          <div class="gm-board${isJigsawPuzzle ? ' gm-board--jigsaw' : ''}" id="gm-board" style="--gm-grid-cols:${grid.cols};--gm-grid-rows:${grid.rows};">${boardHtml}</div>
           <div class="gm-pieces-panel">
             <h3 class="gm-pieces-panel__title">${completed && !hasRemainingPieces ? piecesTitle : g.pieces}</h3>
             <div id="gm-pieces-container">${piecesHtml}</div>
@@ -807,7 +1436,7 @@ function renderDetectiveLegacy(locale) {
     dotsHtml += `<div class="${cls}" id="gm-md-${i}">${label}</div>`;
   }
   dotsHtml += `<div class="gm-mission-line${idx >= 5 ? ' is-done' : ''}"></div>`;
-  dotsHtml += `<div class="gm-mission-dot gm-mission-dot--reward">🎁</div>`;
+  dotsHtml += `<div class="gm-mission-dot gm-mission-dot--reward"></div>`;
 
   // Answer buttons
   let answers = [...q.answers].sort(() => Math.random() - 0.5);
@@ -815,7 +1444,7 @@ function renderDetectiveLegacy(locale) {
   const gridCls = answers.length === 3 ? 'gm-answers--three' : '';
   const answersHtml = answers.map((a, ai) => `
     <button class="gm-answer-btn" data-gm-action="answer" data-answer-idx="${ai}" data-is-correct="${a.c}">
-      <img class="gm-answer-btn__img" src="${a.img}" alt="${_lv(a.l, locale)}" onerror="this.style.display='none'">
+      <img class="gm-answer-btn__img" src="${_detectiveAnswerImageSrc(a)}" alt="${_lv(a.l, locale)}" draggable="false" onerror="this.style.display='none'">
       <span class="gm-answer-btn__label">${_lv(a.l, locale)}</span>
     </button>`).join('');
 
@@ -824,7 +1453,7 @@ function renderDetectiveLegacy(locale) {
       <div class="gm-header">
         <button class="gm-header__back" data-gm-action="confirm-back">←</button>
         <div class="gm-header__title">${locale === 'en' ? 'Market Detective 🔍' : 'Tržnični detektiv 🔍'}</div>
-        <div class="gm-header__score">⭐ <span class="gm-score-val">${gs.score}</span></div>
+        <div class="gm-header__score"><span class="gm-score-val">${gs.score}</span></div>
         <div class="gm-header__timer${gs.timeLeft <= 10 ? ' is-urgent' : ''}" id="gm-timer-badge">
           ⏱ <span id="gm-time">${_formatTime(gs.timeLeft)}</span>
         </div>
@@ -836,7 +1465,7 @@ function renderDetectiveLegacy(locale) {
           <div class="gm-mission-dots" id="gm-mission-dots">${dotsHtml}</div>
         </div>
         <div class="gm-question-card">
-          <img id="gm-q-img" class="gm-question-card__img" src="${q.img}" alt="" onerror="this.style.display='none'">
+          <img id="gm-q-img" class="gm-question-card__img" src="${_detectiveQuestionImageSrc(q)}" alt="" onerror="this.style.display='none'">
           <div class="gm-question-card__body">
             <div class="gm-question-type">${_lv(q.type, locale)}</div>
             <div class="gm-question-title">${_lv(q.title, locale)}</div>
@@ -849,9 +1478,9 @@ function renderDetectiveLegacy(locale) {
         <div class="gm-explanation" id="gm-explanation" style="display:none"></div>
         <div class="gm-detective__actions">
           <button class="gm-btn gm-btn--hint" id="gm-det-hint-btn" data-gm-action="det-hint">
-            💡 ${g.hint} -<span id="gm-det-hint-cost">${cfg.hintCost}</span>
+            ${g.hint} -<span id="gm-det-hint-cost">${cfg.hintCost}</span>
           </button>
-          <button class="gm-btn gm-btn--restart" data-gm-action="confirm-restart">🔄 ${g.restart}</button>
+          <button class="gm-btn gm-btn--restart" data-gm-action="confirm-restart">${g.restart}</button>
         </div>
       </div>
       ${renderToast()}
@@ -867,79 +1496,52 @@ function renderDetective(locale) {
   const cfg = DIFF_CONFIG[gs.difficulty];
   const q = gs.det.questions[gs.det.currentQ];
   const idx = gs.det.currentQ;
-  const totalMissions = gs.det.questions.length;
-  const progressPct = Math.round(((idx + 1) / totalMissions) * 100);
-  const title = locale === 'en'
-    ? { top: 'Market', bottom: 'detective' }
-    : { top: 'Tr&#382;ni&#269;ni', bottom: 'detektiv' };
+  const totalRiddles = gs.det.questions.length;
+  const missionNodes = 5;
+  const riddlesPerNode = Math.max(1, Math.ceil(totalRiddles / missionNodes));
+  const activeMissionNode = Math.min(missionNodes - 1, Math.floor(idx / riddlesPerNode));
+  const completedMissionNodes = Math.min(missionNodes, Math.floor(idx / riddlesPerNode));
+  const progressPct = Math.round((idx / totalRiddles) * 100);
+  const questionHeading = locale === 'en' ? 'Who am I?' : 'Kdo sem?';
+  const missionTitle = locale === 'en' ? 'Detective missions' : 'Detektivske misije';
 
-  let dotsHtml = '';
-  for (let i = 0; i < totalMissions; i++) {
-    if (i > 0) {
-      dotsHtml += `<div class="gm-mission-line${i <= idx ? ' is-done' : ''}" id="gm-ml-${i}"></div>`;
-    }
-    let cls = 'gm-mission-dot';
-    let label = i + 1;
-    if (i < idx) {
-      cls += ' is-done';
-      label = '&#10003;';
-    } else if (i === idx) {
-      cls += ' is-current';
-    }
-    const diffLabel = i < 2
+  const missionSteps = Array.from({ length: missionNodes }, (_, i) => {
+    const stateClass = i < completedMissionNodes ? ' done' : i === activeMissionNode ? ' current' : ' todo';
+    const label = i < 2
       ? (locale === 'en' ? 'Easy' : 'Lahko')
       : i < 4
         ? (locale === 'en' ? 'Medium' : 'Srednje')
         : (locale === 'en' ? 'Hard' : 'Te&#382;je');
-    dotsHtml += `
-      <div class="gm-mission-step">
-        <div class="${cls}" id="gm-md-${i}">${label}</div>
-        <span>${diffLabel}</span>
-      </div>`;
-  }
-  dotsHtml += `<div class="gm-mission-line${idx >= totalMissions ? ' is-done' : ''}"></div>`;
-  dotsHtml += `
-    <div class="gm-mission-reward">
-      <div class="gm-mission-dot gm-mission-dot--reward">&#127873;</div>
-      <strong>${locale === 'en' ? 'REWARD' : 'NAGRADA'}</strong>
-      <span>${locale === 'en' ? 'at the end!' : 'na koncu poti!'}</span>
-    </div>`;
+    const line = i < missionNodes - 1
+      ? `<div class="gm-mission-line${i < completedMissionNodes - 1 ? ' done-line' : ''}"></div>`
+      : '';
+    return `
+      <div class="gm-mission-col">
+        <div class="gm-mission-step${stateClass}">
+          ${i < completedMissionNodes ? '&#10003;' : i + 1}
+        </div>
+        <div class="gm-mission-label">${label}</div>
+      </div>
+      ${line}`;
+  }).join('');
 
   const answersHtml = _detectiveAnswers(q).map((a, ai) => `
     <button class="gm-answer-btn" data-gm-action="answer" data-answer-idx="${ai}" data-is-correct="${a.c}">
-      <img class="gm-answer-btn__img" src="${a.img}" alt="${_lv(a.l, locale)}" onerror="this.style.display='none'">
+      <span class="gm-answer-btn__photo">
+        <img class="gm-answer-btn__img" src="${_detectiveAnswerImageSrc(a)}" alt="${_lv(a.l, locale)}" draggable="false" onerror="this.style.display='none'">
+      </span>
       <span class="gm-answer-btn__label">${_lv(a.l, locale)}</span>
+      <span class="gm-answer-btn__leaf" aria-hidden="true"></span>
     </button>`).join('');
 
   return `
     <section class="gm-detective">
-      <div class="gm-det-awning" aria-hidden="true"></div>
       <div class="gm-detective__content">
-        <header class="gm-det-hero">
-          <button class="gm-det-logo" data-gm-action="confirm-back" aria-label="${locale === 'en' ? 'Back' : 'Nazaj'}">
-            <span class="gm-det-logo__mark" aria-hidden="true">☺</span>
-            <span>
-              <strong>ZDRAVO</strong>
-              <b>JEM</b>
-              <small>${locale === 'en' ? 'for my health' : 'za moje zdravje'}</small>
-            </span>
-          </button>
-          <button class="gm-det-back" type="button" data-gm-action="confirm-back" aria-label="${locale === 'en' ? 'Back' : 'Nazaj'}">
-            <span aria-hidden="true">&larr;</span>
-            <strong>${locale === 'en' ? 'Back' : 'Nazaj'}</strong>
-          </button>
-          <div class="gm-det-title-wrap">
-            <h1 class="gm-det-title">
-              <span>${title.top}</span>
-              <strong>${title.bottom}</strong>
-            </h1>
-            <span class="gm-det-lens" aria-hidden="true"></span>
-          </div>
-          <div class="gm-det-ribbon">${locale === 'en' ? 'Solve the clue and find the right answer!' : 'Re&#353;i namig in odkrij pravi odgovor!'}</div>
-        </header>
+        <button class="gm-det-back" data-gm-action="confirm-back" aria-label="${locale === 'en' ? 'Back' : 'Nazaj'}">&#8592;</button>
+        <img class="gm-det-header-img" src="${IMGS.detective_header}" alt="" draggable="false" onerror="this.style.display='none'">
 
         <div class="gm-det-stats">
-          <div class="gm-det-stat gm-det-stat--time">
+          <div class="gm-det-stat gm-det-stat--time" id="gm-timer-badge">
             <span class="gm-det-clock" aria-hidden="true"></span>
             <span>
               <b>${locale === 'en' ? 'TIME' : '&#268;AS'}</b>
@@ -949,48 +1551,62 @@ function renderDetective(locale) {
           <div class="gm-det-stat gm-det-stat--progress">
             <b>${locale === 'en' ? 'PROGRESS' : 'NAPREDEK'}</b>
             <div class="gm-det-progress"><span style="width:${progressPct}%"></span></div>
-            <small>${idx + 1} / ${totalMissions}</small>
-            <em aria-hidden="true">&#11088;</em>
+            <small>${idx} / ${totalRiddles}</small>
           </div>
           <div class="gm-det-stat gm-det-stat--score">
-            <em aria-hidden="true">&#11088;</em>
             <span>
+              <b>${locale === 'en' ? 'POINTS' : 'TO&#268;KE'}</b>
               <strong class="gm-score-val">${gs.score}</strong>
-              <b>${g.pointsLabel}</b>
             </span>
           </div>
         </div>
 
         <article class="gm-question-card">
-          <div class="gm-question-lens" aria-hidden="true"></div>
-          <div class="gm-question-type">${_lv(q.type, locale)}</div>
-          <div class="gm-question-title">${_lv(q.title, locale)}</div>
+          <div class="gm-question-lens" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none">
+              <circle cx="10.5" cy="10.5" r="6.5" />
+              <path d="M15.5 15.5 21 21" />
+            </svg>
+          </div>
+          <div class="gm-question-title">${questionHeading}</div>
+          <div class="gm-question-divider" aria-hidden="true"><img src="${IMGS.detective_divider}" alt="" draggable="false" onerror="this.style.display='none'"></div>
           <div class="gm-question-text">${_lv(q.text, locale)}</div>
+          <span class="gm-question-leaf gm-question-leaf--left" aria-hidden="true"><img src="${IMGS.detective_leaf}" alt="" draggable="false" onerror="this.style.display='none'"></span>
+          <span class="gm-question-leaf gm-question-leaf--right" aria-hidden="true"><img src="${IMGS.detective_leaf}" alt="" draggable="false" onerror="this.style.display='none'"></span>
         </article>
 
         <div class="gm-hint-area" id="gm-hint-area" style="display:none"></div>
         <div class="gm-answers" id="gm-answers">${answersHtml}</div>
 
-        <div class="gm-det-play-row">
+        <div class="gm-det-bottom-row">
           <button class="gm-det-hint-btn" id="gm-det-hint-btn" data-gm-action="det-hint">
-            <span aria-hidden="true">&#128161;</span>
+            <span class="gm-det-bulb" aria-hidden="true"></span>
             <strong>${g.hint}</strong>
             <small>-${cfg.hintCost} ${g.pointsLabel}</small>
           </button>
           <div class="gm-score-feedback" id="gm-score-feedback" style="display:none"></div>
-          <button class="gm-det-restart" data-gm-action="confirm-restart" aria-label="${g.restart}">&#8635;</button>
-          <div class="gm-det-mascot" aria-hidden="true">
-            <span>${locale === 'en' ? 'Bravo, detective!' : 'Bravo, pravi detektiv!'}</span>
-            <b>&#129488;</b>
-          </div>
+          <button class="gm-det-super-btn" data-gm-action="confirm-restart">
+            <span class="gm-det-super-star" aria-hidden="true">&#9733;</span>
+            <span>
+              <strong>${g.restart}</strong>
+              <small>${locale === 'en' ? 'new mystery' : 'nova uganka'}</small>
+            </span>
+          </button>
+          <img class="gm-det-buddy" src="${IMGS.detective_mascot}" alt="" draggable="false" onerror="this.style.display='none'">
         </div>
 
         <div class="gm-explanation" id="gm-explanation" style="display:none"></div>
         <div class="gm-combo-badge" id="gm-combo-badge" style="display:none">${g.combo}</div>
 
         <div class="gm-mission-bar">
-          <div class="gm-mission-bar__title">${g.missionTitle}</div>
-          <div class="gm-mission-dots" id="gm-mission-dots">${dotsHtml}</div>
+          <div class="gm-mission-bar__title">${missionTitle}</div>
+          <div class="gm-mission-dots" id="gm-mission-dots">
+            ${missionSteps}
+            <div class="gm-mission-reward">
+              <img class="gm-mission-reward-img" src="${IMGS.detective_reward}" alt="" draggable="false" onerror="this.style.display='none'">
+              <strong>${locale === 'en' ? 'REWARD<br>at the end!' : 'NAGRADA<br>na koncu poti!'}</strong>
+            </div>
+          </div>
         </div>
       </div>
       ${renderToast()}
@@ -1006,15 +1622,16 @@ function renderEnd(locale) {
   const gs = _gameState;
   const g = _gl(locale);
   const pct = gs.endPct;
-  let sticker, msg, sub, tone;
-  if (pct <= 40)      { sticker = '&#127793;'; msg = g.endMsg0;  sub = g.endSub0;  tone = 'try'; }
-  else if (pct <= 75) { sticker = '&#11088;';  msg = g.endMsg40; sub = g.endSub40; tone = 'bravo'; }
-  else                { sticker = '&#127942;'; msg = g.endMsg75; sub = g.endSub75; tone = 'master'; }
+  const showRecipeButton = gs.game !== 'puzzle' && !!gs.endRecipe;
+  let msg, sub, tone;
+  if (pct <= 40) { msg = g.endMsg0; sub = g.endSub0; tone = 'try'; }
+  else if (pct <= 75) { msg = g.endMsg40; sub = g.endSub40; tone = 'bravo'; }
+  else { msg = g.endMsg75; sub = g.endSub75; tone = 'master'; }
 
   return `
     <section class="gm-end">
       <div class="gm-end__overlay" role="dialog" aria-modal="true" aria-live="polite">
-        <div class="gm-end__sticker gm-end__sticker--${tone}" aria-hidden="true">${sticker}</div>
+        <div class="gm-end__sticker" aria-hidden="true"><img class="gm-end__logo" src="${IMGS.logo}" alt="Zdravo Jem" onerror="this.style.display='none'"></div>
         <div class="gm-end__pct">${pct}%</div>
         <div class="gm-end__msg">${msg}</div>
         ${sub ? `<div class="gm-end__sub">${sub}</div>` : ''}
@@ -1023,9 +1640,8 @@ function renderEnd(locale) {
           <div class="gm-end__score-big">${gs.score} ${g.pointsLabel}</div>
         </div>
         <div class="gm-end__buttons">
-          <button class="gm-end-btn gm-end-btn--primary" data-gm-action="confirm-restart">&#8635; ${g.playAgain}</button>
-          <button class="gm-end-btn gm-end-btn--recipe" data-gm-action="view-recipe">&#128214; ${g.viewRecipe}</button>
-          <button class="gm-end-btn gm-end-btn--secondary" data-gm-action="go-select">&#127918; ${g.backToGames}</button>
+          <button class="gm-end-btn gm-end-btn--primary" data-gm-action="confirm-restart"><span class="gm-end-btn__mark gm-end-btn__mark--icon" aria-hidden="true">${GM_ICONS.restart}</span>${g.playAgain}</button>
+          <button class="gm-end-btn gm-end-btn--secondary" data-gm-action="go-select"><span class="gm-end-btn__mark gm-end-btn__mark--games" aria-hidden="true"></span>${g.backToGames}</button>
         </div>
       </div>
       ${renderToast()}
@@ -1077,6 +1693,7 @@ function renderModal(type, locale) {
 export function render({ state }) {
   const locale = state.locale || 'sl';
   const activeGame = state.activeGame;
+  _rememberGameIngredients(state);
 
   // No active game → show game picker
   if (!activeGame) {
@@ -1093,9 +1710,9 @@ export function render({ state }) {
     }
     return renderIntro(_gameState.game, locale);
   }
-  if (_gameState.subScreen === 'puzzle')    return renderPuzzle(locale);
+  if (_gameState.subScreen === 'puzzle') return renderPuzzle(locale);
   if (_gameState.subScreen === 'detective') return renderDetective(locale);
-  if (_gameState.subScreen === 'end')       return renderEnd(locale);
+  if (_gameState.subScreen === 'end') return renderEnd(locale);
 
   return renderSelect(locale);
 }
@@ -1104,7 +1721,13 @@ export function render({ state }) {
 // Cleanup — called by app.js when leaving the games screen
 // ---------------------------------------------------------------------------
 export function cleanup() {
+  _puzzleStartToken++;
   _clearTimer();
+  if (_boundRoot && _boundPointerHandler) {
+    _boundRoot.removeEventListener('pointerdown', _boundPointerHandler);
+  }
+  _boundRoot = null;
+  _boundPointerHandler = null;
   _gameState = null;
   _dragData = null;
   _touchActive = false;
@@ -1136,7 +1759,7 @@ function _startTimer(onTick, onExpire) {
   _timerInt = setInterval(() => {
     _gameState.timeLeft--;
     const timeEl = _rootEl && _rootEl.querySelector('#gm-time');
-    const badge  = _rootEl && _rootEl.querySelector('#gm-timer-badge');
+    const badge = _rootEl && _rootEl.querySelector('#gm-timer-badge');
     if (timeEl) timeEl.textContent = _formatTime(_gameState.timeLeft);
     if (badge) badge.classList.toggle('is-urgent', _gameState.timeLeft <= 10);
     if (onTick) onTick();
@@ -1172,19 +1795,49 @@ function _openModal(id) {
 function _closeModal(id, actions) {
   _hideModal(id);
   if (_isTimedGameActive() && _gameState.timeLeft > 0) {
-    _startTimer(null, () => _endGame(actions));
+    const onExpire = _gameState.subScreen === 'detective'
+      ? () => _handleDetectiveTimeout(actions)
+      : () => _endGame(actions);
+    _startTimer(null, onExpire);
   }
 }
 
 // ---------------------------------------------------------------------------
 // Puzzle logic
 // ---------------------------------------------------------------------------
-function _startPuzzle(actions) {
-  const locale = _gameState.locale;
-  const cfg = DIFF_CONFIG[_gameState.difficulty];
-  const sc = _pickPuzzleScenario();
-  const idx = PUZZLE_SCENARIOS.findIndex((scenario) => scenario.id === sc.id);
-  _lastPuzzleScenarioId = sc.id;
+async function _startPuzzle(actions) {
+  if (!_gameState || _gameState.isStarting) return;
+
+  const difficulty = _gameState.difficulty;
+  const cfg = DIFF_CONFIG[difficulty];
+  const baseScenario = _pickPuzzleScenario();
+  const source = _pickFarmToPlatePuzzleImage();
+  const startToken = ++_puzzleStartToken;
+  const idx = PUZZLE_SCENARIOS.findIndex((scenario) => scenario.id === baseScenario.id);
+  _lastPuzzleScenarioId = baseScenario.id;
+  _gameState = { ..._gameState, isStarting: true };
+
+  const startBtn = _rootEl && _rootEl.querySelector('.gm-start-btn');
+  if (startBtn) {
+    startBtn.classList.add('gm-btn--disabled');
+    startBtn.disabled = true;
+  }
+  if (_rootEl) {
+    _rootEl.querySelectorAll('.gm-diff-btn').forEach((button) => {
+      button.disabled = true;
+    });
+  }
+
+  let sc;
+  try {
+    sc = await _buildPicturePuzzleScenario(baseScenario, difficulty, source);
+  } catch (error) {
+    console.warn('Failed to build picture puzzle, using scenario pieces', error);
+    sc = baseScenario;
+  }
+
+  if (!_gameState || _gameState.game !== 'puzzle' || _puzzleStartToken !== startToken) return;
+
   const prePlaceIds = _pickPrePlacedPuzzleIds(sc, cfg.puzzlePrePlaced);
 
   const placed = {};
@@ -1200,7 +1853,8 @@ function _startPuzzle(actions) {
     score: 0,
     timeLeft: cfg.time,
     lastPuzzleIdx: idx,
-    endRecipe: sc.relatedRecipeId,
+    endRecipe: null,
+    isStarting: false,
     puzzle: { scenario: sc, placed, prePlaceIds, hintsLeft: 3, placedCount, completed: false }
   };
 
@@ -1210,9 +1864,7 @@ function _startPuzzle(actions) {
 }
 
 function _bindPuzzle(actions) {
-  const locale = _gameState.locale;
   const sc = _gameState.puzzle.scenario;
-  const cfg = DIFF_CONFIG[_gameState.difficulty];
 
   // Drag-and-drop on board slots
   const board = _rootEl.querySelector('#gm-board');
@@ -1227,7 +1879,7 @@ function _bindPuzzle(actions) {
   _rootEl.querySelectorAll('.gm-piece').forEach(el => {
     const pid = el.dataset.pieceId;
     const isDist = el.dataset.isDist === 'true';
-    const allPieces = [...sc.pieces, ...sc.distractors];
+    const allPieces = [...sc.pieces, ...(sc.distractors || [])];
     const piece = allPieces.find(p => p.id === pid);
     if (!piece) return;
 
@@ -1243,11 +1895,11 @@ function _startDrag(piece, el, ev) {
   _dragData = { piece, el };
   el.classList.add('is-dragging');
   const ghost = _rootEl.querySelector('#gm-drag-ghost');
-  const gImg  = _rootEl.querySelector('#gm-ghost-img');
-  const gLbl  = _rootEl.querySelector('#gm-ghost-label');
+  const gImg = _rootEl.querySelector('#gm-ghost-img');
+  const gLbl = _rootEl.querySelector('#gm-ghost-label');
   if (ghost) { ghost.style.display = 'flex'; }
-  if (gImg)  { gImg.src = piece.img; gImg.style.display = 'block'; }
-  if (gLbl)  { gLbl.textContent = _lv(piece.l, _gameState.locale); }
+  if (gImg) { gImg.src = piece.img; gImg.style.display = 'block'; }
+  if (gLbl) { gLbl.textContent = _pieceLabel(piece, _gameState.locale); }
 }
 
 function _endDrag() {
@@ -1257,19 +1909,37 @@ function _endDrag() {
   if (ghost) ghost.style.display = 'none';
 }
 
+// The drag ghost is position:fixed inside the .app-root, which is uniformly
+// scaled (transform: scale(--app-scale)). Touch coordinates are in untransformed
+// viewport space, so convert them into the scaled element's local space, otherwise
+// the ghost drifts away from the finger on any screen where the scale isn't 1.
+function _positionGhost(ghost, clientX, clientY) {
+  if (!ghost) return;
+  const appRoot = document.querySelector('.app-root');
+  if (appRoot && appRoot.offsetWidth) {
+    const rect = appRoot.getBoundingClientRect();
+    const scale = rect.width / appRoot.offsetWidth || 1;
+    ghost.style.left = ((clientX - rect.left) / scale) + 'px';
+    ghost.style.top = ((clientY - rect.top) / scale) + 'px';
+  } else {
+    ghost.style.left = clientX + 'px';
+    ghost.style.top = clientY + 'px';
+  }
+}
+
 function _touchStart(piece, el, ev) {
   ev.preventDefault();
   _dragData = { piece, el };
   _touchActive = true;
   el.classList.add('is-dragging');
   const ghost = _rootEl.querySelector('#gm-drag-ghost');
-  const gImg  = _rootEl.querySelector('#gm-ghost-img');
-  const gLbl  = _rootEl.querySelector('#gm-ghost-label');
+  const gImg = _rootEl.querySelector('#gm-ghost-img');
+  const gLbl = _rootEl.querySelector('#gm-ghost-label');
   if (ghost) { ghost.style.display = 'flex'; }
-  if (gImg)  { gImg.src = piece.img; gImg.style.display = 'block'; }
-  if (gLbl)  { gLbl.textContent = _lv(piece.l, _gameState.locale); }
+  if (gImg) { gImg.src = piece.img; gImg.style.display = 'block'; }
+  if (gLbl) { gLbl.textContent = _pieceLabel(piece, _gameState.locale); }
   const t = ev.touches[0];
-  if (ghost) { ghost.style.left = t.clientX + 'px'; ghost.style.top = t.clientY + 'px'; }
+  _positionGhost(ghost, t.clientX, t.clientY);
 }
 
 function _touchMove(ev) {
@@ -1277,7 +1947,7 @@ function _touchMove(ev) {
   ev.preventDefault();
   const t = ev.touches[0];
   const ghost = _rootEl && _rootEl.querySelector('#gm-drag-ghost');
-  if (ghost) { ghost.style.left = t.clientX + 'px'; ghost.style.top = t.clientY + 'px'; }
+  _positionGhost(ghost, t.clientX, t.clientY);
   const el = document.elementFromPoint(t.clientX, t.clientY);
   _touchSlotTarget = el ? el.closest('[data-gm-drop]') : null;
 }
@@ -1319,9 +1989,10 @@ function _onDrop(pos, actions) {
     const slot = _rootEl.querySelector(`[data-gm-drop="${pos}"]`);
     if (slot) {
       slot.innerHTML = `
-        <img src="${piece.img}" alt="${_lv(piece.l, locale)}" onerror="this.style.display='none'">
-        <div class="gm-slot__label">${_lv(piece.l, locale)}</div>`;
+        ${_renderPieceImage(piece, locale, true)}
+        <div class="gm-slot__label">${_escapeHtml(_pieceLabel(piece, locale))}</div>`;
       slot.classList.add('gm-slot--filled', 'gm-slot--correct');
+      if (piece.shape) slot.classList.add('gm-slot--jigsaw');
       slot.removeAttribute('data-gm-drop');
     }
     _dragData.el.remove();
@@ -1389,9 +2060,9 @@ function _updatePuzzleProgress() {
   const total = sc.pieces.length;
   const pct = Math.round(placed / total * 100);
   const placedEl = _rootEl && _rootEl.querySelector('#gm-placed');
-  const fillEl   = _rootEl && _rootEl.querySelector('.gm-progress-fill');
+  const fillEl = _rootEl && _rootEl.querySelector('.gm-progress-fill');
   if (placedEl) placedEl.textContent = placed;
-  if (fillEl)   fillEl.style.width = pct + '%';
+  if (fillEl) fillEl.style.width = pct + '%';
   if (_rootEl) {
     _rootEl.querySelectorAll('.gm-progress-dot').forEach((dot, index) => {
       dot.classList.toggle('is-filled', index < placed);
@@ -1413,7 +2084,7 @@ function _useHint() {
   const slot = _rootEl.querySelector(`[data-gm-drop="${target.pos}"]`);
   const pieceEl = _rootEl.querySelector(`[data-piece-id="${target.id}"]`);
 
-  if (slot)    { slot.classList.add('gm-slot--hint'); setTimeout(() => slot.classList.remove('gm-slot--hint'), 2600); }
+  if (slot) { slot.classList.add('gm-slot--hint'); setTimeout(() => slot.classList.remove('gm-slot--hint'), 2600); }
   if (pieceEl) { pieceEl.classList.add('gm-piece--hint'); setTimeout(() => pieceEl.classList.remove('gm-piece--hint'), 2600); }
 
   gs.puzzle.hintsLeft--;
@@ -1443,11 +2114,11 @@ function _startDetective(actions) {
     score: 0,
     timeLeft: cfg.time,
     endRecipe: qs[0] ? qs[0].recipe : 'honey_breakfast',
-    det: { questions: qs, currentQ: 0, correct: 0, combo: 0, hintsUsed: 0, wrongAttempts: 0, hintUsedQ: false }
+    det: { questions: qs, currentQ: 0, correct: 0, combo: 0, hintsUsed: 0, wrongAttempts: 0, hintUsedQ: false, answerOrders: {} }
   };
 
   actions.goTo('games');
-  _startTimer(null, () => _endGame(actions));
+  _startTimer(null, () => _handleDetectiveTimeout(actions));
 }
 
 function _answerClick(isCorrect, btn, actions) {
@@ -1466,6 +2137,7 @@ function _answerClick(isCorrect, btn, actions) {
     _addScore(pts);
     gs.det.correct++;
     gs.det.combo++;
+    _updateDetectiveProgress(gs.det.currentQ + 1);
 
     if (gs.det.combo >= 3) {
       _addScore(100);
@@ -1504,27 +2176,73 @@ function _answerClick(isCorrect, btn, actions) {
 function _advanceQ(actions) {
   const gs = _gameState;
   const next = gs.det.currentQ + 1;
-  if (next >= 5) {
+  if (next >= gs.det.questions.length) {
     _clearTimer();
     _endGame(actions);
   } else {
+    const cfg = DIFF_CONFIG[gs.difficulty];
     gs.det.currentQ = next;
+    gs.timeLeft = cfg.time;
     gs.det.wrongAttempts = 0;
     gs.det.hintUsedQ = false;
     actions.goTo('games');
+    _startTimer(null, () => _handleDetectiveTimeout(actions));
   }
+}
+
+function _handleDetectiveTimeout(actions) {
+  const gs = _gameState;
+  if (!gs || gs.subScreen !== 'detective') return;
+
+  const q = gs.det.questions[gs.det.currentQ];
+  const locale = gs.locale;
+  const g = _gl(locale);
+
+  _rootEl.querySelectorAll('.gm-answer-btn').forEach((button) => {
+    button.classList.add('is-locked');
+    if (button.dataset.isCorrect === 'true') button.classList.add('is-correct');
+  });
+
+  gs.det.combo = 0;
+  gs.endRecipe = q.recipe;
+  _showDetFeedback(g.revealAnswer, 'bad');
+  _showExplanation(_lv(q.explanation, locale));
+  setTimeout(() => _advanceQ(actions), 1800);
 }
 
 function _showDetFeedback(msg, type) {
   const el = _rootEl && _rootEl.querySelector('#gm-score-feedback');
   if (!el) return;
-  el.textContent = msg;
+  const cleanMsg = String(msg || '').replace(/[^\p{L}\p{N}\p{P}\p{Zs}+-]/gu, '').trim();
   const pointsMatch = String(msg).match(/\+(\d+)/);
-  el.dataset.score = pointsMatch
+  el.className = `gm-score-feedback gm-score-feedback--${type}`;
+  const scoreText = pointsMatch
     ? `+${pointsMatch[1]} ${_gl(_gameState.locale).pointsLabel}`.toUpperCase()
     : '';
-  el.className = `gm-score-feedback gm-score-feedback--${type}`;
-  el.style.display = 'block';
+
+  if (type === 'good') {
+    el.innerHTML = `
+      <span class="gm-score-feedback__title">SUPER!</span>
+      ${scoreText ? `<span class="gm-score-feedback__points">${_escapeHtml(scoreText)}</span>` : ''}
+    `;
+  } else {
+    el.textContent = cleanMsg;
+  }
+
+  el.style.display = type === 'good' ? 'grid' : 'flex';
+}
+
+function _updateDetectiveProgress(completedCount) {
+  const gs = _gameState;
+  if (!gs || !gs.det) return;
+
+  const total = gs.det.questions.length;
+  const clamped = Math.max(0, Math.min(total, completedCount));
+  const progressFill = _rootEl && _rootEl.querySelector('.gm-det-progress span');
+  const progressLabel = _rootEl && _rootEl.querySelector('.gm-det-stat--progress small');
+
+  if (progressFill) progressFill.style.width = `${Math.round((clamped / total) * 100)}%`;
+  if (progressLabel) progressLabel.textContent = `${clamped} / ${total}`;
 }
 
 function _showExplanation(text) {
@@ -1547,10 +2265,14 @@ function _useDetHint() {
   _addScore(cfg.pHint);
 
   const ha = _rootEl.querySelector('#gm-hint-area');
-  if (ha) { ha.textContent = '💡 ' + _lv(q.hint, locale); ha.style.display = 'block'; }
+  if (ha) { ha.textContent = _lv(q.hint, locale); ha.style.display = 'flex'; }
+  if (ha) { ha.textContent = _lv(q.hint, locale); }
 
   const btn = _rootEl.querySelector('#gm-det-hint-btn');
-  if (btn) { btn.disabled = true; btn.style.opacity = '0.5'; btn.textContent = `💡 ${g.hintUsed}`; }
+  if (btn) { btn.disabled = true; btn.style.opacity = '0.5'; btn.textContent = g.hintUsed; }
+  if (btn) {
+    btn.innerHTML = `<span class="gm-det-bulb" aria-hidden="true"></span><strong>${g.hintUsed}</strong>`;
+  }
 
   // Grey out one wrong answer
   const allBtns = [..._rootEl.querySelectorAll('.gm-answer-btn:not(.is-locked):not(.is-greyed)')];
@@ -1570,7 +2292,7 @@ function _endGame(actions, puzzleCompleted) {
     pct = Math.round(gs.puzzle.placedCount / sc.pieces.length * 100);
     if (puzzleCompleted) _addScore(250);
   } else {
-    pct = Math.round(gs.det.correct / 5 * 100);
+    pct = Math.round(gs.det.correct / gs.det.questions.length * 100);
     if (gs.det.hintsUsed === 0) _addScore(100);
     _addScore(150);
   }
@@ -1586,8 +2308,12 @@ export function bind({ state, actions, root }) {
   _rootEl = root;
   const locale = state.locale || 'sl';
 
+  if (_boundRoot && _boundPointerHandler) {
+    _boundRoot.removeEventListener('pointerdown', _boundPointerHandler);
+  }
+
   // Delegate all game actions via a single listener on root
-  root.addEventListener('pointerdown', (ev) => {
+  _boundPointerHandler = (ev) => {
     const target = ev.target.closest('[data-gm-action]');
     if (!target) return;
     const action = target.dataset.gmAction;
@@ -1607,6 +2333,7 @@ export function bind({ state, actions, root }) {
       return;
     }
     if (action === 'diff') {
+      if (_gameState && _gameState.isStarting) return;
       if (_gameState) _gameState.difficulty = target.dataset.diff;
       root.querySelectorAll('.gm-diff-btn').forEach(b => b.classList.toggle('is-active', b.dataset.diff === target.dataset.diff));
       return;
@@ -1662,6 +2389,7 @@ export function bind({ state, actions, root }) {
     // ---- END screen ----
     if (action === 'view-recipe') {
       const recipeKey = _gameState && _gameState.endRecipe;
+      if (!_gameState || _gameState.game === 'puzzle' || !recipeKey) return;
       cleanup();
       if (actions.openGameRecipe) {
         actions.openGameRecipe(recipeKey);
@@ -1676,7 +2404,9 @@ export function bind({ state, actions, root }) {
       actions.closeGame();
       return;
     }
-  });
+  };
+  _boundRoot = root;
+  root.addEventListener('pointerdown', _boundPointerHandler);
 
   // After render, re-bind puzzle drag/drop if we're on the puzzle screen
   if (_gameState && _gameState.subScreen === 'puzzle') {

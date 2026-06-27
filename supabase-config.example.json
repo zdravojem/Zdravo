@@ -1,0 +1,14 @@
+{
+  "url": "https://your-project-ref.supabase.co",
+  "anonKey": "your-anon-key",
+  "serviceRoleKey": "your-service-role-key-for-qr-url-updates",
+  "publicRecipeBaseUrl": "https://recipes.your-domain.com",
+  "publicRecipeAutoDownload": true,
+  "r2AccountId": "your-cloudflare-account-id",
+  "r2Endpoint": "https://your-cloudflare-account-id.r2.cloudflarestorage.com",
+  "r2AccessKeyId": "your-r2-access-key-id",
+  "r2SecretAccessKey": "your-r2-secret-access-key",
+  "r2Bucket": "your-r2-bucket-name",
+  "r2PublicBaseUrl": "https://recipes.your-domain.com",
+  "recipeQrPrefix": "recipes"
+}

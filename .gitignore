@@ -2,13 +2,15 @@
 node_modules/
 
 # Electron build output
-dist/*
+dist/
 out/
 release/
+github-release/
 
 # Local SQLite databases
 database/*.db
 database/*.db-*
+*.db
 
 # Logs
 logs/
@@ -22,6 +24,12 @@ pnpm-debug.log*
 .env
 .env.*
 !.env.example
+
+# Secrets / credentials (never commit)
+credentials.json
+token.json
+*.pem
+*.key
 
 # OS and editor files
 .DS_Store

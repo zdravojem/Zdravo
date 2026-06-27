@@ -6,11 +6,20 @@
   "private": true,
   "scripts": {
     "start": "electron .",
-    "pack": "electron-builder --dir",
-    "dist": "electron-builder"
+    "recipe-share:build": "node scripts/build-recipe-share.cjs",
+    "recipe-qr:sync": "node scripts/sync-recipe-qr-pages.cjs",
+    "recipe-qr:dry-run": "node scripts/sync-recipe-qr-pages.cjs --dry-run",
+    "pack": "electron-builder --dir && npm --prefix ../admin/recipe-admin run pack",
+    "dist": "electron-builder && npm --prefix ../admin/recipe-admin run dist",
+    "dist:client": "electron-builder"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.1067.0",
+    "@supabase/supabase-js": "^2.108.1",
     "better-sqlite3": "^12.10.0",
+    "dotenv": "^17.4.2",
+    "googleapis": "^173.0.0",
+    "nodemailer": "^8.0.11",
     "qrcode": "^1.5.4"
   },
   "devDependencies": {
@@ -25,12 +34,25 @@
     "directories": {
       "output": "dist"
     },
+    "artifactName": "Zdravo-Jem-Installer-${version}.${ext}",
     "files": [
       "**/*"
+    ],
+    "extraResources": [
+      {
+        "from": ".env.local",
+        "to": ".env.local",
+        "filter": [
+          ".env.local"
+        ]
+      }
     ],
     "win": {
       "target": "nsis",
       "icon": "assets/icons/zdravo-jem-icon.ico"
+    },
+    "nsis": {
+      "differentialPackage": false
     }
   }
 }

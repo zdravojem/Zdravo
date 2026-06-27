@@ -22,13 +22,13 @@
 
 .btn--outline {
   background: #fff;
-  color: var(--green);
+  color: var(--brown);
   border: 1px solid var(--green);
 }
 
 .btn--ghost {
   background: transparent;
-  color: var(--green);
+  color: var(--brown);
   border: 1px solid rgba(59, 109, 17, 0.3);
 }
 
@@ -76,7 +76,7 @@
   font-family: var(--font-serif);
   font-size: 18px;
   font-weight: 700;
-  color: var(--green);
+  color: var(--brown);
   background: transparent;
   border: none;
   min-height: 44px;
@@ -130,7 +130,7 @@
   position: absolute;
   top: 8px;
   right: 8px;
-  color: var(--green);
+  color: var(--brown);
   opacity: 0;
 }
 
@@ -140,7 +140,7 @@
 
 .counter-badge {
   background: var(--green-light);
-  color: var(--green);
+  color: var(--brown);
   padding: 8px 14px;
   border-radius: 999px;
   font-size: 13px;
@@ -233,7 +233,7 @@
 
 .badge--outline {
   background: rgba(255, 255, 255, 0.85);
-  color: var(--green);
+  color: var(--brown);
 }
 
 .recipe-body {
@@ -278,7 +278,7 @@
 
 .missing-badge {
   background: var(--green-light);
-  color: var(--green);
+  color: var(--brown);
   padding: 5px 10px;
   border-radius: 8px;
   font-size: 12px;
@@ -314,7 +314,7 @@
 
 .missing-label {
   font-size: 13px;
-  color: var(--green);
+  color: var(--brown);
 }
 
 .step-card {

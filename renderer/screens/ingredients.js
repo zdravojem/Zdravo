@@ -1,65 +1,61 @@
-import { ingredientImageSrc, ingredientImageKey } from '../ingredient-images.js';
+import { ingredientImageSrc } from '../ingredient-images.js';
 
-const productOrderKeys = [
-  'korenje',
-  'paradiznik',
-  'bucke',
-  'krompir',
-  'cebula',
-  'zelje',
-  'jabolka',
-  'jagode',
-  'hruske',
-  'slive',
-  'ajda',
-  'kruh',
-  'govedina',
-  'piscanec',
-  'med'
+const categoryImageOrder = [
+  'sadje',
+  'zelenjava',
+  'meso_in_mesni_izdelki',
+  'ribe',
+  'jajca',
+  'mlecni_izdelki',
+  'strocnice',
+  'gobe',
+  'vlozena_kisana_zelenjava',
+  'zita_kase_zdrobi',
+  'moka',
+  'pekovski_izdelki_testo_kvas',
+  'olja_in_mascobe',
+  'zacimbe_in_zelisca',
+  'omake_kis_dodatki',
+  'sladila',
+  'juhe_in_osnove',
+  'semena',
+  'pijace_alkohol_za_kuhanje'
 ];
 
-function normalize(value) {
-  return ingredientImageKey(value);
+const categoryImageByKey = new Map(
+  categoryImageOrder.map((categoryKey, index) => [categoryKey, index + 1])
+);
+
+function activeCategoryKey(state, categories) {
+  return categories.some((category) => category.key === state.activeCategory)
+    ? state.activeCategory
+    : null;
 }
 
-function allProducts(state) {
-  const rows = Object.values(state.ingredientsByCategory).flat();
-  const byName = new Map(rows.map((item) => [normalize(item.name_sl), item]));
-
-  const ordered = productOrderKeys
-    .map((key) => byName.get(key))
-    .filter(Boolean);
-  const rest = rows.filter(
-    (item) => !productOrderKeys.includes(normalize(item.name_sl))
-  );
-  return ordered.concat(rest);
+function visibleProducts(state, categoryKey) {
+  return state.ingredientsByCategory[categoryKey] || [];
 }
 
-function visibleProducts(state) {
-  if (state.activeCategory === 'all') {
-    return allProducts(state);
+function categoryLabel(category) {
+  if (typeof category.label === 'string') {
+    return category.label;
   }
-  return state.ingredientsByCategory[state.activeCategory] || [];
+
+  return category.label?.[category.locale] || category.label?.sl || '';
 }
 
-function categoryLabel(category, locale) {
-  if (category.key === 'meso_ribe') {
-    return locale === 'en' ? 'Meat' : 'Meso';
-  }
-  if (category.key === 'zacimbe') {
-    return locale === 'en' ? 'Herbs' : 'Zeli&#353;&#269;a';
-  }
-  return category.label;
+function categoryImageSrc(categoryKey) {
+  const index = categoryImageByKey.get(categoryKey);
+  return index ? `../assets/images/categories/ordered/${index}.png` : '';
 }
 
 export function render({ state }) {
   const locale = state.ui.locale;
-  const categories = [
-    { key: 'all', label: locale === 'en' ? 'All' : 'Vse' },
-    ...state.ui.categories
-  ];
-  const products = visibleProducts(state);
-  const selectedCount = state.selectedIngredients.size;
+  const categories = state.ui.categories.map((category) => ({ ...category, locale }));
+  const activeCategory = activeCategoryKey(state, categories);
+  const activeCategoryData = categories.find((category) => category.key === activeCategory);
+  const products = activeCategory ? visibleProducts(state, activeCategory) : [];
+  const title = activeCategoryData ? categoryLabel(activeCategoryData) : state.ui.copy.homeNavItems;
 
   return `
     <section class="screen kiosk-screen screen--products">
@@ -68,60 +64,49 @@ export function render({ state }) {
           <span aria-hidden="true">&#8249;</span>
           ${state.ui.copy.back}
         </button>
-        <h1>${state.ui.copy.homeNavItems}</h1>
+        <h1>${title}</h1>
         <span></span>
       </header>
 
       <div class="kiosk-scroll">
-        <div class="kiosk-tabs" role="tablist">
-          ${categories
-            .map(
-              (category) => `
-                <button
-                  class="kiosk-tab ${state.activeCategory === category.key ? 'is-active' : ''}"
-                  data-category="${category.key}"
-                  role="tab"
-                  aria-selected="${state.activeCategory === category.key}"
-                >
-                  ${categoryLabel(category, locale)}
-                </button>
-              `
-            )
-            .join('')}
-        </div>
-
-        <div class="product-browser-grid">
-          ${products
-            .map((item) => {
-              const label = state.ui.translateIngredient(item.name_sl);
-              const isSelected = state.selectedIngredients.has(item.name_sl);
-              return `
-                <button
-                  class="product-browser-card ${isSelected ? 'is-selected' : ''}"
-                  data-product="${item.name_sl}"
-                  aria-pressed="${isSelected}"
-                >
-                  <span class="product-browser-card__photo">
-                    <img src="${ingredientImageSrc(item.name_sl)}" alt="${label}" loading="lazy" />
-                  </span>
-                  <span class="product-browser-card__label">${label}</span>
-                  <span class="product-browser-card__check" aria-hidden="true">
-                    <svg viewBox="0 0 24 24">
-                      <path d="M20 6 9 17l-5-5" />
-                    </svg>
-                  </span>
-                </button>
-              `;
-            })
-            .join('')}
-        </div>
-      </div>
-
-      <div class="ingredient-selection-bar">
-        <span class="counter-badge">${state.ui.copy.selectedCount(selectedCount)}</span>
-        <button class="btn btn--primary" data-action="next" ${selectedCount ? '' : 'disabled'}>
-          ${state.ui.copy.next}
-        </button>
+        ${activeCategory
+          ? `
+            <div class="product-browser-grid">
+              ${products
+                .map((item) => {
+                  const label = state.ui.translateIngredient(item.name_sl);
+                  return `
+                    <button class="product-browser-card" data-product="${item.name_sl}">
+                      <span class="product-browser-card__photo">
+                        <img src="${ingredientImageSrc(item)}" alt="${label}" loading="lazy" />
+                      </span>
+                      <span class="product-browser-card__label">${label}</span>
+                    </button>
+                  `;
+                })
+                .join('')}
+            </div>
+          `
+          : `
+            <div class="ingredient-category-grid" aria-label="${state.ui.copy.homeMarketTitle}">
+              ${categories
+                .map(
+                  (category) => `
+                    <button
+                      class="ingredient-category-card"
+                      data-category="${category.key}"
+                      aria-label="${categoryLabel(category)}"
+                    >
+                      <span class="ingredient-category-card__thumb">
+                        <img src="${categoryImageSrc(category.key)}" alt="" loading="lazy" />
+                      </span>
+                      <span class="ingredient-category-card__name">${categoryLabel(category)}</span>
+                    </button>
+                  `
+                )
+                .join('')}
+            </div>
+          `}
       </div>
     </section>
   `;
@@ -130,15 +115,21 @@ export function render({ state }) {
 export function bind({ actions, root, state }) {
   const back = root.querySelector('[data-action="back"]');
   if (back) {
-    back.addEventListener('pointerdown', () => actions.goHome(false));
+    back.addEventListener('pointerdown', () => {
+      if (state.activeCategory) {
+        actions.openProducts();
+        return;
+      }
+      actions.goHome(false);
+    });
   }
 
-  const tabs = root.querySelector('.kiosk-tabs');
-  if (tabs) {
-    tabs.addEventListener('pointerdown', (event) => {
-      const tab = event.target.closest('[data-category]');
-      if (tab) {
-        actions.setCategory(tab.dataset.category);
+  const categories = root.querySelector('.ingredient-category-grid');
+  if (categories) {
+    categories.addEventListener('pointerdown', (event) => {
+      const card = event.target.closest('[data-category]');
+      if (card) {
+        actions.setCategory(card.dataset.category);
       }
     });
   }
@@ -148,16 +139,7 @@ export function bind({ actions, root, state }) {
     grid.addEventListener('pointerdown', (event) => {
       const card = event.target.closest('[data-product]');
       if (card) {
-        actions.toggleIngredient(card.dataset.product);
-      }
-    });
-  }
-
-  const next = root.querySelector('[data-action="next"]');
-  if (next) {
-    next.addEventListener('pointerdown', () => {
-      if (state.selectedIngredients.size) {
-        actions.goTo('preferences');
+        actions.showRecipesForIngredient(card.dataset.product);
       }
     });
   }
