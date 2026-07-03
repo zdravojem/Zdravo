@@ -1774,8 +1774,17 @@ body[data-screen="games"] .app-root {
 }
 
 .recipe-share-panel {
+  position: relative;
+  overflow: hidden;
   background: linear-gradient(145deg, #fff8ec 0%, #fffdf8 100%);
   border-color: #efdcc1;
+}
+
+.recipe-share-panel .recipe-section-title,
+.recipe-share-panel p,
+.recipe-share-grid {
+  position: relative;
+  z-index: 1;
 }
 
 .recipe-section-title,
@@ -1824,6 +1833,20 @@ body[data-screen="games"] .app-root {
   margin-bottom: 14px;
 }
 
+.recipe-share-flight {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  z-index: 0;
+  width: 175px;
+  height: 95px;
+  border-radius: 12px;
+  object-fit: cover;
+  object-position: 78% 25%;
+  display: block;
+  pointer-events: none;
+}
+
 .recipe-share-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -1859,11 +1882,6 @@ body[data-screen="games"] .app-root {
 .recipe-share-card:active {
   transform: scale(0.98);
   box-shadow: 0 6px 14px rgba(54, 40, 18, 0.08);
-}
-
-.recipe-share-card:nth-child(2) {
-  background: #fff9eb;
-  color: var(--amber);
 }
 
 .recipe-share-card__icon {
@@ -4261,6 +4279,8 @@ body[data-screen="games"] .app-root {
 }
 
 .recipe-hero h1 {
+  position: relative;
+  z-index: 1;
   max-width: 12ch;
   margin: 0 0 9px;
   color: #20242a;
@@ -4272,6 +4292,8 @@ body[data-screen="games"] .app-root {
 }
 
 .recipe-hero p {
+  position: relative;
+  z-index: 1;
   max-width: 42ch;
   color: #4f5b4a;
   font-size: 12px;
@@ -4280,7 +4302,23 @@ body[data-screen="games"] .app-root {
   text-shadow: none;
 }
 
+.recipe-hero__flower {
+  position: absolute;
+  top: 50px;
+  right: 2px;
+  z-index: 0;
+  width: 85px;
+  height: 85px;
+  object-fit: cover;
+  object-position: center 50%;
+  -webkit-mask-image: radial-gradient(circle, #000 42%, transparent 70%);
+  mask-image: radial-gradient(circle, #000 42%, transparent 70%);
+  pointer-events: none;
+}
+
 .recipe-stat-grid {
+  position: relative;
+  z-index: 1;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 8px;
   margin: 13px 0 0;
@@ -4359,6 +4397,8 @@ body[data-screen="games"] .app-root {
 }
 
 .recipe-share-panel {
+  position: relative;
+  overflow: hidden;
   background: #fff5e8;
   border-color: #efd5b6;
 }
@@ -4386,7 +4426,17 @@ body[data-screen="games"] .app-root {
   font-weight: 700;
 }
 
+.recipe-share-flight {
+  top: 4px;
+  right: 6px;
+  width: 150px;
+  height: 82px;
+  opacity: 1;
+}
+
 .recipe-share-grid {
+  position: relative;
+  z-index: 1;
   gap: 10px;
 }
 

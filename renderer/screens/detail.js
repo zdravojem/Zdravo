@@ -61,42 +61,6 @@ function iconSvg(path) {
   `;
 }
 
-function qrGlyphSvg() {
-  const m = 3;
-  const n = 16;
-  const size = n * m;
-  const inFinder = (c, r) =>
-    (c < 7 && r < 7) || (c > n - 8 && r < 7) || (c < 7 && r > n - 8);
-
-  let dots = '';
-  for (let r = 0; r < n; r += 1) {
-    for (let c = 0; c < n; c += 1) {
-      if (inFinder(c, r)) {
-        continue;
-      }
-      if ((c * 7 + r * 13 + c * r) % 3 === 0) {
-        dots += `<rect x="${c * m}" y="${r * m}" width="${m}" height="${m}" fill="#1b1b1b" />`;
-      }
-    }
-  }
-
-  const finder = (gx, gy) => `
-    <rect x="${gx}" y="${gy}" width="${7 * m}" height="${7 * m}" fill="#1b1b1b" />
-    <rect x="${gx + m}" y="${gy + m}" width="${5 * m}" height="${5 * m}" fill="#ffffff" />
-    <rect x="${gx + 2 * m}" y="${gy + 2 * m}" width="${3 * m}" height="${3 * m}" fill="#1b1b1b" />
-  `;
-
-  return `
-    <svg viewBox="0 0 ${size} ${size}" aria-hidden="true" focusable="false">
-      <rect width="${size}" height="${size}" fill="#ffffff" />
-      ${finder(0, 0)}
-      ${finder(size - 7 * m, 0)}
-      ${finder(0, size - 7 * m)}
-      ${dots}
-    </svg>
-  `;
-}
-
 function emailGlyphSvg() {
   return `
     <svg viewBox="0 0 48 48" aria-hidden="true" focusable="false">
@@ -380,6 +344,7 @@ export function render({ state }) {
               <span class="recipe-hero__eyebrow">${labels.eyebrow}</span>
               <h1>${recipeCopy.title}</h1>
               <p>${recipeCopy.description}</p>
+              <img class="recipe-hero__flower" src="../assets/images/recipes/flower2.png" alt="" aria-hidden="true" />
               <div class="recipe-stat-grid">
                 ${renderStatCard('<circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" />', labels.time, `${totalTime(recipe)} min`, 'recipe-stat-card--time')}
                 ${renderStatCard('<path d="M12 3l2.2 5.5 5.8.4-4.5 3.7 1.4 5.7L12 15.2 7.1 18.3l1.4-5.7L4 8.9l5.8-.4L12 3z" />', labels.difficulty, difficulty, 'recipe-stat-card--difficulty')}
@@ -394,6 +359,7 @@ export function render({ state }) {
               <h2>${labels.sendRecipe}</h2>
             </div>
             <p>${labels.shareText}</p>
+            <img class="recipe-share-flight" src="../assets/images/arrow.png" alt="" aria-hidden="true" />
             <div class="recipe-share-grid">
               <button class="recipe-share-card recipe-share-card--email" type="button" data-action="share-email">
                 <span class="recipe-share-card__icon" aria-hidden="true">${emailGlyphSvg()}</span>

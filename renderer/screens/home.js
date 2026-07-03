@@ -555,18 +555,25 @@ function setupInfiniteCarousel(track) {
     frame = window.requestAnimationFrame(autoScroll);
   };
 
+  // A plain tap must still reach the card underneath (see bind()'s TAP_SLOP
+  // logic), so pointer capture is only claimed once the pointer has actually
+  // moved past a small threshold — otherwise event.target on pointerup gets
+  // retargeted to `track` and every tap on a card silently does nothing.
+  const DRAG_SLOP = 10;
+  let isDragging = false;
+
   track.addEventListener('pointerdown', (event) => {
     isPaused = true;
+    isDragging = false;
     dragPointerId = event.pointerId;
     dragStartX = event.clientX;
     dragStartOffset = x;
-    track.classList.add('is-dragging');
-    track.setPointerCapture?.(event.pointerId);
   }, { passive: true });
 
   const resumeAutoScroll = () => {
     isPaused = false;
     dragPointerId = null;
+    isDragging = false;
     track.classList.remove('is-dragging');
     lastAutoTime = 0;
   };
@@ -574,6 +581,15 @@ function setupInfiniteCarousel(track) {
   track.addEventListener('pointermove', (event) => {
     if (dragPointerId !== event.pointerId) {
       return;
+    }
+
+    if (!isDragging) {
+      if (Math.abs(event.clientX - dragStartX) < DRAG_SLOP) {
+        return;
+      }
+      isDragging = true;
+      track.classList.add('is-dragging');
+      track.setPointerCapture?.(event.pointerId);
     }
 
     applyOffset(dragStartOffset + event.clientX - dragStartX);
