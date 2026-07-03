@@ -826,7 +826,7 @@ function registerIpc() {
       const emailLines = [
         `From: "Zdravo Jem" <${gmailUser}>`,
         `To: ${toEmail}`,
-        `Subject: Recept: ${recipe.title} \uD83C\uDF3F`,
+        `Subject: Recept: ${recipe.title}`,
         'MIME-Version: 1.0',
         'Content-Type: text/html; charset=UTF-8',
         '',
@@ -873,6 +873,10 @@ function registerIpc() {
       errorCorrectionLevel: 'M',
       margin: 1,
       scale: 8,
+      color: {
+        dark: '#6B4423',
+        light: '#F7F3EC'
+      },
       ...options
     });
   });

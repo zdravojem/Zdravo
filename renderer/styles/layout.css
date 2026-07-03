@@ -84,7 +84,7 @@ body[data-screen="welcome"] .language-switcher__button.is-active {
   bottom: 0;
   height: var(--nav-h);
   display: flex;
-  background: #fff;
+  background: #fff6e8;
   border-top: 1px solid var(--border);
   z-index: 20;
 }
@@ -629,7 +629,7 @@ body[data-screen="welcome"] .language-switcher__button.is-active {
   display: flex;
   flex-direction: column;
   padding: 0;
-  background: #fff6e8;
+  background: #fffaf2;
   border: 0;
   border-radius: var(--radius);
   box-shadow: inset 0 0 0 1px var(--border);
@@ -1465,6 +1465,11 @@ body[data-screen="games"] .app-root {
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   padding: 12px 12px calc(var(--nav-h) + 16px);
+  scrollbar-width: none;
+}
+
+.recipe-sheet__scroll::-webkit-scrollbar {
+  display: none;
 }
 
 .recipe-hero {
@@ -2019,8 +2024,8 @@ body[data-screen="games"] .app-root {
   margin: 18px auto 14px;
   padding: 16px;
   border-radius: 20px;
-  background: #fff;
-  border: 1px solid rgba(0, 0, 0, 0.08);
+  background: var(--cream);
+  border: 1px solid #efdcc1;
   display: grid;
   place-items: center;
   overflow: hidden;
@@ -2056,6 +2061,16 @@ body[data-screen="games"] .app-root {
 .recipe-share-modal__error {
   margin-top: 4px;
   color: var(--coral);
+}
+
+.recipe-share-modal__actions .btn--primary {
+  background: var(--brown);
+  border-color: var(--brown);
+  box-shadow: 0 4px 12px rgba(107, 68, 35, 0.25);
+}
+
+.recipe-share-modal__actions .btn--outline {
+  border-color: var(--brown);
 }
 
 .recipe-share-modal__actions {
@@ -2284,13 +2299,12 @@ body[data-screen="games"] .app-root {
   border-radius: 50%;
   background: #fff;
   color: var(--brown);
-  border: 2px solid rgba(59, 109, 17, 0.18);
+  border: 2px solid var(--green-mid);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 14px;
   font-weight: 900;
-  box-shadow: 0 7px 16px rgba(59, 109, 17, 0.1);
 }
 
 .recipe-prep-step .recipe-detail-icon {
@@ -3848,7 +3862,7 @@ body[data-screen="games"] .app-root {
   gap: 8px;
   padding: 10px 6px 12px;
   align-items: center;
-  background: #fff6e8;
+  background: #fffaf2;
   border-radius: 0 0 var(--radius) var(--radius);
 }
 

@@ -740,8 +740,8 @@ let _gameState = null;   // active game runtime state
 let _timerInt = null;   // setInterval handle
 let _toastTimer = null;  // toast hide timer
 let _dragData = null;   // current drag payload
-let _touchActive = false;
-let _touchSlotTarget = null;
+let _dragActive = false;
+let _dropSlotTarget = null;
 let _rootEl = null;      // bound DOM root
 let _boundRoot = null;
 let _boundPointerHandler = null;
@@ -876,7 +876,7 @@ function _renderPieceImage(piece, locale, inSlot) {
     ? (inSlot ? ' class="gm-jigsaw-img"' : ' class="gm-piece__img gm-piece__img--jigsaw"')
     : '';
   const style = inSlot ? _jigsawImgStyle(piece) : '';
-  return `<img${cls} src="${piece.img}" alt="${_escapeHtml(_pieceLabel(piece, locale))}"${style} onerror="this.style.display='none'">`;
+  return `<img${cls} src="${piece.img}" alt="${_escapeHtml(_pieceLabel(piece, locale))}"${style} draggable="false" onerror="this.style.display='none'">`;
 }
 
 function _puzzleTrayPieces(gs, cfg) {
@@ -1210,6 +1210,15 @@ const GM_ICONS = {
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
       <polyline points="1 4 1 10 7 10" />
       <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10" />
+    </svg>`,
+  search: `
+    <svg class="gm-badge__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <circle cx="11" cy="11" r="7" />
+      <path d="M21 21l-4.35-4.35" />
+    </svg>`,
+  puzzle: `
+    <svg class="gm-badge__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M4 4 H9 A2 2 0 0 1 13 4 H18 V9 A2 2 0 0 0 18 13 V18 H4 Z" />
     </svg>`
 };
 
@@ -1240,7 +1249,7 @@ function renderSelect(locale) {
           <div class="gm-card__body">
             <h2 class="gm-card__title">${locale === 'en' ? 'From Farm to Plate' : 'Od kmetije do krožnika'}</h2>
             <p class="gm-card__desc">${locale === 'en' ? "Assemble the picture and discover food's journey from field to table." : 'Sestavi sliko in odkrij pot hrane od polja do mize.'}</p>
-            <span class="gm-badge">${locale === 'en' ? '🧩 Puzzle' : '🧩 Sestavljanka'}</span>
+            <span class="gm-badge">${GM_ICONS.puzzle}${locale === 'en' ? 'Puzzle' : 'Sestavljanka'}</span>
           </div>
         </button>
         <button class="gm-card" data-gm-action="intro" data-game="detective">
@@ -1248,7 +1257,7 @@ function renderSelect(locale) {
           <div class="gm-card__body">
             <h2 class="gm-card__title">${locale === 'en' ? 'Market Detective' : 'Tržnični detektiv'}</h2>
             <p class="gm-card__desc">${locale === 'en' ? 'Solve clues and find the right answer about market food!' : 'Reši namige in odkrij pravi odgovor o hrani s tržnice!'}</p>
-            <span class="gm-badge">${locale === 'en' ? '🔍 Quiz' : '🔍 Kviz'}</span>
+            <span class="gm-badge">${GM_ICONS.search}${locale === 'en' ? 'Quiz' : 'Kviz'}</span>
           </div>
         </button>
       </div>
@@ -1340,7 +1349,7 @@ function renderPuzzle(locale) {
       <div class="gm-piece gm-piece--pos-${p.pos || 0}${p.shape ? ' gm-piece--jigsaw' : ''}${p.isDistractor ? ' gm-piece--distractor' : ''}"
            data-piece-id="${p.id}"
            data-is-dist="${!!p.isDistractor}"
-           draggable="true">
+           draggable="false">
         ${_renderPieceImage(p, locale, false)}
         <span class="gm-piece__label">${_escapeHtml(_pieceLabel(p, locale))}</span>
       </div>`).join('')
@@ -1726,7 +1735,7 @@ export function cleanup() {
   _boundPointerHandler = null;
   _gameState = null;
   _dragData = null;
-  _touchActive = false;
+  _dragActive = false;
   _rootEl = null;
 }
 
@@ -1862,40 +1871,25 @@ async function _startPuzzle(actions) {
 function _bindPuzzle(actions) {
   const sc = _gameState.puzzle.scenario;
 
-  // Drag-and-drop on board slots
   const board = _rootEl.querySelector('#gm-board');
   if (!board) return;
 
-  board.querySelectorAll('[data-gm-drop]').forEach(slot => {
-    slot.addEventListener('dragover', e => e.preventDefault());
-    slot.addEventListener('drop', e => { e.preventDefault(); _onDrop(parseInt(slot.dataset.gmDrop), actions); });
-  });
-
-  // Piece drag start / touch
+  // Piece drag, unified across mouse/touch/pen via Pointer Events. Native
+  // HTML5 drag-and-drop (dragstart/dragover/drop) isn't used because legacy
+  // Touch Events don't fire reliably on all Windows touchscreen digitizers,
+  // while Pointer Events do — see setupInfiniteCarousel in home.js for the
+  // same pattern.
   _rootEl.querySelectorAll('.gm-piece').forEach(el => {
     const pid = el.dataset.pieceId;
-    const isDist = el.dataset.isDist === 'true';
     const allPieces = [...sc.pieces, ...(sc.distractors || [])];
     const piece = allPieces.find(p => p.id === pid);
     if (!piece) return;
 
-    el.addEventListener('dragstart', ev => _startDrag(piece, el, ev));
-    el.addEventListener('dragend', () => _endDrag());
-    el.addEventListener('touchstart', ev => _touchStart(piece, el, ev), { passive: false });
-    el.addEventListener('touchmove', ev => _touchMove(ev), { passive: false });
-    el.addEventListener('touchend', ev => _touchEnd(ev, actions));
+    el.addEventListener('pointerdown', ev => _pointerDragStart(piece, el, ev));
+    el.addEventListener('pointermove', _pointerDragMove);
+    el.addEventListener('pointerup', ev => _pointerDragEnd(ev, actions));
+    el.addEventListener('pointercancel', ev => _pointerDragEnd(ev, actions));
   });
-}
-
-function _startDrag(piece, el, ev) {
-  _dragData = { piece, el };
-  el.classList.add('is-dragging');
-  const ghost = _rootEl.querySelector('#gm-drag-ghost');
-  const gImg = _rootEl.querySelector('#gm-ghost-img');
-  const gLbl = _rootEl.querySelector('#gm-ghost-label');
-  if (ghost) { ghost.style.display = 'flex'; }
-  if (gImg) { gImg.src = piece.img; gImg.style.display = 'block'; }
-  if (gLbl) { gLbl.textContent = _pieceLabel(piece, _gameState.locale); }
 }
 
 function _endDrag() {
@@ -1905,16 +1899,33 @@ function _endDrag() {
   if (ghost) ghost.style.display = 'none';
 }
 
-// The drag ghost is position:fixed inside the .app-root, which is uniformly
-// scaled (transform: scale(--app-scale)). Touch coordinates are in untransformed
-// viewport space, so convert them into the scaled element's local space, otherwise
-// the ghost drifts away from the finger on any screen where the scale isn't 1.
+// A CSS transform (or filter) on ANY ancestor makes that ancestor the
+// containing block for a position:fixed descendant, per spec. #gm-drag-ghost
+// sits inside .gm-puzzle, which itself is centered with
+// `left:50%; transform:translateX(-50%)` (see "Keep every game screen in the
+// same portrait panel" in games.css) — that's the ghost's real containing
+// block, not .app-root. Walk up to find whichever ancestor actually applies.
+function _fixedContainingBlock(el) {
+  let node = el.parentElement;
+  while (node && node !== document.body) {
+    const cs = getComputedStyle(node);
+    if (cs.transform !== 'none' || cs.filter !== 'none') {
+      return node;
+    }
+    node = node.parentElement;
+  }
+  return document.documentElement;
+}
+
+// Pointer coordinates are in untransformed viewport space, so convert them
+// into the containing block's local space, otherwise the ghost drifts away
+// from the finger/cursor whenever an ancestor is scaled and/or translated.
 function _positionGhost(ghost, clientX, clientY) {
   if (!ghost) return;
-  const appRoot = document.querySelector('.app-root');
-  if (appRoot && appRoot.offsetWidth) {
-    const rect = appRoot.getBoundingClientRect();
-    const scale = rect.width / appRoot.offsetWidth || 1;
+  const cb = _fixedContainingBlock(ghost);
+  if (cb && cb.offsetWidth) {
+    const rect = cb.getBoundingClientRect();
+    const scale = rect.width / cb.offsetWidth || 1;
     ghost.style.left = ((clientX - rect.left) / scale) + 'px';
     ghost.style.top = ((clientY - rect.top) / scale) + 'px';
   } else {
@@ -1923,43 +1934,50 @@ function _positionGhost(ghost, clientX, clientY) {
   }
 }
 
-function _touchStart(piece, el, ev) {
+// Pointer Events cover mouse, touch and pen with one code path. Legacy Touch
+// Events (touchstart/touchmove/touchend) don't fire reliably on every Windows
+// touchscreen digitizer, which is why touch dragging could silently fail
+// while mouse dragging worked.
+function _pointerDragStart(piece, el, ev) {
+  if (ev.pointerType === 'mouse' && ev.button !== 0) return;
   ev.preventDefault();
   _dragData = { piece, el };
-  _touchActive = true;
+  _dragActive = true;
   el.classList.add('is-dragging');
+  el.setPointerCapture?.(ev.pointerId);
   const ghost = _rootEl.querySelector('#gm-drag-ghost');
   const gImg = _rootEl.querySelector('#gm-ghost-img');
   const gLbl = _rootEl.querySelector('#gm-ghost-label');
   if (ghost) { ghost.style.display = 'flex'; }
   if (gImg) { gImg.src = piece.img; gImg.style.display = 'block'; }
   if (gLbl) { gLbl.textContent = _pieceLabel(piece, _gameState.locale); }
-  const t = ev.touches[0];
-  _positionGhost(ghost, t.clientX, t.clientY);
+  _positionGhost(ghost, ev.clientX, ev.clientY);
 }
 
-function _touchMove(ev) {
-  if (!_touchActive) return;
+function _pointerDragMove(ev) {
+  if (!_dragActive) return;
   ev.preventDefault();
-  const t = ev.touches[0];
   const ghost = _rootEl && _rootEl.querySelector('#gm-drag-ghost');
-  _positionGhost(ghost, t.clientX, t.clientY);
-  const el = document.elementFromPoint(t.clientX, t.clientY);
-  _touchSlotTarget = el ? el.closest('[data-gm-drop]') : null;
+  _positionGhost(ghost, ev.clientX, ev.clientY);
+  const el = document.elementFromPoint(ev.clientX, ev.clientY);
+  _dropSlotTarget = el ? el.closest('[data-gm-drop]') : null;
 }
 
-function _touchEnd(ev, actions) {
-  if (!_touchActive) return;
-  _touchActive = false;
+function _pointerDragEnd(ev, actions) {
+  if (!_dragActive) return;
+  _dragActive = false;
+  if (_dragData && _dragData.el.hasPointerCapture?.(ev.pointerId)) {
+    _dragData.el.releasePointerCapture(ev.pointerId);
+  }
   const ghost = _rootEl && _rootEl.querySelector('#gm-drag-ghost');
   if (ghost) ghost.style.display = 'none';
   if (_dragData) _dragData.el.classList.remove('is-dragging');
-  if (_touchSlotTarget) {
-    const pos = parseInt(_touchSlotTarget.dataset.gmDrop);
+  if (_dropSlotTarget) {
+    const pos = parseInt(_dropSlotTarget.dataset.gmDrop);
     if (!isNaN(pos)) _onDrop(pos, actions);
   }
   _dragData = null;
-  _touchSlotTarget = null;
+  _dropSlotTarget = null;
 }
 
 function _onDrop(pos, actions) {

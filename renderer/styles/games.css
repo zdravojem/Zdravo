@@ -141,6 +141,7 @@ body[data-game-active="true"] .language-switcher {
   align-self: flex-start;
   display: inline-flex;
   align-items: center;
+  gap: 6px;
   min-height: 29px;
   padding: 5px 15px;
   border-radius: 999px;
@@ -148,6 +149,13 @@ body[data-game-active="true"] .language-switcher {
   color: var(--brown);
   font-size: 13px;
   font-weight: 700;
+}
+
+.gm-badge__icon {
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+  color: var(--brown);
 }
 
 .gm-intro {
@@ -247,21 +255,21 @@ body[data-game-active="true"] .language-switcher {
 }
 
 .gm-diff-btn.is-active {
-  border-color: var(--green);
-  background: var(--green);
+  border-color: #9fb584;
+  background: #9fb584;
   color: #fff;
 }
 
 .gm-start-btn {
-  min-width: 322px;
-  min-height: 86px;
-  padding: 0 52px;
+  min-width: 220px;
+  min-height: 58px;
+  padding: 0 36px;
   border-radius: 999px;
-  background: #df5731;
+  background: var(--brown);
   color: #fff;
-  font-size: 25px;
+  font-size: 18px;
   font-weight: 800;
-  box-shadow: 0 18px 38px rgba(223, 87, 49, 0.2);
+  box-shadow: 0 10px 22px rgba(107, 68, 35, 0.2);
 }
 
 .gm-puzzle,
@@ -4228,7 +4236,7 @@ body[data-game-active="true"] .language-switcher {
 }
 
 .gm-end-btn--primary {
-  background: var(--coral);
+  background: var(--brown);
   color: #fff;
 }
 
@@ -4293,7 +4301,7 @@ body[data-game-active="true"] .language-switcher {
 }
 
 .gm-modal-btn--confirm {
-  background: var(--coral);
+  background: var(--brown);
   color: #fff;
 }
 
@@ -4470,14 +4478,12 @@ body[data-game-active="true"] .language-switcher {
   pointer-events: none;
 }
 
-/* Grass/meadow decoration limited to the game column (phone-size UI),
-   leaving the left & right of the screen plain. */
+/* Grass/meadow decoration spans the full screen width, edge to edge. */
 .gm-puzzle::before {
-  left: 50%;
-  transform: translateX(-50%);
+  left: 0;
+  right: 0;
   bottom: 0;
   z-index: -2;
-  width: min(100%, 480px);
   height: 200px;
   background-image: url("../../assets/images/games/buttom.png");
   background-repeat: no-repeat;

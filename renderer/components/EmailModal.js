@@ -30,7 +30,7 @@ export function renderEmailModal({ recipe, share }) {
         style="width:min(92vw, 520px); background:#fff8ea; border:2px solid #b88445; border-radius:18px; box-shadow:0 20px 70px rgba(0, 0, 0, 0.28); overflow:hidden; font-family:Arial, sans-serif;"
       >
         <div style="background:#6b421f; color:#fff8ea; padding:22px 24px;">
-          <h2 style="margin:0; font-size:24px; line-height:1.2; font-weight:800;">Po&#353;lji recept na e-po&#353;to</h2>
+          <h2 style="margin:0; font-size:24px; line-height:1.2; font-weight:800; color:#fff8ea;">Po&#353;lji recept na e-po&#353;to</h2>
           <p style="margin:8px 0 0; font-size:15px; line-height:1.35; color:#f7e8c7;">${escapeHtml(recipeTitle)}</p>
         </div>
 
@@ -76,7 +76,7 @@ export function renderEmailModal({ recipe, share }) {
               ${loading || success ? 'disabled' : ''}
               style="min-height:48px; border:2px solid #6b421f; border-radius:12px; padding:0 20px; background:${loading || success ? '#c99a5f' : '#6b421f'}; color:#fff8ea; font-size:16px; font-weight:800;"
             >
-              ${loading ? 'Po&#353;iljam...' : 'Po&#353;lji &#128231;'}
+              ${loading ? 'Po&#353;iljam...' : 'Po&#353;lji'}
             </button>
           </div>
         </div>
