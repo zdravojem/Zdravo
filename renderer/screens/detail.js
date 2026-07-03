@@ -61,15 +61,6 @@ function iconSvg(path) {
   `;
 }
 
-function leafSvg(className) {
-  return `
-    <svg class="${className}" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-      <path d="M19.5 5.2c-5.9 0-10.6 4.4-10.6 9.8 0 2.6 2.1 4.8 4.8 4.8 6.1 0 10.8-5.7 10.8-12.2 0-1.6-1.2-2.4-2.7-2.4-1.2 0-1.7 0-2.3 0z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
-      <path d="M8.2 18.2c3-1.4 6.3-4.7 8.7-9.1" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
-    </svg>
-  `;
-}
-
 function qrGlyphSvg() {
   const m = 3;
   const n = 16;
@@ -213,7 +204,7 @@ function detailLabels(locale) {
     sendRecipe: 'Shrani recept',
     shareText: 'Imej ga pri sebi za tr&#382;nico ali kuhanje.',
     emailTitle: 'Po&#353;lji na e-po&#353;to',
-    emailText: 'Recept v tvojem nabiralniku',
+    emailText: 'Recept na tvojem mailu',
     qrTitle: 'Skeniraj QR kodo',
     qrText: 'Odpri na svojem telefonu'
   };
@@ -401,7 +392,6 @@ export function render({ state }) {
           <section class="recipe-share-panel">
             <div class="recipe-section-title">
               <h2>${labels.sendRecipe}</h2>
-              <span aria-hidden="true">${leafSvg('recipe-section-leaf')}</span>
             </div>
             <p>${labels.shareText}</p>
             <div class="recipe-share-grid">
@@ -485,7 +475,6 @@ export function render({ state }) {
             <section class="recipe-card-panel recipe-tip-panel">
               <div class="recipe-section-title">
                 <h2>${state.ui.locale === 'en' ? 'Additional advice' : 'Dodatni nasvet'}</h2>
-                <span aria-hidden="true">${leafSvg('recipe-section-leaf')}</span>
               </div>
               <p>${additionalTip}</p>
             </section>

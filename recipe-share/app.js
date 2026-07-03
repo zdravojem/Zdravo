@@ -62,7 +62,7 @@
       downloadTitle: 'Prenesi HTML',
       downloadText: 'Shrani na napravo',
       emailTitle: 'Po&#353;lji na e-mail',
-      emailText: 'Recept v tvojem nabiralniku',
+      emailText: 'Recept na tvojem mailu',
       suitableFor: 'Primerno za',
       preparationMethod: 'Na&#269;in priprave',
       ingredients: 'Sestavine',

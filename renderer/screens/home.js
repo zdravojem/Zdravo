@@ -485,80 +485,118 @@ function setupCategoryCarousel(carousel, state, actions) {
 }
 
 // Seamless looping carousel: the track holds three identical copies of the row
-// and the scroll position is kept inside the middle copy so it can be dragged
-// endlessly in either direction.
+// and moves with a transform so browser scroll clamping cannot halt the motion.
 function setupInfiniteCarousel(track) {
   if (!track) {
     return;
   }
 
   let frame = 0;
-  let correcting = false;
+  let x = 0;
+  let lastAutoTime = 0;
   let loopWidth = 0;
-  let firstStart = 0;
-  let secondStart = 0;
+  let isPaused = false;
+  let dragPointerId = null;
+  let dragStartX = 0;
+  let dragStartOffset = 0;
+  const autoSpeed = 0.025;
+
+  const normalizeOffset = (value) => {
+    if (!loopWidth && !measure()) {
+      return value;
+    }
+
+    let next = value;
+    while (next <= -loopWidth) next += loopWidth;
+    while (next > 0) next -= loopWidth;
+    return next;
+  };
+
+  const applyOffset = (value) => {
+    x = normalizeOffset(value);
+    track.style.transform = `translate3d(${x}px, 0, 0)`;
+  };
 
   const measure = () => {
-    const first = track.querySelector('[data-loop="1"]');
-    const second = track.querySelector('[data-loop="2"]');
+    const first = track.querySelector('[data-loop="0"]');
+    const second = track.querySelector('[data-loop="1"]');
 
     if (!first || !second) {
       return false;
     }
 
-    firstStart = first.offsetLeft;
-    secondStart = second.offsetLeft;
-    loopWidth = secondStart - firstStart;
+    loopWidth = second.offsetLeft - first.offsetLeft;
     return loopWidth > 0;
   };
 
-  const keepCentered = () => {
-    if (!loopWidth && !measure()) {
-      return;
-    }
-
-    const min = firstStart - loopWidth * 0.5;
-    const max = secondStart - loopWidth * 0.5;
-    let nextScrollLeft = track.scrollLeft;
-
-    if (nextScrollLeft < min) {
-      nextScrollLeft += loopWidth;
-    } else if (nextScrollLeft > max) {
-      nextScrollLeft -= loopWidth;
-    }
-
-    if (nextScrollLeft !== track.scrollLeft) {
-      correcting = true;
-      track.scrollLeft = nextScrollLeft;
-      correcting = false;
-    }
-  };
-
-  const scheduleCorrection = () => {
-    if (frame) {
-      return;
-    }
-
-    frame = window.requestAnimationFrame(() => {
+  const autoScroll = (time) => {
+    if (!track.isConnected) {
       frame = 0;
-      keepCentered();
-    });
-  };
-
-  window.requestAnimationFrame(() => {
-    if (!measure()) {
       return;
     }
 
-    track.scrollLeft = firstStart;
-    keepCentered();
-  });
-
-  track.addEventListener('scroll', () => {
-    if (!correcting) {
-      scheduleCorrection();
+    if (!loopWidth && !measure()) {
+      lastAutoTime = 0;
+      frame = window.requestAnimationFrame(autoScroll);
+      return;
     }
+
+    if (!lastAutoTime) {
+      lastAutoTime = time;
+    }
+
+    const elapsed = Math.min(48, Math.max(0, time - lastAutoTime));
+    lastAutoTime = time;
+
+    if (!isPaused && elapsed > 0) {
+      applyOffset(x - elapsed * autoSpeed);
+    }
+
+    frame = window.requestAnimationFrame(autoScroll);
+  };
+
+  track.addEventListener('pointerdown', (event) => {
+    isPaused = true;
+    dragPointerId = event.pointerId;
+    dragStartX = event.clientX;
+    dragStartOffset = x;
+    track.classList.add('is-dragging');
+    track.setPointerCapture?.(event.pointerId);
   }, { passive: true });
+
+  const resumeAutoScroll = () => {
+    isPaused = false;
+    dragPointerId = null;
+    track.classList.remove('is-dragging');
+    lastAutoTime = 0;
+  };
+
+  track.addEventListener('pointermove', (event) => {
+    if (dragPointerId !== event.pointerId) {
+      return;
+    }
+
+    applyOffset(dragStartOffset + event.clientX - dragStartX);
+  }, { passive: true });
+
+  track.addEventListener('pointerup', resumeAutoScroll, { passive: true });
+  track.addEventListener('pointercancel', resumeAutoScroll, { passive: true });
+  track.addEventListener('pointerleave', resumeAutoScroll, { passive: true });
+
+  track.addEventListener('wheel', (event) => {
+    if (Math.abs(event.deltaX) <= Math.abs(event.deltaY) && !event.shiftKey) {
+      return;
+    }
+
+    event.preventDefault();
+    const delta = event.shiftKey && !event.deltaX ? event.deltaY : event.deltaX;
+    isPaused = true;
+    applyOffset(x - delta);
+    window.clearTimeout(track._resumeWheelTimer);
+    track._resumeWheelTimer = window.setTimeout(resumeAutoScroll, 600);
+  }, { passive: false });
+
+  frame = window.requestAnimationFrame(autoScroll);
 }
 
 function gameTitleLines(title, locale) {
@@ -806,11 +844,6 @@ function totalRecipeTime(recipe) {
 
 function formatRecipeTime(minutes) {
   const total = Math.max(0, Number(minutes || 0));
-  if (total >= 60) {
-    const hours = Math.floor(total / 60);
-    const remainder = total % 60;
-    return remainder ? `${hours} h ${remainder} min` : `${hours} h`;
-  }
   return `${total} min`;
 }
 
@@ -941,14 +974,16 @@ export function render({ state }) {
           <h2>${state.ui.copy.homeRecipesTitle}</h2>
           <button class="home-link" data-action="all-recipes">${locale === 'en' ? 'View all' : 'Vsi recepti'} <span>&rarr;</span></button>
         </div>
-        <div class="home-recipe-carousel" data-recipe-carousel>
-          ${homeRecipeIdeas.length
-            ? Array.from({ length: homeRecipeIdeas.length > 3 ? 3 : 1 }, (_, loopIndex) =>
-                homeRecipeIdeas
-                  .map((recipe) => renderFeaturedRecipeCard({ locale, recipe, state, loopIndex }))
-                  .join('')
-              ).join('')
-            : `<span class="home-recipe-empty">${locale === 'en' ? 'No recipes available yet.' : 'Recepti še niso na voljo.'}</span>`}
+        <div class="home-recipe-carousel-clip">
+          <div class="home-recipe-carousel" data-recipe-carousel>
+            ${homeRecipeIdeas.length
+              ? Array.from({ length: 3 }, (_, loopIndex) =>
+                  homeRecipeIdeas
+                    .map((recipe) => renderFeaturedRecipeCard({ locale, recipe, state, loopIndex }))
+                    .join('')
+                ).join('')
+              : `<span class="home-recipe-empty">${locale === 'en' ? 'No recipes available yet.' : 'Recepti še niso na voljo.'}</span>`}
+          </div>
         </div>
       </section>
 

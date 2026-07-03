@@ -37,15 +37,16 @@ body[data-game-active="true"] .language-switcher {
   width: min(800px, calc(100% - 64px));
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 38px;
+  justify-content: center;
+  margin-bottom: 28px;
 }
 
 .gm-select__brand-img {
-  width: 92px;
-  height: 92px;
-  border-radius: 16px;
+  width: min(100%, 440px);
+  height: 126px;
+  border-radius: 0;
   object-fit: cover;
+  object-position: center;
 }
 
 .gm-select__brand-title {
@@ -182,9 +183,11 @@ body[data-game-active="true"] .language-switcher {
 }
 
 .gm-intro__logo {
-  height: 100px;
-  width: auto;
+  width: min(100%, 380px);
+  height: 110px;
   display: block;
+  object-fit: cover;
+  object-position: center;
 }
 
 .gm-intro__body {
@@ -4519,16 +4522,20 @@ body[data-game-active="true"] .language-switcher {
 }
 
 .gm-header__brand {
-  display: inline-flex;
+  display: flex;
   align-items: center;
+  justify-content: center;
   gap: 7px;
+  width: 100%;
   min-height: 42px;
 }
 
 .gm-brand-logo {
-  height: 74px;
-  width: auto;
+  width: min(100%, 340px);
+  height: 98px;
   display: block;
+  object-fit: cover;
+  object-position: center;
 }
 
 .gm-brand-mark {

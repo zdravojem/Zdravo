@@ -9,7 +9,7 @@ import { ingredientImageSrc as iImg } from '../ingredient-images.js';
 // Image map (game assets only — ingredient images use iImg() directly)
 // ---------------------------------------------------------------------------
 const IMGS = {
-  logo: '../assets/images/home-games/zdravojem.png',
+  logo: '../assets/images/home-games/zdravojemlong.png',
   puzzle_banner: '../assets/images/games/puzzle-banner.png',
   detective_banner: '../assets/images/games/detective-banner.png',
   detective_header: '../assets/images/games/detective/header.png',
@@ -1229,13 +1229,9 @@ function renderSelect(locale) {
     <section class="gm-select">
       <div class="gm-select__brand">
         <img class="gm-select__brand-img" src="${IMGS.logo}" alt="Zdravo Jem" onerror="this.style.display='none'">
-        <div>
-          <div class="gm-select__brand-title">ZDRAVO JEM</div>
-          <div class="gm-select__brand-sub">Tržnica Sevnica</div>
-        </div>
       </div>
       <div class="gm-select__hero">
-        <h1 class="gm-select__title">${locale === 'en' ? 'Games' : 'Igrice'}</h1>
+        <h1 class="gm-select__title">${locale === 'en' ? 'Games' : 'Igre'}</h1>
         <p class="gm-select__sub">${locale === 'en' ? 'Choose a game and start discovering the world of food!' : 'Izberi igro in začni odkrivati svet hrane!'}</p>
       </div>
       <div class="gm-cards">
