@@ -1315,7 +1315,6 @@ function renderPuzzle(locale) {
   const isJigsawPuzzle = !!sc.jigsaw;
   const piecesTitle = completed ? g.puzzleCompleteTitle : g.pieces;
   const hintLabel = completed ? g.puzzleCompleteTitle : g.hint;
-  const puzzleSubtitle = _lv(sc.edu, locale);
 
   // Build board slots HTML
   let boardHtml = '';
@@ -1383,7 +1382,6 @@ function renderPuzzle(locale) {
       </div>
       <div class="gm-puzzle__content">
 <img class="gm-puzzle-banner" src="${IMGS.puzzle_header}" alt="${_lv(sc.title, locale)}" draggable="false" onerror="this.style.display='none'">
-        <p class="gm-puzzle__subtitle">${puzzleSubtitle}</p>
         ${completed ? `<div class="gm-puzzle__complete">${g.puzzleComplete}</div>` : ''}
         <div class="gm-puzzle__area">
           <div class="gm-board${isJigsawPuzzle ? ' gm-board--jigsaw' : ''}" id="gm-board" style="--gm-grid-cols:${grid.cols};--gm-grid-rows:${grid.rows};">${boardHtml}</div>
@@ -1948,7 +1946,7 @@ function _pointerDragStart(piece, el, ev) {
   const ghost = _rootEl.querySelector('#gm-drag-ghost');
   const gImg = _rootEl.querySelector('#gm-ghost-img');
   const gLbl = _rootEl.querySelector('#gm-ghost-label');
-  if (ghost) { ghost.style.display = 'flex'; }
+  if (ghost) { ghost.style.display = 'flex'; ghost.classList.toggle('is-jigsaw', !!piece.shape); }
   if (gImg) { gImg.src = piece.img; gImg.style.display = 'block'; }
   if (gLbl) { gLbl.textContent = _pieceLabel(piece, _gameState.locale); }
   _positionGhost(ghost, ev.clientX, ev.clientY);
@@ -2022,13 +2020,13 @@ function _onDrop(pos, actions) {
       const timerBadge = _rootEl.querySelector('#gm-timer-badge');
       if (timerBadge) timerBadge.classList.remove('is-urgent');
 
-      const subtitleEl = _rootEl.querySelector('.gm-puzzle__subtitle');
-      if (subtitleEl) {
+      const bannerEl = _rootEl.querySelector('.gm-puzzle-banner');
+      if (bannerEl) {
         let completeBanner = _rootEl.querySelector('.gm-puzzle__complete');
         if (!completeBanner) {
           completeBanner = document.createElement('div');
           completeBanner.className = 'gm-puzzle__complete';
-          subtitleEl.insertAdjacentElement('afterend', completeBanner);
+          bannerEl.insertAdjacentElement('afterend', completeBanner);
         }
         completeBanner.textContent = g.puzzleComplete;
       }
