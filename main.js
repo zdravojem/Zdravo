@@ -5,6 +5,7 @@ const { pathToFileURL } = require('url');
 const Database = require('better-sqlite3');
 require('dotenv').config({ path: '.env.local' });
 const { google } = require('googleapis');
+const nodemailer = require('nodemailer');
 const QRCode = require('qrcode');
 const { createSupabaseSync, getLocalImagePath } = require('./supabase-sync');
 
@@ -751,6 +752,22 @@ function isTransientNetworkError(error) {
     /getaddrinfo|ENOTFOUND|EAI_AGAIN|network|socket hang up/i.test(message);
 }
 
+function isGoogleOAuthInvalidGrant(error) {
+  return error?.response?.data?.error === 'invalid_grant' ||
+    error?.cause?.message === 'invalid_grant' ||
+    error?.message === 'invalid_grant';
+}
+
+function logEmailSendError(error) {
+  console.error('Failed to send email:', {
+    message: error?.message,
+    code: error?.code,
+    status: error?.status,
+    googleError: error?.response?.data?.error,
+    googleDescription: error?.response?.data?.error_description
+  });
+}
+
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 async function withRetry(fn, { retries = 3, baseDelayMs = 1000 } = {}) {
@@ -775,6 +792,23 @@ async function withRetry(fn, { retries = 3, baseDelayMs = 1000 } = {}) {
   }
 
   throw lastError;
+}
+
+async function sendRecipeEmailWithGmailSmtp({ gmailUser, gmailAppPassword, toEmail, recipe, htmlBody }) {
+  const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: gmailUser,
+      pass: gmailAppPassword
+    }
+  });
+
+  await withRetry(() => transporter.sendMail({
+    from: `"Zdravo Jem" <${gmailUser}>`,
+    to: toEmail,
+    subject: `Recept: ${recipe.title}`,
+    html: htmlBody
+  }));
 }
 
 function registerIpc() {
@@ -808,20 +842,37 @@ function registerIpc() {
       const gmailClientId = runtimeConfigValue(['GMAIL_CLIENT_ID']);
       const gmailClientSecret = runtimeConfigValue(['GMAIL_CLIENT_SECRET']);
       const gmailRefreshToken = runtimeConfigValue(['GMAIL_REFRESH_TOKEN']);
+      const gmailAppPassword = runtimeConfigValue(['GMAIL_APP_PASSWORD']);
       const gmailUser = runtimeConfigValue(['GMAIL_USER']);
 
+      if (!gmailUser) {
+        throw new Error('Gmail sender address is not configured.');
+      }
+
+      const htmlBody = buildRecipeEmailHtml(recipe);
+
       if (!gmailClientId || !gmailClientSecret || !gmailRefreshToken) {
-        throw new Error('Gmail credentials are not configured.');
+        if (!gmailAppPassword) {
+          throw new Error('Gmail credentials are not configured.');
+        }
+
+        await sendRecipeEmailWithGmailSmtp({
+          gmailUser,
+          gmailAppPassword,
+          toEmail,
+          recipe,
+          htmlBody
+        });
+
+        return { success: true };
       }
 
       const oauth2Client = new google.auth.OAuth2(gmailClientId, gmailClientSecret);
-
       oauth2Client.setCredentials({
         refresh_token: gmailRefreshToken
       });
 
       const gmail = google.gmail({ version: 'v1', auth: oauth2Client });
-      const htmlBody = buildRecipeEmailHtml(recipe);
 
       const emailLines = [
         `From: "Zdravo Jem" <${gmailUser}>`,
@@ -840,19 +891,41 @@ function registerIpc() {
         .replace(/\//g, '_')
         .replace(/=+$/, '');
 
-      await withRetry(() => gmail.users.messages.send({
-        userId: 'me',
-        requestBody: { raw: encodedEmail }
-      }));
+      try {
+        await withRetry(() => gmail.users.messages.send({
+          userId: 'me',
+          requestBody: { raw: encodedEmail }
+        }));
+      } catch (error) {
+        if (!isGoogleOAuthInvalidGrant(error) || !gmailAppPassword) {
+          throw error;
+        }
+
+        console.warn('Gmail OAuth refresh token is invalid; retrying email with Gmail app password.');
+        await sendRecipeEmailWithGmailSmtp({
+          gmailUser,
+          gmailAppPassword,
+          toEmail,
+          recipe,
+          htmlBody
+        });
+      }
 
       return { success: true };
     } catch (error) {
-      console.error('Failed to send email:', error);
+      logEmailSendError(error);
 
       if (isTransientNetworkError(error)) {
         return {
           success: false,
           error: 'Trenutno ni povezave z internetom. Poskusite znova \u010Dez nekaj trenutkov.'
+        };
+      }
+
+      if (isGoogleOAuthInvalidGrant(error)) {
+        return {
+          success: false,
+          error: 'Prijava v Gmail je potekla. Ustvarite nov Gmail refresh token ali nastavite Gmail app password.'
         };
       }
 
