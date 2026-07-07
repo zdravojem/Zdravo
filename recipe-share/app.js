@@ -2,15 +2,35 @@
   const config = window.ZDRAVO_RECIPE_SHARE_CONFIG || {};
   const staticPayload = window.ZDRAVO_STATIC_RECIPE_PAYLOAD || null;
   const appRoot = document.getElementById('app');
-  const urlParams = new URLSearchParams(window.location.search);
-  const locale = staticPayload?.locale === 'en' || urlParams.get('locale') === 'en' ? 'en' : 'sl';
-  const autoDownload = Boolean(staticPayload?.autoDownload) || urlParams.get('download') === '1' || recipePathParts().download;
+  const urlParams = createUrlParams(window.location.search);
+  const locale = staticPayload && staticPayload.locale === 'en' || urlParams.get('locale') === 'en' ? 'en' : 'sl';
+  const autoDownload = Boolean(staticPayload && staticPayload.autoDownload) || urlParams.get('download') === '1' || recipePathParts().download;
   const state = {
     recipe: null,
     selectedIngredients: selectedIngredientsFromConfig(),
-    servings: null,
     cssText: typeof window.ZDRAVO_RECIPE_SHARE_CSS === 'string' ? window.ZDRAVO_RECIPE_SHARE_CSS : ''
   };
+
+  function createUrlParams(search) {
+    if (typeof URLSearchParams !== 'undefined') {
+      return new URLSearchParams(search);
+    }
+
+    const values = {};
+    String(search || '').replace(/^\?/, '').split('&').forEach((part) => {
+      if (!part) return;
+      const pieces = part.split('=');
+      const key = decodeURIComponent((pieces[0] || '').replace(/\+/g, ' '));
+      const value = decodeURIComponent((pieces.slice(1).join('=') || '').replace(/\+/g, ' '));
+      values[key] = value;
+    });
+
+    return {
+      get(name) {
+        return Object.prototype.hasOwnProperty.call(values, name) ? values[name] : null;
+      }
+    };
+  }
 
   const copy = {
     en: {
@@ -19,22 +39,13 @@
       configError: 'Recipe share is not configured.',
       notFound: 'Recipe not found.',
       loadError: 'Recipe could not be loaded.',
+      topbarLabel: 'Recipe',
+      downloadTitle: 'Download HTML',
       eyebrow: 'Kitchen recipe',
-      plateBadge: 'Zdravo plate',
       time: 'Time',
       difficulty: 'Difficulty',
       servings: 'Servings',
-      ingredientMatch: 'Ingredient match',
-      selected: 'selected',
-      toGather: 'to gather',
-      keepRecipe: 'Save this recipe',
-      keepText: 'Download a copy for cooking, or send it to your inbox.',
-      downloadTitle: 'Download HTML',
-      downloadText: 'Save on this device',
-      emailTitle: 'Send by email',
-      emailText: 'Recipe to your inbox',
-      suitableFor: 'Suitable for',
-      preparationMethod: 'Preparation method',
+      suitability: 'Diet',
       ingredients: 'Ingredients',
       marketIngredients: 'Market ingredients',
       marketBadge: 'Fresh picks',
@@ -49,25 +60,16 @@
       configError: 'Javna stran recepta ni nastavljena.',
       notFound: 'Recept ni najden.',
       loadError: 'Recepta ni bilo mogoce naloziti.',
+      topbarLabel: 'Recept',
+      downloadTitle: 'Prenesi HTML',
       eyebrow: 'Kuhinjski recept',
-      plateBadge: 'Zdravo kro&#382;nik',
-      time: '&#268;as',
+      time: 'Čas',
       difficulty: 'Zahtevnost',
       servings: 'Porcije',
-      ingredientMatch: 'Ujemanje sestavin',
-      selected: 'izbranih',
-      toGather: 'za dodati',
-      keepRecipe: 'Shrani recept',
-      keepText: 'Prenesi kopijo za kuhanje ali si jo poslji na e-mail.',
-      downloadTitle: 'Prenesi HTML',
-      downloadText: 'Shrani na napravo',
-      emailTitle: 'Po&#353;lji na e-mail',
-      emailText: 'Recept na tvojem mailu',
-      suitableFor: 'Primerno za',
-      preparationMethod: 'Na&#269;in priprave',
+      suitability: 'Primerno',
       ingredients: 'Sestavine',
-      marketIngredients: 'Sestavine iz tr&#382;nice',
-      marketBadge: 'Sveza izbira',
+      marketIngredients: 'Sestavine iz tržnice',
+      marketBadge: 'Sveža izbira',
       steps: 'Koraki',
       additionalTip: 'Dodatni nasvet',
       ingredient: 'sestavina',
@@ -88,20 +90,54 @@
     }
   };
 
+  // Canonical unit keys for declension lookup — maps any inflected form to its root.
+  const UNIT_ROOT = {
+    porcija: 'porcija', porcije: 'porcija', porcij: 'porcija',
+    kos: 'kos', kosi: 'kos', kosov: 'kos',
+    cmok: 'cmok', cmoka: 'cmok', cmoki: 'cmok', cmokov: 'cmok',
+    hlebec: 'hlebec', hlebca: 'hlebec', hlebci: 'hlebec', hlebcev: 'hlebec',
+    zavitek: 'zavitek', zavitka: 'zavitek', zavitki: 'zavitek', zavitkov: 'zavitek'
+  };
+
+  const SL_FORMS = {
+    porcija: [null, 'porcija', 'porcije', 'porcije', 'porcije', 'porcij'],
+    kos: [null, 'kos', 'kosi', 'kosi', 'kosi', 'kosov'],
+    cmok: [null, 'cmok', 'cmoka', 'cmoki', 'cmoki', 'cmokov'],
+    hlebec: [null, 'hlebec', 'hlebca', 'hlebci', 'hlebci', 'hlebcev'],
+    zavitek: [null, 'zavitek', 'zavitka', 'zavitki', 'zavitki', 'zavitkov']
+  };
+
+  const EN_FORMS = {
+    porcija: [null, 'serving', 'servings', 'servings', 'servings', 'servings'],
+    kos: [null, 'piece', 'pieces', 'pieces', 'pieces', 'pieces'],
+    cmok: [null, 'dumpling', 'dumplings', 'dumplings', 'dumplings', 'dumplings'],
+    hlebec: [null, 'loaf', 'loaves', 'loaves', 'loaves', 'loaves'],
+    zavitek: [null, 'strudel', 'strudels', 'strudels', 'strudels', 'strudels']
+  };
+
+  function declectUnit(n, unitRaw) {
+    const root = UNIT_ROOT[String(unitRaw).trim().toLowerCase()];
+    if (!root) return String(unitRaw || '');
+    const forms = locale === 'en' ? EN_FORMS[root] : SL_FORMS[root];
+    if (!forms) return String(unitRaw || '');
+    const idx = Math.min(Math.max(Math.round(n), 1), 5);
+    return forms[idx] || forms[5];
+  }
+
   const tagLabels = {
     en: {
       Zajtrk: 'Breakfast',
       Malica: 'Snack',
       Kosilo: 'Lunch',
       'Lahkotno kosilo': 'Light lunch',
-      Vecerja: 'Dinner',
+      'Večerja': 'Dinner',
       Sladica: 'Dessert',
       Priloga: 'Side dish',
       Predjed: 'Starter',
-      Enoloncnica: 'Stew',
-      'Jed na zlico': 'Spoon dish',
+      'Enolončnica': 'Stew',
+      'Jed na žlico': 'Spoon dish',
       Prigrizek: 'Snack',
-      'Praznicna jed': 'Holiday dish'
+      'Praznična jed': 'Holiday dish'
     }
   };
 
@@ -120,12 +156,51 @@
     return String(value || '').trim().replace(/\/+$/, '');
   }
 
+  function normalizeBaseUrl(value) {
+    const trimmed = String(value || '').trim().replace(/\/+$/, '');
+    if (!trimmed) return '';
+    return /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`;
+  }
+
   function encodeStoragePath(imagePath) {
     return String(imagePath || '')
       .split('/')
       .filter(Boolean)
       .map((part) => encodeURIComponent(part))
       .join('/');
+  }
+
+  function publicR2ImageUrl(prefix, imagePath) {
+    const publicBaseUrl = normalizeBaseUrl(config.r2PublicBaseUrl || config.r2BaseUrl || config.publicBaseUrl);
+    const normalizedPrefix = String(prefix || '').trim().replace(/^\/+|\/+$/g, '');
+    const normalizedPath = String(imagePath || '').trim().replace(/^\/+/, '');
+
+    if (!publicBaseUrl || !normalizedPath) {
+      return '';
+    }
+
+    return `${publicBaseUrl}/${[normalizedPrefix, normalizedPath].filter(Boolean).map(encodeStoragePath).join('/')}`;
+  }
+
+  function templateValue(template, item) {
+    const slug = safeFileName(item && (item.slug || item.name_sl || item.id));
+    const id = Number(item && (item.id || item.ingredient_id));
+    const recipeIndex = Number.isInteger(id) && id >= 76 && id <= 145 ? String(id - 75) : '';
+    const ingredientIndex = Number.isInteger(id)
+      ? String(id >= 222 && id <= 257 ? id - 116 : id >= 117 ? id - 116 : id >= 12 ? id - 11 : id)
+      : '';
+
+    return String(template || '')
+      .replace(/\{id\}/g, safeFileName(item && (item.id || item.ingredient_id) || ''))
+      .replace(/\{recipe_index\}/g, safeFileName(recipeIndex))
+      .replace(/\{ingredient_index\}/g, safeFileName(ingredientIndex))
+      .replace(/\{slug\}/g, slug)
+      .replace(/\{name\}/g, slug)
+      .replace(/\{image_path\}/g, String(item && item.image_path || '').replace(/^\/+/, ''));
+  }
+
+  function imagePathForItem(item, template) {
+    return String(item && item.image_path || '').trim() || templateValue(template, item);
   }
 
   function escapeHtml(value) {
@@ -147,7 +222,7 @@
   }
 
   function selectedIngredientsFromConfig() {
-    if (Array.isArray(staticPayload?.selectedIngredients) && staticPayload.selectedIngredients.length) {
+    if (staticPayload && Array.isArray(staticPayload.selectedIngredients) && staticPayload.selectedIngredients.length) {
       return new Set(staticPayload.selectedIngredients.map(normalizeName).filter(Boolean));
     }
 
@@ -183,7 +258,7 @@
     `);
   }
 
-  function storageImageUrl(bucket, imagePath) {
+  function storageImageUrl(bucket, imagePath, r2Prefix) {
     const supabaseUrl = normalizeSupabaseUrl(config.supabaseUrl);
     const normalizedPath = String(imagePath || '').trim();
 
@@ -192,18 +267,32 @@
     }
 
     if (!supabaseUrl || !normalizedPath || normalizedPath.startsWith('assets/')) {
-      return placeholderImage();
+      const r2Url = !normalizedPath.startsWith('assets/') ? publicR2ImageUrl(r2Prefix, normalizedPath) : '';
+      return r2Url || placeholderImage();
+    }
+
+    const r2Url = publicR2ImageUrl(r2Prefix, normalizedPath);
+    if (r2Url) {
+      return r2Url;
     }
 
     return `${supabaseUrl}/storage/v1/object/public/${bucket}/${encodeStoragePath(normalizedPath)}`;
   }
 
   function recipeImageSrc(recipe) {
-    return storageImageUrl(config.recipeImageBucket || 'recipe-images', recipe.image_path);
+    return storageImageUrl(
+      config.recipeImageBucket || 'recipe-images',
+      imagePathForItem(recipe, config.r2RecipeImageTemplate || '{recipe_index}.png'),
+      config.r2RecipeImagePrefix || 'epix-group_recipes-photo-1-70_2026-06-04_0734'
+    );
   }
 
   function ingredientImageSrc(ingredient) {
-    return storageImageUrl(config.ingredientImageBucket || 'ingredient-images', ingredient.image_path);
+    return storageImageUrl(
+      config.ingredientImageBucket || 'ingredient-images',
+      imagePathForItem(ingredient, config.r2IngredientImageTemplate || '{ingredient_index}.png'),
+      config.r2IngredientImagePrefix || 'ingredient-images'
+    );
   }
 
   async function supabaseRows(table, params) {
@@ -235,7 +324,7 @@
   }
 
   async function loadRecipe() {
-    if (staticPayload?.recipe) {
+    if (staticPayload && staticPayload.recipe) {
       return staticPayload.recipe;
     }
 
@@ -278,8 +367,8 @@
     recipe.ingredients = links.map((link) => ({
       ...link,
       id: link.ingredient_id,
-      name_sl: ingredientsById.get(Number(link.ingredient_id))?.name_sl || '',
-      image_path: ingredientsById.get(Number(link.ingredient_id))?.image_path || ''
+      name_sl: (ingredientsById.get(Number(link.ingredient_id)) || {}).name_sl || '',
+      image_path: (ingredientsById.get(Number(link.ingredient_id)) || {}).image_path || ''
     })).filter((ingredient) => ingredient.name_sl);
 
     return recipe;
@@ -313,57 +402,32 @@
     return Number(recipe.prep_time_min || 0) + Number(recipe.cook_time_min || 0);
   }
 
-  function slServingsLabel(quantity, unit) {
-    const n = Number(quantity);
-
-    if (unit === 'porcija' || unit === 'porcije' || unit === 'porcij') {
-      if (n === 1) return 'porcija';
-      if (n >= 2 && n <= 4) return 'porcije';
-      return 'porcij';
-    }
-
-    if (unit === 'kos' || unit === 'kosi' || unit === 'kosov') {
-      if (n === 1) return 'kos';
-      if (n >= 2 && n <= 4) return 'kosi';
-      return 'kosov';
-    }
-
-    return unit || '';
-  }
-
-  function recipeServingsText(recipe, quantityOverride) {
-    const quantity = quantityOverride ?? recipe.servings_quantity ?? recipe.servings;
-    if (quantity === undefined || quantity === null || quantity === '') {
-      return '';
-    }
-
-    const unit = String(recipe.servings_unit || '').trim();
-    const enUnits = {
-      porcija: 'serving',
-      porcije: 'servings',
-      porcij: 'servings',
-      kos: 'piece',
-      kosi: 'pieces',
-      kosov: 'pieces'
-    };
-    const label = locale === 'en'
-      ? enUnits[unit] || unit
-      : slServingsLabel(quantity, unit);
-
-    return [formatServingQty(quantity), label].filter(Boolean).join(' ');
-  }
-
   function formatServingQty(value) {
     const number = Number(value);
     if (!Number.isFinite(number) || number <= 0) return '0';
     return String(parseFloat(number.toFixed(2)));
   }
 
-  function amountText(item, ratio = 1) {
-    const quantity = item.quantity !== undefined && item.quantity !== null && item.quantity !== ''
-      ? formatServingQty(Number(item.quantity) * ratio)
-      : '';
-    return [quantity, item.unit].filter(Boolean).join(' ').trim();
+  function recipeServingsText(recipe) {
+    const quantity = recipe.servings_quantity !== undefined && recipe.servings_quantity !== null ? recipe.servings_quantity : recipe.servings;
+    if (quantity === undefined || quantity === null || quantity === '') {
+      return '';
+    }
+
+    const unit = String(recipe.servings_unit || '').trim();
+    const label = unit ? declectUnit(quantity, unit) : '';
+    return [formatServingQty(quantity), label].filter(Boolean).join(' ');
+  }
+
+  function amountText(item) {
+    const label = declectUnit(item.quantity, item.unit);
+    return [item.quantity, label].filter(Boolean).join(' ').trim();
+  }
+
+  function ingredientAmountAttrs(item) {
+    const qty = item.quantity !== undefined && item.quantity !== null ? item.quantity : '';
+    const unit = item.unit || '';
+    return qty !== '' ? ` data-base-qty="${qty}" data-unit="${escapeHtml(unit)}"` : '';
   }
 
   function parseTags(value) {
@@ -385,7 +449,7 @@
   }
 
   function tagLabel(tag) {
-    return tagLabels[locale]?.[tag] || tag;
+    return tagLabels[locale] && tagLabels[locale][tag] || tag;
   }
 
   function iconSvg(path) {
@@ -401,6 +465,14 @@
       <svg class="${className}" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
         <path d="M19.5 5.2c-5.9 0-10.6 4.4-10.6 9.8 0 2.6 2.1 4.8 4.8 4.8 6.1 0 10.8-5.7 10.8-12.2 0-1.6-1.2-2.4-2.7-2.4-1.2 0-1.7 0-2.3 0z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
         <path d="M8.2 18.2c3-1.4 6.3-4.7 8.7-9.1" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+      </svg>
+    `;
+  }
+
+  function heartSvg() {
+    return `
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M12 20.5c-4.9-3.4-8-6.3-8-10.2A4.4 4.4 0 0 1 8.4 6c1.5 0 2.8.7 3.6 1.8A4.4 4.4 0 0 1 15.6 6 4.4 4.4 0 0 1 20 10.3c0 3.9-3.1 6.8-8 10.2z" />
       </svg>
     `;
   }
@@ -421,20 +493,37 @@
     `;
   }
 
+  function renderSuitabilityStat(tag) {
+    if (!tag) {
+      return '';
+    }
+
+    return renderStatCard(
+      '<circle cx="12" cy="12" r="8" /><path d="M8.5 12.5l2.2 2.2 4.8-5.2" />',
+      copy.suitability,
+      tagLabel(tag),
+      'recipe-stat-card--tag'
+    );
+  }
+
   function renderServingsCard(recipe) {
-    const quantity = recipe.servings_quantity ?? recipe.servings;
+    const quantity = recipe.servings_quantity !== undefined && recipe.servings_quantity !== null ? recipe.servings_quantity : recipe.servings;
     if (quantity === undefined || quantity === null || quantity === '') return '';
 
-    const current = state.servings || Number(quantity);
+    const numQty = Number(quantity);
+    const unit = String(recipe.servings_unit || '').trim();
+    const displayText = recipeServingsText(recipe);
 
     return `
-      <span class="recipe-stat-card recipe-stat-card--servings" data-default-servings="${Number(quantity)}">
+      <span class="recipe-stat-card recipe-stat-card--servings"
+            data-servings-default="${numQty}"
+            data-servings-unit="${escapeHtml(unit)}">
         ${iconSvg('<path d="M7 3v8M11 3v8M9 3v18M17 3c1.5 2.2 1.5 5.6 0 8v10" />')}
         <span class="recipe-stat-card__copy">
           <small>${copy.servings}</small>
           <span class="recipe-servings-control">
-            <button class="recipe-servings-btn" data-action="serving-dec" aria-label="-" type="button">-</button>
-            <strong class="recipe-servings-val">${escapeHtml(recipeServingsText(recipe, current))}</strong>
+            <button class="recipe-servings-btn" data-action="serving-dec" aria-label="−" type="button">−</button>
+            <strong class="recipe-servings-val" data-current="${numQty}">${escapeHtml(displayText)}</strong>
             <button class="recipe-servings-btn" data-action="serving-inc" aria-label="+" type="button">+</button>
           </span>
         </span>
@@ -453,25 +542,15 @@
     return `${count} sestavin`;
   }
 
-  function currentServingRatio(recipe) {
-    const defaultServings = Number(recipe.servings_quantity ?? recipe.servings);
-    return defaultServings && state.servings ? state.servings / defaultServings : 1;
-  }
-
   function renderRecipe(recipe) {
     const ingredients = recipe.ingredients || [];
     const steps = recipeSteps(recipe);
-    const ratio = currentServingRatio(recipe);
-    const availableCount = ingredients.filter((item) => state.selectedIngredients.has(normalizeName(item.name_sl))).length;
-    const missingCount = Math.max(ingredients.length - availableCount, 0);
-    const matchPercent = ingredients.length ? Math.round((availableCount / ingredients.length) * 100) : 0;
     const marketList = ingredients.slice(0, 5);
     const tags = parseTags(recipe.tags);
-    const preparationMethod = formatTextBlock(recipe.nacin_priprave);
     const additionalTip = formatTextBlock(recipe.dodatni_nasvet);
     const title = recipeTitle(recipe);
     const description = recipeDescription(recipe);
-    const difficulty = difficultyLabels[locale]?.[recipe.difficulty] || recipe.difficulty || '';
+    const difficulty = difficultyLabels[locale] && difficultyLabels[locale][recipe.difficulty] || recipe.difficulty || '';
 
     document.documentElement.lang = locale;
     document.title = `${title || copy.appTitle} - ${copy.appTitle}`;
@@ -485,8 +564,7 @@
                 <path d="M12 3v12M7 10l5 5 5-5M5 21h14" />
               </svg>
             </button>
-            <span>${copy.ingredients}</span>
-            <strong>${leafSvg('brand-leaf')}${copy.appTitle.toUpperCase()}</strong>
+            <span>${copy.topbarLabel}</span>
           </header>
 
           <div class="recipe-sheet__scroll">
@@ -494,52 +572,21 @@
               <img class="recipe-hero__image" src="${recipeImageSrc(recipe)}" alt="${escapeHtml(title)}" />
               <div class="recipe-hero__shade" aria-hidden="true"></div>
               <div class="recipe-hero__badge">
-                ${leafSvg('recipe-hero__leaf')}
-                <span>${copy.plateBadge}</span>
+                ${heartSvg()}
               </div>
               <div class="recipe-hero__copy">
                 <span class="recipe-hero__eyebrow">${copy.eyebrow}</span>
                 <h1>${escapeHtml(title)}</h1>
                 <p>${escapeHtml(description)}</p>
+                <img class="recipe-hero__flower" src="https://pub-5ef221e208a84efe9d31dd8d16b8f322.r2.dev/share-assets/flower.webp" alt="" aria-hidden="true" />
+                <div class="recipe-stat-grid">
+                  ${renderStatCard('<circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" />', copy.time, `${recipeTimeMinutes(recipe)} min`, 'recipe-stat-card--time')}
+                  ${renderStatCard('<path d="M12 3l2.2 5.5 5.8.4-4.5 3.7 1.4 5.7L12 15.2 7.1 18.3l1.4-5.7L4 8.9l5.8-.4L12 3z" />', copy.difficulty, difficulty, 'recipe-stat-card--difficulty')}
+                  ${renderServingsCard(recipe)}
+                  ${renderSuitabilityStat(tags[0])}
+                </div>
               </div>
             </section>
-
-            <div class="recipe-stat-grid">
-              ${renderStatCard('<circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" />', copy.time, `${recipeTimeMinutes(recipe)} min`, 'recipe-stat-card--time')}
-              ${renderStatCard('<path d="M12 3l2.2 5.5 5.8.4-4.5 3.7 1.4 5.7L12 15.2 7.1 18.3l1.4-5.7L4 8.9l5.8-.4L12 3z" />', copy.difficulty, difficulty, 'recipe-stat-card--difficulty')}
-              ${renderServingsCard(recipe)}
-            </div>
-
-            <section class="recipe-match-panel" style="--recipe-match: ${matchPercent}%">
-              <div class="recipe-section-title">
-                <h2>${copy.ingredientMatch}</h2>
-                <span aria-hidden="true">${leafSvg('recipe-section-leaf')}</span>
-              </div>
-              <div class="recipe-match-meter" aria-hidden="true"><span></span></div>
-              <div class="recipe-match-summary">
-                <strong>${availableCount}/${ingredients.length}</strong>
-                <span>${copy.selected}</span>
-                <em>${missingCount} ${copy.toGather}</em>
-              </div>
-            </section>
-
-            ${tags.length || preparationMethod ? `
-              <section class="recipe-card-panel recipe-suitability-panel">
-                ${tags.length ? `
-                  <div class="recipe-section-title">
-                    <h2>${copy.suitableFor}</h2>
-                    <span aria-hidden="true">${leafSvg('recipe-section-leaf')}</span>
-                  </div>
-                  <div class="recipe-suitability-tags">
-                    ${tags.map((tag) => `<span>${escapeHtml(tagLabel(tag))}</span>`).join('')}
-                  </div>
-                ` : ''}
-                ${preparationMethod ? `
-                  <h2 class="${tags.length ? 'recipe-suitability-panel__prep-heading' : ''}">${copy.preparationMethod}</h2>
-                  <p class="recipe-text-panel__body">${preparationMethod}</p>
-                ` : ''}
-              </section>
-            ` : ''}
 
             <section class="recipe-card-panel recipe-ingredients-panel">
               <div class="recipe-ingredients-heading">
@@ -549,7 +596,7 @@
               <div class="recipe-ingredient-grid">
                 ${ingredients.map((item) => {
                   const hasIt = state.selectedIngredients.has(normalizeName(item.name_sl));
-                  const amount = amountText(item, ratio);
+                  const amount = amountText(item);
                   return `
                     <div class="recipe-ingredient-tile ${hasIt ? 'is-available' : 'is-missing'}">
                       <span class="recipe-ingredient-photo">
@@ -557,7 +604,7 @@
                       </span>
                       <span class="recipe-ingredient-copy">
                         <strong>${escapeHtml(item.name_sl)}</strong>
-                        ${amount ? `<em>${escapeHtml(amount)}</em>` : ''}
+                        ${amount ? `<em${ingredientAmountAttrs(item)}>${escapeHtml(amount)}</em>` : ''}
                       </span>
                     </div>
                   `;
@@ -588,7 +635,6 @@
                 ${steps.map((step, index) => `
                   <div class="recipe-prep-step">
                     <span class="recipe-prep-number">${index + 1}</span>
-                    ${iconSvg('<path d="M5 12h14M7 8h10M8 16h8" />')}
                     <p>${escapeHtml(step)}</p>
                   </div>
                 `).join('')}
@@ -599,7 +645,6 @@
               <section class="recipe-card-panel recipe-tip-panel">
                 <div class="recipe-section-title">
                   <h2>${copy.additionalTip}</h2>
-                  <span aria-hidden="true">${leafSvg('recipe-section-leaf')}</span>
                 </div>
                 <p>${additionalTip}</p>
               </section>
@@ -610,6 +655,35 @@
     `;
   }
 
+  function updateServings(newQty) {
+    const card = appRoot.querySelector('.recipe-stat-card--servings');
+    if (!card) return;
+
+    const defaultQty = Number(card.dataset.servingsDefault);
+    const unit = card.dataset.servingsUnit || '';
+    if (!defaultQty) return;
+
+    const valEl = card.querySelector('.recipe-servings-val');
+    if (valEl) {
+      const label = unit ? declectUnit(newQty, unit) : '';
+      valEl.textContent = [formatServingQty(newQty), label].filter(Boolean).join(' ');
+      valEl.dataset.current = newQty;
+    }
+
+    const decBtn = card.querySelector('[data-action="serving-dec"]');
+    if (decBtn) decBtn.disabled = newQty <= 1;
+
+    const ratio = newQty / defaultQty;
+    appRoot.querySelectorAll('.recipe-ingredient-copy em[data-base-qty]').forEach((el) => {
+      const base = Number(el.dataset.baseQty);
+      if (!base) return;
+      const scaled = base * ratio;
+      const unitRaw = el.dataset.unit || '';
+      const unitLabel = unitRaw ? declectUnit(scaled, unitRaw) : '';
+      el.textContent = [formatServingQty(scaled), unitLabel].filter(Boolean).join(' ');
+    });
+  }
+
   function setStatus(message) {
     appRoot.innerHTML = `
       <section class="screen screen--standard">
@@ -618,27 +692,6 @@
         </div>
       </section>
     `;
-  }
-
-  function mailtoUrl() {
-    const recipe = state.recipe;
-    const steps = recipeSteps(recipe);
-    const ingredientLines = (recipe.ingredients || []).map((item) => {
-      const amount = amountText(item, currentServingRatio(recipe));
-      return `- ${item.name_sl}${amount ? ` (${amount})` : ''}`;
-    });
-    const body = [
-      recipeTitle(recipe),
-      recipeDescription(recipe),
-      '',
-      copy.ingredients,
-      ...ingredientLines,
-      '',
-      copy.steps,
-      ...steps.map((step, index) => `${index + 1}. ${step}`)
-    ].filter(Boolean).join('\n');
-
-    return `mailto:?subject=${encodeURIComponent(recipeTitle(recipe))}&body=${encodeURIComponent(body)}`;
   }
 
   function safeFileName(value) {
@@ -655,7 +708,7 @@
     }
 
     const inlineStyle = document.getElementById('zdravo-recipe-inline-style');
-    if (inlineStyle?.textContent) {
+    if (inlineStyle && inlineStyle.textContent) {
       state.cssText = inlineStyle.textContent;
       return state.cssText;
     }
@@ -715,15 +768,12 @@
         return;
       }
 
-      if (action === 'email') {
-        window.location.href = mailtoUrl();
-        return;
-      }
-
       if (action === 'serving-dec' || action === 'serving-inc') {
-        const current = state.servings || Number(state.recipe.servings_quantity ?? state.recipe.servings) || 1;
-        state.servings = action === 'serving-dec' ? Math.max(1, current - 1) : current + 1;
-        renderRecipe(state.recipe);
+        const valEl = appRoot.querySelector('.recipe-servings-val');
+        if (!valEl) return;
+        const current = Number(valEl.dataset.current) || 1;
+        const next = action === 'serving-dec' ? Math.max(1, current - 1) : current + 1;
+        if (next !== current) updateServings(next);
       }
     };
   }
@@ -731,8 +781,11 @@
   function fitAppScale() {
     const styles = getComputedStyle(document.documentElement);
     const baseH = parseFloat(styles.getPropertyValue('--app-base-h')) || 854;
-    const scale = window.innerHeight / baseH;
-    const logicalWidth = window.innerWidth / scale;
+    const viewport = window.visualViewport || {};
+    const viewportHeight = Number(viewport.height || window.innerHeight || document.documentElement.clientHeight || baseH);
+    const viewportWidth = Number(viewport.width || window.innerWidth || document.documentElement.clientWidth || 480);
+    const scale = Math.max(0.1, Math.min(1.2, viewportHeight / baseH));
+    const logicalWidth = Math.max(320, viewportWidth / scale);
     const rootStyle = document.documentElement.style;
     rootStyle.setProperty('--app-scale', String(scale));
     rootStyle.setProperty('--app-logical-w', logicalWidth + 'px');
@@ -745,7 +798,7 @@
     document.documentElement.lang = locale;
     setStatus(copy.loading);
 
-    if (!staticPayload?.recipe && (!normalizeSupabaseUrl(config.supabaseUrl) || !String(config.supabaseAnonKey || config.supabaseKey || '').trim())) {
+    if (!(staticPayload && staticPayload.recipe) && (!normalizeSupabaseUrl(config.supabaseUrl) || !String(config.supabaseAnonKey || config.supabaseKey || '').trim())) {
       setStatus(copy.configError);
       return;
     }
@@ -758,7 +811,6 @@
         return;
       }
 
-      state.servings = Number(state.recipe.servings_quantity ?? state.recipe.servings) || null;
       renderRecipe(state.recipe);
       bind();
 

@@ -36,7 +36,24 @@
     },
     "artifactName": "Zdravo-Jem-Installer-${version}.${ext}",
     "files": [
-      "**/*"
+      "main.js",
+      "preload.js",
+      "supabase-sync.js",
+      "package.json",
+      "renderer/**/*",
+      "assets/**/*",
+      "database/schema.sql",
+      "!**/*.log",
+      "!**/.env*",
+      "!credentials.json",
+      "!token.json",
+      "!database/*.db",
+      "!database/*.db-*",
+      "!dist/**",
+      "!github-release/**",
+      "!recipe-share/**",
+      "!scripts/**",
+      "!supabase/**"
     ],
     "extraResources": [
       {

@@ -179,7 +179,7 @@ function r2ImagePrefix(kind: 'recipe' | 'ingredient') {
     ? ['R2_RECIPE_IMAGE_PREFIX', 'CF_R2_RECIPE_IMAGE_PREFIX', 'ZDRAVO_RECIPE_QR_RECIPE_IMAGE_PREFIX']
     : ['R2_INGREDIENT_IMAGE_PREFIX', 'CF_R2_INGREDIENT_IMAGE_PREFIX', 'ZDRAVO_RECIPE_QR_INGREDIENT_IMAGE_PREFIX'];
 
-  return firstEnv(names, kind === 'recipe' ? 'recipe-images' : 'ingredient-images')
+  return firstEnv(names, kind === 'recipe' ? 'epix-group_recipes-photo-1-70_2026-06-04_0734' : 'ingredient-images')
     .replace(/^\/+|\/+$/g, '');
 }
 
@@ -188,11 +188,14 @@ function r2ImageTemplate(kind: 'recipe' | 'ingredient') {
     ? ['R2_RECIPE_IMAGE_TEMPLATE', 'CF_R2_RECIPE_IMAGE_TEMPLATE', 'ZDRAVO_RECIPE_QR_RECIPE_IMAGE_TEMPLATE']
     : ['R2_INGREDIENT_IMAGE_TEMPLATE', 'CF_R2_INGREDIENT_IMAGE_TEMPLATE', 'ZDRAVO_RECIPE_QR_INGREDIENT_IMAGE_TEMPLATE'];
 
-  return firstEnv(names, '');
+  return firstEnv(names, kind === 'recipe' ? '{recipe_index}.png' : '{ingredient_index}.png');
 }
 
 function recipeQrImageMode() {
-  return firstEnv(['ZDRAVO_RECIPE_QR_IMAGE_MODE', 'RECIPE_QR_IMAGE_MODE'], 'embed').toLowerCase();
+  return firstEnv(
+    ['ZDRAVO_RECIPE_QR_IMAGE_MODE', 'RECIPE_QR_IMAGE_MODE'],
+    firstEnv(['R2_PUBLIC_BASE_URL', 'CF_PUBLIC_BASE_URL']) ? 'r2-url' : 'embed'
+  ).toLowerCase();
 }
 
 function r2AssetUrl(prefix: string, imagePath: unknown) {
@@ -424,7 +427,7 @@ async function putR2Object(key: string, html: string) {
   const body = encoder.encode(html);
   await putR2Bytes(key, body, {
     cacheControl: env('R2_CACHE_CONTROL', 'public, max-age=300'),
-    contentDisposition: `attachment; filename="${safeFileName(key.split('/').pop())}"`,
+    contentDisposition: `inline; filename="${safeFileName(key.split('/').pop())}"`,
     contentType: 'text/html; charset=utf-8',
     metadata: {
       'x-amz-meta-zdravo-sha256': await sha256Hex(body)
@@ -806,7 +809,6 @@ function buildHtml(recipe: Recipe, publicUrl: string) {
       <header class="topbar">
         <a class="download" href="${escapeHtml(publicUrl)}" download aria-label="Prenesi">↓</a>
         <span>SESTAVINE</span>
-        <strong>ZDRAVO JEM</strong>
       </header>
       <section class="hero">
         <img src="${escapeHtml(storageImageUrl(recipeImageBucket, recipe.image_path, recipe.updated_at))}" alt="${escapeHtml(title)}" />
@@ -854,11 +856,11 @@ function buildHtml(recipe: Recipe, publicUrl: string) {
 
 function escapeJsonForScript(value: unknown) {
   return JSON.stringify(value)
-    .replace(/</g, '\\u003c')
-    .replace(/>/g, '\\u003e')
-    .replace(/&/g, '\\u0026')
-    .replace(/ /g, '\\u2028')
-    .replace(/ /g, '\\u2029');
+    .replace(/</g, "\\u003c")
+    .replace(/>/g, "\\u003e")
+    .replace(/&/g, "\\u0026")
+    .replace(/\u2028/g, "\\u2028")
+    .replace(/\u2029/g, "\\u2029");
 }
 
 function escapeScriptText(value: string) {
@@ -893,6 +895,11 @@ function buildShareHtml(recipe: Recipe, publicUrl: string) {
   const browserConfig = {
     ingredientImageBucket: env('INGREDIENT_IMAGE_BUCKET', 'ingredient-images'),
     recipeImageBucket: env('RECIPE_IMAGE_BUCKET', 'recipe-images'),
+    r2IngredientImagePrefix: r2ImagePrefix('ingredient'),
+    r2IngredientImageTemplate: r2ImageTemplate('ingredient'),
+    r2PublicBaseUrl: normalizeBaseUrl(firstEnv(['R2_PUBLIC_BASE_URL', 'CF_PUBLIC_BASE_URL'])),
+    r2RecipeImagePrefix: r2ImagePrefix('recipe'),
+    r2RecipeImageTemplate: r2ImageTemplate('recipe'),
     supabaseUrl: normalizeBaseUrl(requiredEnv('SUPABASE_URL'))
   };
 
@@ -906,7 +913,13 @@ function buildShareHtml(recipe: Recipe, publicUrl: string) {
     <style id="zdravo-recipe-inline-style">${SHARE_STYLES_CSS}</style>
   </head>
   <body data-screen="detail">
-    <div id="app" class="app-root"></div>
+    <div id="app" class="app-root">
+      <section class="screen screen--standard">
+        <div class="empty-state">
+          <h1>Nalaganje recepta...</h1>
+        </div>
+      </section>
+    </div>
     <script>
       window.ZDRAVO_RECIPE_SHARE_CONFIG = ${escapeJsonForScript(browserConfig)};
       window.ZDRAVO_STATIC_RECIPE_PAYLOAD = ${escapeJsonForScript(payload)};

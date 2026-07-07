@@ -263,6 +263,10 @@ Image handling has two modes:
 - `ZDRAVO_RECIPE_QR_IMAGE_MODE=r2-url`: writes image URLs that point to files
   in the same public R2 bucket.
 
+When `R2_PUBLIC_BASE_URL` is configured and no image mode is set, the QR page
+generator defaults to `r2-url`. Set `ZDRAVO_RECIPE_QR_IMAGE_MODE=embed` only if
+you explicitly want images embedded into the HTML.
+
 For `r2-url`, the generated HTML expects:
 
 ```text
@@ -276,6 +280,14 @@ So if `ingredients.image_path` is `tomato.png` and
 ```text
 https://your-r2-public-url/ingredient-images/tomato.png
 ```
+
+If an ingredient row has no `image_path`, the generator falls back to the
+ordered ingredient filename template `{ingredient_index}.png`, matching the
+local `assets/images/ingredients/ordered` convention.
+
+If a recipe row has no `image_path`, recipes 76-145 fall back to the ordered
+recipe image template `{recipe_index}.png` under
+`epix-group_recipes-photo-1-70_2026-06-04_0734`.
 
 The Edge Function mirrors Supabase Storage files to R2 at that exact path. It
 also adds a version query to generated image URLs from the row `updated_at`, so

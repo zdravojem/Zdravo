@@ -201,10 +201,23 @@ function loadConfig() {
     'r2AccountId'
   ]);
   const endpoint = resolveR2Endpoint(values, accountId);
+  const publicBaseUrl = normalizeBaseUrl(firstValue(values, [
+    'R2_PUBLIC_BASE_URL',
+    'CF_PUBLIC_BASE_URL',
+    'S3_PUBLIC_BASE_URL',
+    'ZDRAVO_RECIPE_QR_PUBLIC_BASE_URL',
+    'r2PublicBaseUrl',
+    'recipeQrPublicBaseUrl'
+  ]));
+  const explicitImageMode = String(firstValue(values, [
+    'ZDRAVO_RECIPE_QR_IMAGE_MODE',
+    'RECIPE_QR_IMAGE_MODE',
+    'recipeQrImageMode'
+  ]) || '').trim().toLowerCase();
 
   return {
     ingredientImageBucket: firstValue(values, ['INGREDIENT_IMAGE_BUCKET', 'ingredientImageBucket']) || 'ingredient-images',
-    imageMode: String(firstValue(values, ['ZDRAVO_RECIPE_QR_IMAGE_MODE', 'RECIPE_QR_IMAGE_MODE', 'recipeQrImageMode']) || 'embed').trim().toLowerCase(),
+    imageMode: explicitImageMode || (publicBaseUrl ? 'r2-url' : 'embed'),
     locale: firstValue(values, ['ZDRAVO_RECIPE_QR_LOCALE', 'recipeQrLocale']) === 'en' ? 'en' : 'sl',
     outputDir: path.resolve(firstValue(values, ['ZDRAVO_RECIPE_QR_OUTPUT', 'recipeQrOutput']) || defaultOutputDir),
     recipeImageBucket: firstValue(values, ['RECIPE_IMAGE_BUCKET', 'recipeImageBucket']) || 'recipe-images',
@@ -214,27 +227,20 @@ function loadConfig() {
       cacheControl: firstValue(values, ['R2_CACHE_CONTROL', 'recipeQrCacheControl']) || 'public, max-age=300',
       endpoint,
       forcePathStyle: boolValue(firstValue(values, ['R2_FORCE_PATH_STYLE', 'S3_FORCE_PATH_STYLE', 'r2ForcePathStyle']), false),
-      publicBaseUrl: normalizeBaseUrl(firstValue(values, [
-        'R2_PUBLIC_BASE_URL',
-        'CF_PUBLIC_BASE_URL',
-        'S3_PUBLIC_BASE_URL',
-        'ZDRAVO_RECIPE_QR_PUBLIC_BASE_URL',
-        'r2PublicBaseUrl',
-        'recipeQrPublicBaseUrl'
-      ])),
+      publicBaseUrl,
       region: firstValue(values, ['R2_REGION', 'AWS_REGION', 'r2Region']) || 'auto',
       secretAccessKey: firstValue(values, ['R2_SECRET_ACCESS_KEY', 'CF_R2_SECRET_ACCESS_KEY', 'AWS_SECRET_ACCESS_KEY', 'r2SecretAccessKey']),
       prefix: String(firstValue(values, ['R2_RECIPE_PREFIX', 'ZDRAVO_RECIPE_QR_PREFIX', 'recipeQrPrefix']) || 'recipes')
         .trim()
         .replace(/^\/+|\/+$/g, ''),
-      recipeImagePrefix: String(firstValue(values, ['R2_RECIPE_IMAGE_PREFIX', 'CF_R2_RECIPE_IMAGE_PREFIX', 'ZDRAVO_RECIPE_QR_RECIPE_IMAGE_PREFIX', 'recipeQrRecipeImagePrefix']) || 'recipe-images')
+      recipeImagePrefix: String(firstValue(values, ['R2_RECIPE_IMAGE_PREFIX', 'CF_R2_RECIPE_IMAGE_PREFIX', 'ZDRAVO_RECIPE_QR_RECIPE_IMAGE_PREFIX', 'recipeQrRecipeImagePrefix']) || 'epix-group_recipes-photo-1-70_2026-06-04_0734')
         .trim()
         .replace(/^\/+|\/+$/g, ''),
       ingredientImagePrefix: String(firstValue(values, ['R2_INGREDIENT_IMAGE_PREFIX', 'CF_R2_INGREDIENT_IMAGE_PREFIX', 'ZDRAVO_RECIPE_QR_INGREDIENT_IMAGE_PREFIX', 'recipeQrIngredientImagePrefix']) || 'ingredient-images')
         .trim()
         .replace(/^\/+|\/+$/g, ''),
-      recipeImageTemplate: String(firstValue(values, ['R2_RECIPE_IMAGE_TEMPLATE', 'CF_R2_RECIPE_IMAGE_TEMPLATE', 'ZDRAVO_RECIPE_QR_RECIPE_IMAGE_TEMPLATE', 'recipeQrRecipeImageTemplate']) || '').trim(),
-      ingredientImageTemplate: String(firstValue(values, ['R2_INGREDIENT_IMAGE_TEMPLATE', 'CF_R2_INGREDIENT_IMAGE_TEMPLATE', 'ZDRAVO_RECIPE_QR_INGREDIENT_IMAGE_TEMPLATE', 'recipeQrIngredientImageTemplate']) || '').trim()
+      recipeImageTemplate: String(firstValue(values, ['R2_RECIPE_IMAGE_TEMPLATE', 'CF_R2_RECIPE_IMAGE_TEMPLATE', 'ZDRAVO_RECIPE_QR_RECIPE_IMAGE_TEMPLATE', 'recipeQrRecipeImageTemplate']) || '{recipe_index}.png').trim(),
+      ingredientImageTemplate: String(firstValue(values, ['R2_INGREDIENT_IMAGE_TEMPLATE', 'CF_R2_INGREDIENT_IMAGE_TEMPLATE', 'ZDRAVO_RECIPE_QR_INGREDIENT_IMAGE_TEMPLATE', 'recipeQrIngredientImageTemplate']) || '{ingredient_index}.png').trim()
     },
     supabase: {
       anonKey: firstValue(values, [
@@ -569,6 +575,11 @@ function buildStandaloneRecipeHtml(recipe, config, assets, publicUrl) {
   const browserConfig = {
     ingredientImageBucket: config.ingredientImageBucket,
     recipeImageBucket: config.recipeImageBucket,
+    r2IngredientImagePrefix: config.r2.ingredientImagePrefix,
+    r2IngredientImageTemplate: config.r2.ingredientImageTemplate,
+    r2PublicBaseUrl: config.r2.publicBaseUrl,
+    r2RecipeImagePrefix: config.r2.recipeImagePrefix,
+    r2RecipeImageTemplate: config.r2.recipeImageTemplate,
     supabaseUrl: config.supabase.url
   };
 
@@ -582,7 +593,13 @@ function buildStandaloneRecipeHtml(recipe, config, assets, publicUrl) {
     <style id="zdravo-recipe-inline-style">${assets.css}</style>
   </head>
   <body data-screen="detail">
-    <div id="app" class="app-root"></div>
+    <div id="app" class="app-root">
+      <section class="screen screen--standard">
+        <div class="empty-state">
+          <h1>Nalaganje recepta...</h1>
+        </div>
+      </section>
+    </div>
     <script>
       window.ZDRAVO_RECIPE_SHARE_CONFIG = ${escapeJsonForScript(browserConfig)};
       window.ZDRAVO_STATIC_RECIPE_PAYLOAD = ${escapeJsonForScript(payload)};
@@ -633,7 +650,7 @@ async function uploadHtml(config, client, key, html, fileName, htmlHash) {
     Body: html,
     Bucket: config.r2.bucket,
     CacheControl: config.r2.cacheControl,
-    ContentDisposition: `attachment; filename="${fileName}"`,
+    ContentDisposition: `inline; filename="${fileName}"`,
     ContentType: 'text/html; charset=utf-8',
     Key: key,
     Metadata: {
