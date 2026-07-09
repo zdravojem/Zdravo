@@ -4,6 +4,7 @@
 // ============================================================================
 
 import { ingredientImageSrc as iImg } from '../ingredient-images.js';
+import { recipeImageSrc as rImg } from '../recipe-images.js';
 
 // ---------------------------------------------------------------------------
 // Image map (game assets only — ingredient images use iImg() directly)
@@ -723,6 +724,54 @@ const QUESTIONS = [
     recipe: 'polnjene_paprike'
   }
 ];
+
+// Maps each question's `recipe` key to the real recipe slug (for its photo)
+// and a display name shown on the detective screen.
+const DETECTIVE_RECIPE_INFO = {
+  pecena_postrv: { slug: 'pecena-postrv-z-zelisci', name: { sl: 'Pe&#269;ena postrv z zeli&#353;&#269;i', en: 'Baked trout with herbs' } },
+  jabolcni_zavitek: { slug: 'jablocni-zavitek', name: { sl: 'Jabol&#269;ni zavitek', en: 'Apple strudel' } },
+  fizolova_juha: { slug: 'fizolova-juha', name: { sl: 'Fi&#382;olova juha', en: 'Bean soup' } },
+  bucna_juha: { slug: 'bucna-juha-s-semeni', name: { sl: 'Bu&#269;na juha s semeni', en: 'Pumpkin soup with seeds' } },
+  krompirjeva_solata: { slug: 'krompirjeva-solata-z-bucnim-oljem', name: { sl: 'Krompirjeva solata z bu&#269;nim oljem', en: 'Potato salad with pumpkin oil' } },
+  skutni_namaz: { slug: 'skutni-namaz-z-zelisci', name: { sl: 'Skutni namaz z zeli&#353;&#269;i', en: 'Cottage cheese spread with herbs' } },
+  domace_klobase: { slug: 'domace-klobase-s-hrenom', name: { sl: 'Doma&#269;e klobase s hrenom', en: 'Homemade sausages with horseradish' } },
+  pecena_jabolka: { slug: 'pecena-jabolka-z-orehi-in-medom', name: { sl: 'Pe&#269;ena jabolka z orehi in medom', en: 'Baked apples with walnuts and honey' } },
+  prosena_kasa: { slug: 'prosena-kasa-z-mlekom', name: { sl: 'Prosena ka&#353;a z mlekom', en: 'Millet porridge with milk' } },
+  polnjene_paprike: { slug: 'polnjene-paprike-v-paradiznikovi-omaki', name: { sl: 'Polnjene paprike v paradi&#382;nikovi omaki', en: 'Stuffed peppers in tomato sauce' } },
+  kruh_z_ocvirki: { slug: 'kruh-z-ocvirki', name: { sl: 'Kruh z ocvirki', en: 'Bread with cracklings' } },
+  pecenica_s_kislim_zeljem: { slug: 'pecenica-s-kislim-zeljem', name: { sl: 'Pe&#269;enica s kislim zeljem', en: 'Roast sausage with sauerkraut' } },
+  ovsena_kasa: { slug: 'ovsena-kasa-s-sadjem', name: { sl: 'Ovsena ka&#353;a s sadjem', en: 'Oatmeal with fruit' } },
+  korenckova_potica: { slug: 'korenckova-potica', name: { sl: 'Koren&#269;kova potica', en: 'Carrot potica' } },
+  domace_klobase_s_hrenom: { slug: 'domace-klobase-s-hrenom-in-trdo-kuhanim-jajcem', name: { sl: 'Doma&#269;e klobase s hrenom in jajcem', en: 'Sausages with horseradish and egg' } },
+  ricet: { slug: 'ricet-jesprenj-s-prekajenim-mesom', name: { sl: 'Ri&#269;et z je&#353;prenjem in prekajenim mesom', en: 'Ri&#269;et barley stew with smoked meat' } },
+  matevz: { slug: 'matevz', name: { sl: 'Matev&#382;', en: 'Matev&#382;' } },
+  ajdova_kasa_z_gobami: { slug: 'ajdova-kasa-z-gobami', name: { sl: 'Ajdova ka&#353;a z gobami', en: 'Buckwheat with mushrooms' } },
+  goveji_golaz: { slug: 'goveji-golaz-s-cvickom', name: { sl: 'Goveji gola&#382; s cvi&#269;kom', en: 'Beef goulash with Cvi&#269;ek' } },
+  krompirjevi_zganci: { slug: 'krompirjevi-zganci', name: { sl: 'Krompirjevi &#382;ganci', en: 'Potato &#382;ganci' } },
+  bucni_zavitek: { slug: 'bucni-zavitek-s-skuto', name: { sl: 'Bu&#269;ni zavitek s skuto', en: 'Pumpkin strudel with cottage cheese' } },
+  duseno_rdece_zelje: { slug: 'duseno-rdece-zelje-z-jabolki', name: { sl: 'Du&#353;eno rde&#269;e zelje z jabolki', en: 'Braised red cabbage with apples' } },
+  polpeti_iz_bucki: { slug: 'polpeti-iz-buck-in-krompirja', name: { sl: 'Polpeti iz bu&#269;k in krompirja', en: 'Zucchini and potato patties' } },
+  skutni_struklji: { slug: 'skutni-struklji', name: { sl: 'Skutni &#353;truklji', en: 'Cottage cheese &#353;truklji' } },
+  jabolcni_kompot: { slug: 'jablocni-kompot-z-medom-in-cimetom', name: { sl: 'Jabol&#269;ni kompot z medom in cimetom', en: 'Apple compote with honey and cinnamon' } },
+  telecja_obara: { slug: 'telecja-obara', name: { sl: 'Tele&#269;ja obara', en: 'Veal stew' } },
+  kruhovi_cmoki: { slug: 'kruhovi-cmoki', name: { sl: 'Kruhovi cmoki', en: 'Bread dumplings' } },
+  jogurtova_strjenka: { slug: 'jogurtova-strjenka-z-medom-in-sezonskim-sadjem', name: { sl: 'Jogurtova strjenka z medom in sadjem', en: 'Yogurt panna cotta with honey and fruit' } },
+  zajcja_obara: { slug: 'zajcja-obara', name: { sl: 'Zaj&#269;ja obara', en: 'Rabbit stew' } },
+  domaci_ajdov_kruh: { slug: 'domaci-ajdov-kruh', name: { sl: 'Doma&#269;i ajdov kruh', en: 'Homemade buckwheat bread' } },
+  sarma: { slug: 'sarma', name: { sl: 'Sarma', en: 'Sarma' } },
+  prezganka: { slug: 'prezganka', name: { sl: 'Pre&#382;ganka', en: 'Pre&#382;ganka soup' } },
+  ajdovi_zganci: { slug: 'ajdovi-zganci-z-ocvirki', name: { sl: 'Ajdovi &#382;ganci z ocvirki', en: 'Buckwheat &#382;ganci with cracklings' } },
+  krap_s_krompirjem: { slug: 'krap-s-krompirjem-v-pecici', name: { sl: 'Krap s krompirjem v pe&#269;ici', en: 'Baked carp with potatoes' } },
+  goveja_juha: { slug: 'goveja-juha-z-domacimi-rezanci', name: { sl: 'Goveja juha z doma&#269;imi rezanci', en: 'Beef soup with homemade noodles' } },
+  pecena_prosena_kasa: { slug: 'pecena-prosena-kasa-s-suhimi-slivami', name: { sl: 'Pe&#269;ena prosena ka&#353;a s suhimi slivami', en: 'Baked millet porridge with dried plums' } },
+  domaci_mlinci: { slug: 'domaci-mlinci', name: { sl: 'Doma&#269;i mlinci', en: 'Homemade mlinci' } }
+};
+
+function _detectiveRecipeCard(question, locale) {
+  const info = question && DETECTIVE_RECIPE_INFO[question.recipe];
+  if (!info) return null;
+  return { img: rImg(info.slug), name: _lv(info.name, locale) };
+}
 
 const DETECTIVE_EXTRA_ANSWERS = [
   { l: { sl: 'Korenje', en: 'Carrot' }, img: iImg('korenje'), c: false },
@@ -1500,33 +1549,9 @@ function renderDetective(locale) {
   const q = gs.det.questions[gs.det.currentQ];
   const idx = gs.det.currentQ;
   const totalRiddles = gs.det.questions.length;
-  const missionNodes = 5;
-  const riddlesPerNode = Math.max(1, Math.ceil(totalRiddles / missionNodes));
-  const activeMissionNode = Math.min(missionNodes - 1, Math.floor(idx / riddlesPerNode));
-  const completedMissionNodes = Math.min(missionNodes, Math.floor(idx / riddlesPerNode));
   const progressPct = Math.round((idx / totalRiddles) * 100);
   const questionHeading = locale === 'en' ? 'Who am I?' : 'Kdo sem?';
-  const missionTitle = locale === 'en' ? 'Detective missions' : 'Detektivske misije';
-
-  const missionSteps = Array.from({ length: missionNodes }, (_, i) => {
-    const stateClass = i < completedMissionNodes ? ' done' : i === activeMissionNode ? ' current' : ' todo';
-    const label = i < 2
-      ? (locale === 'en' ? 'Easy' : 'Lahko')
-      : i < 4
-        ? (locale === 'en' ? 'Medium' : 'Srednje')
-        : (locale === 'en' ? 'Hard' : 'Te&#382;je');
-    const line = i < missionNodes - 1
-      ? `<div class="gm-mission-line${i < completedMissionNodes - 1 ? ' done-line' : ''}"></div>`
-      : '';
-    return `
-      <div class="gm-mission-col">
-        <div class="gm-mission-step${stateClass}">
-          ${i < completedMissionNodes ? '&#10003;' : i + 1}
-        </div>
-        <div class="gm-mission-label">${label}</div>
-      </div>
-      ${line}`;
-  }).join('');
+  const recipeCard = _detectiveRecipeCard(q, locale);
 
   const answersHtml = _detectiveAnswers(q).map((a, ai) => `
     <button class="gm-answer-btn" data-gm-action="answer" data-answer-idx="${ai}" data-is-correct="${a.c}">
@@ -1564,6 +1589,19 @@ function renderDetective(locale) {
           </div>
         </div>
 
+        ${recipeCard ? `
+          <div class="gm-det-recipe">
+            <span class="gm-det-recipe__photo">
+              <img src="${recipeCard.img}" alt="" loading="lazy" draggable="false" onerror="this.style.display='none'">
+            </span>
+            <span class="gm-det-recipe__copy">
+              <small>${locale === 'en' ? 'Recipe' : 'Recept'}:</small>
+              <strong>${recipeCard.name}</strong>
+            </span>
+            <img class="gm-det-recipe__icon" src="${IMGS.detective_leaf}" alt="" draggable="false" onerror="this.style.display='none'">
+          </div>
+        ` : ''}
+
         <article class="gm-question-card">
           <div class="gm-question-lens" aria-hidden="true">
             <svg viewBox="0 0 24 24" fill="none">
@@ -1600,17 +1638,6 @@ function renderDetective(locale) {
 
         <div class="gm-explanation" id="gm-explanation" style="display:none"></div>
         <div class="gm-combo-badge" id="gm-combo-badge" style="display:none">${g.combo}</div>
-
-        <div class="gm-mission-bar">
-          <div class="gm-mission-bar__title">${missionTitle}</div>
-          <div class="gm-mission-dots" id="gm-mission-dots">
-            ${missionSteps}
-            <div class="gm-mission-reward">
-              <img class="gm-mission-reward-img" src="${IMGS.detective_reward}" alt="" draggable="false" onerror="this.style.display='none'">
-              <strong>${locale === 'en' ? 'REWARD<br>at the end!' : 'NAGRADA<br>na koncu poti!'}</strong>
-            </div>
-          </div>
-        </div>
       </div>
       ${renderToast()}
       ${renderModal('back', locale)}

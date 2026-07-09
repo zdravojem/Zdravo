@@ -499,7 +499,7 @@ function setupInfiniteCarousel(track) {
   let dragPointerId = null;
   let dragStartX = 0;
   let dragStartOffset = 0;
-  const autoSpeed = 0.025;
+  const autoSpeed = 0.012;
 
   const normalizeOffset = (value) => {
     if (!loopWidth && !measure()) {

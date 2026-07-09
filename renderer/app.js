@@ -109,13 +109,16 @@ function buildRecipeEmailPayload(state, recipe) {
     description: recipeCopy.description,
     image_url: recipe.image_url || recipeImageSrc(recipe),
     image_path: recipe.image_path || '',
+    qr_url: recipe.qr_url || '',
     prep_time: prepMinutes || '',
     servings: recipeServingsText(recipe, state.locale),
     difficulty: recipe.difficulty ? state.ui.translateDifficulty(recipe.difficulty) || recipe.difficulty : '',
     ingredients: (recipe.ingredients || []).map((item) => {
       const amount = item.amount ?? item.quantity ?? '';
       return {
+        id: item.id ?? item.ingredient_id ?? '',
         name: state.ui.translateIngredient(item.name || item.name_sl || ''),
+        image_path: item.image_path || '',
         amount,
         unit: state.ui.translateUnit(amount, item.unit) || item.unit || ''
       };
@@ -130,7 +133,6 @@ const state = {
   screen: 'welcome',
   activeCategory: null,
   activeRecipeCategory: 'all',
-  recipeSearch: '',
   ingredientsByCategory: {},
   recipesByCategory: {},
   homeRecipeIdeas: [],
@@ -250,7 +252,6 @@ function resetState() {
   gamesScreen.cleanup?.();
   state.activeCategory = null;
   state.activeRecipeCategory = 'all';
-  state.recipeSearch = '';
   state.selectedIngredients = new Set();
   state.selectedHomeCategories = new Set();
   state.homeCategoryScrollLeft = null;
@@ -473,15 +474,10 @@ const actions = {
     state.activeRecipeCategory = categoryKey;
     render();
   },
-  setRecipeSearch(query) {
-    state.recipeSearch = query;
-    render();
-  },
   toggleIngredient(name) {
     state.resultsMode = 'matched';
     state.resultIngredientFilter = null;
     state.activeRecipeCategory = 'all';
-    state.recipeSearch = '';
     if (state.selectedIngredients.has(name)) {
       state.selectedIngredients.delete(name);
     } else {
@@ -500,7 +496,6 @@ const actions = {
     state.resultsMode = 'categories';
     state.resultIngredientFilter = null;
     state.activeRecipeCategory = 'all';
-    state.recipeSearch = '';
     await actions.goTo('results');
   },
   rememberHomeCategoryScroll(scrollLeft) {
@@ -520,14 +515,12 @@ const actions = {
     state.resultsMode = 'all';
     state.resultIngredientFilter = null;
     state.activeRecipeCategory = 'all';
-    state.recipeSearch = '';
     await actions.goTo('results');
   },
   async showMatchedRecipes() {
     state.resultsMode = 'matched';
     state.resultIngredientFilter = null;
     state.activeRecipeCategory = 'all';
-    state.recipeSearch = '';
     await actions.goTo('results');
   },
   async showRecipesForIngredient(name) {
@@ -535,7 +528,6 @@ const actions = {
     state.resultsMode = 'ingredient';
     state.resultIngredientFilter = name;
     state.activeRecipeCategory = 'all';
-    state.recipeSearch = '';
     await actions.goTo('results');
   },
   selectRecipe(recipeId) {
@@ -561,7 +553,6 @@ const actions = {
     state.resultsMode = 'all';
     state.resultIngredientFilter = null;
     state.activeRecipeCategory = 'all';
-    state.recipeSearch = '';
     state.recipeShare = null;
     await computeResults();
     state.currentRecipe =

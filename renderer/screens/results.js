@@ -33,10 +33,6 @@ const recipeBrowserMetaIcons = {
   `
 };
 
-function normalize(value) {
-  return String(value || '').toLowerCase();
-}
-
 function categoryMatches(recipe, activeCategory) {
   if (activeCategory === 'all') {
     return true;
@@ -45,19 +41,7 @@ function categoryMatches(recipe, activeCategory) {
 }
 
 function visibleRecipes(state) {
-  const query = normalize(state.recipeSearch);
-  return state.results.filter((recipe) => {
-    const copy = state.ui.translateRecipe(recipe);
-    const text = [
-      copy.title,
-      copy.description,
-      recipe.tags,
-      ...(recipe.ingredients || []).map((item) => state.ui.translateIngredient(item.name_sl))
-    ]
-      .join(' ')
-      .toLowerCase();
-    return categoryMatches(recipe, state.activeRecipeCategory) && text.includes(query);
-  });
+  return state.results.filter((recipe) => categoryMatches(recipe, state.activeRecipeCategory));
 }
 
 export function render({ state }) {
@@ -76,20 +60,6 @@ export function render({ state }) {
       </header>
 
       <div class="kiosk-scroll">
-        <label class="recipe-search-box">
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <circle cx="11" cy="11" r="8"></circle>
-            <path d="M21 21l-4.35-4.35"></path>
-          </svg>
-          <input
-            type="text"
-            value="${state.recipeSearch}"
-            placeholder="${locale === 'en' ? 'Search recipes or ingredients...' : 'I&#353;&#269;i recepte ali sestavine...'}"
-            data-recipe-search
-            data-focus-key="recipe-search"
-          />
-        </label>
-
         <div class="recipe-browser-list">
           ${
             recipes.length
@@ -138,13 +108,6 @@ export function bind({ actions, root }) {
   const back = root.querySelector('[data-action="back"]');
   if (back) {
     back.addEventListener('pointerdown', () => actions.goHome(false));
-  }
-
-  const search = root.querySelector('[data-recipe-search]');
-  if (search) {
-    search.addEventListener('input', (event) => {
-      actions.setRecipeSearch(event.target.value);
-    });
   }
 
   const list = root.querySelector('.recipe-browser-list');

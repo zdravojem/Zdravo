@@ -1248,49 +1248,13 @@ body[data-screen="games"] .app-root {
 }
 
 /* =========================================================================
-   RECIPES (search + list)
+   RECIPES (list)
    ========================================================================= */
-.recipe-search-box {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin: 16px 20px 16px;
-  padding: 0 16px;
-  background: #fff;
-  border: 1px solid var(--border);
-  border-radius: 14px;
-}
-
-.recipe-search-box svg {
-  width: 20px;
-  height: 20px;
-  color: var(--text-muted);
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 2;
-  flex-shrink: 0;
-}
-
-.recipe-search-box input {
-  flex: 1;
-  padding: 14px 0;
-  border: none;
-  background: none;
-  font-family: inherit;
-  font-size: 15px;
-  color: var(--text-dark);
-  outline: none;
-}
-
-.recipe-search-box input::placeholder {
-  color: var(--text-muted);
-}
-
 .recipe-browser-list {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  padding: 0 20px 20px;
+  padding: 16px 20px 20px;
 }
 
 .recipe-browser-row {
@@ -1991,6 +1955,7 @@ body[data-screen="games"] .app-root {
 }
 
 .recipe-share-modal {
+  --qr-share-brown: #b3906a;
   position: relative;
   width: min(100%, 360px);
   padding: 24px 22px 22px;
@@ -2003,7 +1968,7 @@ body[data-screen="games"] .app-root {
 .recipe-share-modal h3 {
   font-family: var(--font-serif);
   font-size: 24px;
-  color: var(--brown);
+  color: var(--qr-share-brown);
   margin-bottom: 8px;
 }
 
@@ -2023,7 +1988,7 @@ body[data-screen="games"] .app-root {
   place-items: center;
   border-radius: 999px;
   background: rgba(59, 109, 17, 0.08);
-  color: var(--brown);
+  color: var(--qr-share-brown);
 }
 
 .recipe-share-modal__close svg {
@@ -2058,7 +2023,7 @@ body[data-screen="games"] .app-root {
 .recipe-share-modal__qr.is-loading {
   gap: 12px;
   background: linear-gradient(180deg, #fff 0%, #fcf8ef 100%);
-  color: var(--brown);
+  color: var(--qr-share-brown);
 }
 
 .recipe-share-modal__spinner {
@@ -2073,7 +2038,7 @@ body[data-screen="games"] .app-root {
 .recipe-share-modal__qr.is-loading strong {
   font-size: 13px;
   font-weight: 600;
-  color: var(--brown);
+  color: var(--qr-share-brown);
 }
 
 .recipe-share-modal__error {
@@ -2082,13 +2047,14 @@ body[data-screen="games"] .app-root {
 }
 
 .recipe-share-modal__actions .btn--primary {
-  background: var(--brown);
-  border-color: var(--brown);
-  box-shadow: 0 4px 12px rgba(107, 68, 35, 0.25);
+  background: var(--qr-share-brown);
+  border-color: var(--qr-share-brown);
+  box-shadow: 0 4px 12px rgba(179, 144, 106, 0.25);
 }
 
 .recipe-share-modal__actions .btn--outline {
-  border-color: var(--brown);
+  border-color: var(--qr-share-brown);
+  color: var(--qr-share-brown);
 }
 
 .recipe-share-modal__actions {
@@ -2203,7 +2169,9 @@ body[data-screen="games"] .app-root {
   font-size: 14px;
   font-weight: 800;
   line-height: 1.15;
-  overflow-wrap: anywhere;
+  hyphens: none;
+  overflow-wrap: normal;
+  word-break: normal;
 }
 
 .recipe-ingredient-tile em {

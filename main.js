@@ -409,34 +409,120 @@ function encodeStoragePath(imagePath) {
     .join('/');
 }
 
+function normalizePublicBaseUrl(value) {
+  const trimmed = String(value || '').trim().replace(/\/+$/, '');
+  if (!trimmed) {
+    return '';
+  }
+
+  return /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`;
+}
+
+function safeFileName(value, fallback = 'item') {
+  return String(value || '')
+    .trim()
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9._-]+/g, '-')
+    .replace(/^-+|-+$/g, '') || fallback;
+}
+
+function r2ImageTemplateValue(template, item = {}) {
+  const id = Number(item.id || item.ingredient_id);
+  const recipeIndex = Number.isInteger(id) && id >= 76 && id <= 145 ? String(id - 75) : '';
+  const ingredientIndex = Number.isInteger(id)
+    ? String(id >= 222 && id <= 257 ? id - 116 : id >= 117 ? id - 116 : id >= 12 ? id - 11 : id)
+    : '';
+  const slug = safeFileName(item.slug || item.name || item.name_sl || item.title || item.id);
+  const templateText = String(template || '');
+
+  if (
+    (templateText.includes('{recipe_index}') && !recipeIndex) ||
+    (templateText.includes('{ingredient_index}') && !ingredientIndex) ||
+    (templateText.includes('{id}') && !safeFileName(item.id || item.ingredient_id || '', ''))
+  ) {
+    return '';
+  }
+
+  return templateText
+    .replace(/\{id\}/g, safeFileName(item.id || item.ingredient_id || '', ''))
+    .replace(/\{recipe_index\}/g, safeFileName(recipeIndex, ''))
+    .replace(/\{ingredient_index\}/g, safeFileName(ingredientIndex, ''))
+    .replace(/\{slug\}/g, slug)
+    .replace(/\{name\}/g, slug)
+    .replace(/\{image_path\}/g, String(item.image_path || '').replace(/^\/+/, ''));
+}
+
+function configuredR2PublicBaseUrl() {
+  return normalizePublicBaseUrl(runtimeConfigValue([
+    'R2_PUBLIC_BASE_URL',
+    'CF_PUBLIC_BASE_URL',
+    'S3_PUBLIC_BASE_URL',
+    'ZDRAVO_RECIPE_QR_PUBLIC_BASE_URL',
+    'publicBaseUrl',
+    'r2PublicBaseUrl',
+    'recipeQrPublicBaseUrl'
+  ]));
+}
+
+function publicR2ObjectUrl(prefix, imagePath) {
+  const r2BaseUrl = configuredR2PublicBaseUrl();
+  const normalizedPrefix = String(prefix || '').replace(/^\/+|\/+$/g, '');
+  const normalizedPath = String(imagePath || '').trim().replace(/^\/+/, '');
+
+  if (!r2BaseUrl || !normalizedPath || /^https?:\/\//i.test(normalizedPath)) {
+    return /^https?:\/\//i.test(normalizedPath) ? normalizedPath : '';
+  }
+
+  return `${r2BaseUrl}/${[normalizedPrefix, normalizedPath].filter(Boolean).map(encodeStoragePath).join('/')}`;
+}
+
+function isLocalEmailImagePath(value) {
+  const pathValue = String(value || '').trim();
+  return (
+    !pathValue ||
+    pathValue.startsWith('assets/') ||
+    pathValue.startsWith('../') ||
+    pathValue.startsWith('/synced-images/') ||
+    pathValue.startsWith('zdravo-image:')
+  );
+}
+
 function publicRecipeImageUrl(recipe) {
   const explicitUrl = String(recipe.image_url || recipe.imageUrl || recipe.image || '').trim();
   if (/^https?:\/\//i.test(explicitUrl)) {
     return explicitUrl;
   }
 
-  const imagePath = String(recipe.image_path || explicitUrl || '').trim();
+  const templatePath = r2ImageTemplateValue(runtimeConfigValue([
+    'R2_RECIPE_IMAGE_TEMPLATE',
+    'CF_R2_RECIPE_IMAGE_TEMPLATE',
+    'ZDRAVO_RECIPE_QR_RECIPE_IMAGE_TEMPLATE',
+    'recipeQrRecipeImageTemplate',
+    'recipeImageTemplate'
+  ]) || '{recipe_index}.png', recipe);
+  const storedImagePath = String(recipe.image_path || explicitUrl || '').trim();
+  const imagePath = String(isLocalEmailImagePath(storedImagePath) ? templatePath : storedImagePath || templatePath).trim();
   if (/^https?:\/\//i.test(imagePath)) {
     return imagePath;
   }
 
-  if (!imagePath || imagePath.startsWith('assets/')) {
+  if (isLocalEmailImagePath(imagePath)) {
     return '';
   }
 
-  const r2BaseUrl = String(runtimeConfigValue([
-    'R2_PUBLIC_BASE_URL',
-    'CF_PUBLIC_BASE_URL',
-    'publicBaseUrl'
-  ]) || '').trim().replace(/\/+$/, '');
   const r2RecipePrefix = String(runtimeConfigValue([
     'R2_RECIPE_IMAGE_PREFIX',
     'CF_R2_RECIPE_IMAGE_PREFIX',
+    'ZDRAVO_RECIPE_QR_RECIPE_IMAGE_PREFIX',
+    'recipeQrRecipeImagePrefix',
     'recipeImagePrefix'
-  ]) || 'recipe-images').replace(/^\/+|\/+$/g, '');
+  ]) || 'epix-group_recipes-photo-1-70_2026-06-04_0734').replace(/^\/+|\/+$/g, '');
 
-  if (r2BaseUrl) {
-    return `${r2BaseUrl}/${r2RecipePrefix}/${encodeStoragePath(imagePath)}`;
+  const r2Url = publicR2ObjectUrl(r2RecipePrefix, imagePath);
+  if (r2Url) {
+    return r2Url;
   }
 
   const supabaseUrl = String(runtimeConfigValue([
@@ -453,19 +539,75 @@ function publicRecipeImageUrl(recipe) {
   return '';
 }
 
+function publicIngredientImageUrl(ingredient) {
+  const explicitUrl = String(ingredient.image_url || ingredient.imageUrl || '').trim();
+  if (/^https?:\/\//i.test(explicitUrl)) {
+    return explicitUrl;
+  }
+
+  const templatePath = r2ImageTemplateValue(runtimeConfigValue([
+    'R2_INGREDIENT_IMAGE_TEMPLATE',
+    'CF_R2_INGREDIENT_IMAGE_TEMPLATE',
+    'ZDRAVO_RECIPE_QR_INGREDIENT_IMAGE_TEMPLATE',
+    'recipeQrIngredientImageTemplate',
+    'ingredientImageTemplate'
+  ]) || '{ingredient_index}.png', ingredient);
+  const storedImagePath = String(ingredient.image_path || explicitUrl || '').trim();
+  const imagePath = String(isLocalEmailImagePath(storedImagePath) ? templatePath : storedImagePath || templatePath).trim();
+
+  if (isLocalEmailImagePath(imagePath)) {
+    return '';
+  }
+
+  const r2IngredientPrefix = String(runtimeConfigValue([
+    'R2_INGREDIENT_IMAGE_PREFIX',
+    'CF_R2_INGREDIENT_IMAGE_PREFIX',
+    'ZDRAVO_RECIPE_QR_INGREDIENT_IMAGE_PREFIX',
+    'recipeQrIngredientImagePrefix',
+    'ingredientImagePrefix'
+  ]) || 'ingredient-images').replace(/^\/+|\/+$/g, '');
+  const r2Url = publicR2ObjectUrl(r2IngredientPrefix, imagePath);
+  if (r2Url) {
+    return r2Url;
+  }
+
+  const supabaseUrl = String(runtimeConfigValue([
+    'SUPABASE_URL',
+    'VITE_SUPABASE_URL',
+    'VITE_PUBLIC_SUPABASE_URL',
+    'supabaseUrl'
+  ]) || '').trim().replace(/\/+$/, '');
+
+  if (supabaseUrl) {
+    return `${supabaseUrl}/storage/v1/object/public/ingredient-images/${encodeStoragePath(imagePath)}`;
+  }
+
+  return '';
+}
+
 function normalizeEmailIngredient(item) {
   if (typeof item === 'string') {
     return {
+      id: '',
       name: item,
+      imageUrl: '',
+      image_path: '',
       amount: '',
       unit: ''
     };
   }
 
-  return {
+  const ingredient = {
+    id: item?.id ?? item?.ingredient_id ?? '',
     name: item?.name ?? item?.name_sl ?? '',
+    image_path: item?.image_path ?? '',
     amount: item?.amount ?? item?.quantity ?? '',
     unit: item?.unit ?? ''
+  };
+
+  return {
+    ...ingredient,
+    imageUrl: publicIngredientImageUrl(ingredient)
   };
 }
 
@@ -480,6 +622,8 @@ function normalizeRecipeForEmail(recipe = {}) {
     title: recipe.title ?? recipe.name_sl ?? 'Recept',
     description: recipe.description ?? recipe.description_sl ?? '',
     imageUrl: publicRecipeImageUrl(recipe),
+    shareUrl: String(recipe.qr_url || recipe.qrUrl || '').trim(),
+    tip: recipe.dodatni_nasvet ?? recipe.additionalTip ?? '',
     prepTime,
     servings,
     difficulty: recipe.difficulty ?? '',
@@ -488,16 +632,30 @@ function normalizeRecipeForEmail(recipe = {}) {
   };
 }
 
-function metaCardHtml(label, value) {
+const emailPalette = {
+  page: '#fff7ea',
+  card: '#fffdf8',
+  soft: '#fff6e8',
+  greenSoft: '#eff9e5',
+  border: '#eadcc7',
+  greenBorder: '#d2e7c1',
+  title: '#20242a',
+  body: '#4f5b4a',
+  muted: '#829274',
+  brown: '#b3906a',
+  green: '#719b44'
+};
+
+function emailMetaCardHtml(label, value) {
   if (value === undefined || value === null || value === '') {
     return '';
   }
 
   return `
-    <td style="padding:6px; width:33.33%;">
-      <div style="background:#f1f8e9; border:1px solid #a5d6a7; border-radius:10px; padding:12px 10px; text-align:center;">
-        <div style="font-size:11px; line-height:1.2; color:#2e7d32; font-weight:700; text-transform:uppercase;">${label}</div>
-        <div style="font-size:15px; line-height:1.35; color:#1b5e20; font-weight:700; margin-top:4px;">${escapeHtml(value)}</div>
+    <td width="33.33%" style="padding:0 4px 8px 0; vertical-align:top;">
+      <div style="min-height:42px; border:1px solid ${emailPalette.border}; border-radius:12px; background:${emailPalette.card}; padding:9px 8px; text-align:center;">
+        <div style="font-size:10px; line-height:1.2; color:${emailPalette.green}; font-weight:800; text-transform:uppercase; letter-spacing:.2px;">${escapeHtml(label)}</div>
+        <div style="font-size:13px; line-height:1.25; color:#283126; font-weight:900; margin-top:3px;">${escapeHtml(value)}</div>
       </div>
     </td>
   `;
@@ -512,98 +670,185 @@ function prepTimeText(value) {
   return /\bmin\b/i.test(text) ? text : `${text} min`;
 }
 
-function ingredientRowsHtml(ingredients) {
+function emailIngredientCardsHtml(ingredients) {
   if (!ingredients.length) {
     return `
       <tr>
-        <td colspan="3" style="padding:12px; border-bottom:1px solid #e0e0e0; color:#5f6f52;">Sestavine niso navedene.</td>
+        <td style="padding:12px; color:${emailPalette.body}; font-weight:700;">Sestavine niso navedene.</td>
       </tr>
     `;
   }
 
-  return ingredients
-    .map((item) => `
-      <tr>
-        <td style="padding:10px 12px; border-bottom:1px solid #e0e0e0; color:#1f2d1b; font-weight:700;">${escapeHtml(item.name)}</td>
-        <td style="padding:10px 12px; border-bottom:1px solid #e0e0e0; color:#4f5f49; text-align:right;">${escapeHtml(item.amount)}</td>
-        <td style="padding:10px 12px; border-bottom:1px solid #e0e0e0; color:#4f5f49;">${escapeHtml(item.unit)}</td>
-      </tr>
-    `)
-    .join('');
-}
+  const cells = ingredients.map((item) => {
+    const amount = [item.amount, item.unit].filter(Boolean).join(' ').trim();
+    const imageHtml = item.imageUrl
+      ? `<img src="${escapeHtml(item.imageUrl)}" width="54" height="54" alt="${escapeHtml(item.name)}" style="display:block; width:54px; height:54px; border-radius:999px; object-fit:cover; border:0;" />`
+      : `<div style="width:54px; height:54px; border-radius:999px; background:#eef3e8;"></div>`;
 
-function stepsHtml(steps) {
-  if (!steps.length) {
-    return '<p style="margin:0; color:#5f6f52;">Koraki priprave niso navedeni.</p>';
+    return `
+      <td width="50%" style="padding:5px; vertical-align:top;">
+        <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="border-collapse:separate; border-spacing:0; min-height:76px; background:${emailPalette.soft}; border:1px solid #f1e2c8; border-radius:12px;">
+          <tr>
+            <td width="66" style="padding:10px 0 10px 10px; vertical-align:middle;">${imageHtml}</td>
+            <td style="padding:10px 10px 10px 8px; vertical-align:middle;">
+              <div style="color:#2d332d; font-size:13px; font-weight:800; line-height:1.2; word-break:normal; overflow-wrap:normal;">${escapeHtml(item.name)}</div>
+              ${amount ? `<div style="margin-top:3px; color:${emailPalette.muted}; font-size:12px; font-weight:700; line-height:1.2;">${escapeHtml(amount)}</div>` : ''}
+            </td>
+          </tr>
+        </table>
+      </td>
+    `;
+  });
+
+  const rows = [];
+  for (let index = 0; index < cells.length; index += 2) {
+    rows.push(`<tr>${cells[index]}${cells[index + 1] || '<td width="50%" style="padding:5px;"></td>'}</tr>`);
   }
 
-  return `
-    <ol style="margin:0; padding:0 0 0 22px; color:#1f2d1b;">
-      ${steps.map((step) => `
-        <li style="margin:0 0 12px 0; padding-left:4px; line-height:1.55;">${escapeHtml(step)}</li>
-      `).join('')}
-    </ol>
-  `;
+  return rows.join('');
+}
+
+function emailMarketChipsHtml(ingredients) {
+  return ingredients.slice(0, 5).map((item) => {
+    const imageHtml = item.imageUrl
+      ? `<img src="${escapeHtml(item.imageUrl)}" width="28" height="28" alt="${escapeHtml(item.name)}" style="display:block; width:28px; height:28px; border-radius:999px; object-fit:cover; border:0;" />`
+      : `<span style="display:block; width:28px; height:28px; border-radius:999px; background:#f1e8d9;"></span>`;
+
+    return `
+      <td width="20%" style="padding:4px; vertical-align:top; text-align:center;">
+        <div style="min-height:58px; padding:7px 4px; border:1px solid #ebdcc1; border-radius:10px; background:${emailPalette.card}; color:#5f5848; font-size:10px; font-weight:800; line-height:1.15;">
+          <div style="display:inline-block; margin:0 auto 4px;">${imageHtml}</div>
+          <div>${escapeHtml(item.name)}</div>
+        </div>
+      </td>
+    `;
+  }).join('');
+}
+
+function emailStepsHtml(steps) {
+  if (!steps.length) {
+    return `<p style="margin:0; color:${emailPalette.body};">Koraki priprave niso navedeni.</p>`;
+  }
+
+  return steps.map((step, index) => `
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="border-collapse:collapse; border-bottom:${index === steps.length - 1 ? '0' : '1px solid #efe5d6'};">
+      <tr>
+        <td width="34" style="padding:10px 0; vertical-align:top;">
+          <span style="display:inline-block; width:23px; height:23px; border-radius:999px; background:#eef7e7; color:${emailPalette.green}; font-size:12px; font-weight:900; line-height:23px; text-align:center;">${index + 1}</span>
+        </td>
+        <td style="padding:10px 0; color:#665f4e; font-size:14px; font-weight:600; line-height:1.55;">${escapeHtml(step)}</td>
+      </tr>
+    </table>
+  `).join('');
 }
 
 function buildRecipeEmailHtml(recipe) {
   const imageHtml = recipe.imageUrl
     ? `
-      <img src="${escapeHtml(recipe.imageUrl)}" alt="${escapeHtml(recipe.title)}" style="display:block; width:100%; max-width:600px; height:auto; border:0;" />
+      <img src="${escapeHtml(recipe.imageUrl)}" alt="${escapeHtml(recipe.title)}" width="640" height="230" style="display:block; width:100%; max-width:640px; height:230px; border:0; border-radius:16px 16px 0 0; object-fit:cover; object-position:center;" />
     `
     : `
-      <div style="background:#f1f8e9; color:#2e7d32; padding:42px 24px; text-align:center; font-weight:700;">
+      <div style="height:230px; border-radius:16px 16px 0 0; background:#f5efe1; color:${emailPalette.green}; padding:94px 24px; text-align:center; font-weight:800; box-sizing:border-box;">
         Slika recepta
       </div>
     `;
+  const tipHtml = recipe.tip
+    ? `
+      <table role="presentation" width="640" cellspacing="0" cellpadding="0" style="width:100%; max-width:640px; border-collapse:separate; border-spacing:0; margin-top:14px; background:#f5fbef; border:1px solid #dcebcf; border-radius:18px;">
+        <tr>
+          <td style="padding:16px;">
+            <h2 style="margin:0 0 8px; color:${emailPalette.title}; font-size:20px; line-height:1.15; font-weight:900;">Dodatni nasvet</h2>
+            <p style="margin:0; color:#665f4e; font-size:14px; line-height:1.6;">${escapeHtml(recipe.tip)}</p>
+          </td>
+        </tr>
+      </table>
+    `
+    : '';
 
   return `
     <!doctype html>
     <html>
-      <body style="margin:0; padding:0; background:#edf4e8; font-family:Arial, sans-serif; color:#1f2d1b;">
-        <div style="width:100%; background:#edf4e8; padding:24px 0;">
-          <div style="max-width:600px; margin:0 auto; background:#ffffff; border-radius:14px; overflow:hidden;">
-            <div style="background:#2e7d32; color:#ffffff; padding:26px 28px; text-align:center;">
-              <div style="font-size:28px; font-weight:800; line-height:1.1;">Zdravo Jem</div>
-              <div style="font-size:14px; line-height:1.4; margin-top:8px;">Lokalni recepti za zdrav kro&#382;nik</div>
-            </div>
-
-            ${imageHtml}
-
-            <div style="padding:28px;">
-              <h1 style="font-size:28px; line-height:1.2; margin:0 0 12px; color:#1b5e20;">${escapeHtml(recipe.title)}</h1>
-              <p style="font-size:16px; line-height:1.55; margin:0 0 20px; color:#4f5f49;">${escapeHtml(recipe.description)}</p>
-
-              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="border-collapse:collapse; margin:0 0 24px;">
-                <tr>
-                  ${metaCardHtml('Priprava', prepTimeText(recipe.prepTime))}
-                  ${metaCardHtml('Porcije', recipe.servings)}
-                  ${metaCardHtml('Zahtevnost', recipe.difficulty)}
-                </tr>
-              </table>
-
-              <h2 style="font-size:20px; line-height:1.25; margin:0 0 12px; color:#2e7d32;">Sestavine</h2>
-              <table width="100%" cellspacing="0" cellpadding="0" style="border-collapse:collapse; border:1px solid #d7e8cf; margin:0 0 26px;">
-                <thead>
+      <body style="margin:0; padding:0; background:${emailPalette.page}; font-family:Arial, Helvetica, sans-serif; color:${emailPalette.title};">
+        <div style="width:100%; background:${emailPalette.page}; padding:22px 0;">
+          <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="border-collapse:collapse;">
+            <tr>
+              <td align="center" style="padding:0 14px;">
+                <table role="presentation" width="640" cellspacing="0" cellpadding="0" style="width:100%; max-width:640px; border-collapse:collapse;">
                   <tr>
-                    <th align="left" style="background:#f1f8e9; color:#2e7d32; padding:10px 12px; font-size:13px;">Ime</th>
-                    <th align="right" style="background:#f1f8e9; color:#2e7d32; padding:10px 12px; font-size:13px;">Koli&#269;ina</th>
-                    <th align="left" style="background:#f1f8e9; color:#2e7d32; padding:10px 12px; font-size:13px;">Enota</th>
+                    <td style="padding:0 0 8px; color:#24251f; font-size:14px; font-weight:900;">Zdravo Jem</td>
                   </tr>
-                </thead>
-                <tbody>
-                  ${ingredientRowsHtml(recipe.ingredients)}
-                </tbody>
-              </table>
+                  <tr>
+                    <td>${imageHtml}</td>
+                  </tr>
+                </table>
 
-              <h2 style="font-size:20px; line-height:1.25; margin:0 0 12px; color:#2e7d32;">Postopek</h2>
-              ${stepsHtml(recipe.steps)}
-            </div>
+                <table role="presentation" width="640" cellspacing="0" cellpadding="0" style="width:100%; max-width:640px; border-collapse:separate; border-spacing:0; margin-top:-20px; background:${emailPalette.card}; border:1px solid ${emailPalette.border}; border-radius:18px; box-shadow:0 10px 24px rgba(68, 48, 22, 0.08);">
+                  <tr>
+                    <td style="padding:26px 20px 18px;">
+                      <div style="color:${emailPalette.green}; font-size:11px; line-height:1; font-weight:900; text-transform:uppercase; letter-spacing:.4px; margin-bottom:8px;">Kuhinjski recept</div>
+                      <h1 style="margin:0 0 10px; max-width:420px; color:${emailPalette.title}; font-size:34px; line-height:.98; font-weight:900;">${escapeHtml(recipe.title)}</h1>
+                      ${recipe.description ? `<p style="margin:0; max-width:540px; color:${emailPalette.body}; font-size:14px; font-weight:700; line-height:1.45;">${escapeHtml(recipe.description)}</p>` : ''}
+                      <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="border-collapse:collapse; margin-top:16px;">
+                        <tr>
+                          ${emailMetaCardHtml('Cas', prepTimeText(recipe.prepTime))}
+                          ${emailMetaCardHtml('Porcije', recipe.servings)}
+                          ${emailMetaCardHtml('Zahtevnost', recipe.difficulty)}
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                </table>
 
-            <div style="background:#2e7d32; color:#ffffff; padding:18px 24px; text-align:center; font-size:13px; line-height:1.4;">
-              Recept poslan z Zdravo Jem kioska &middot; Ob&#269;ina Sevnica
-            </div>
-          </div>
+                <table role="presentation" width="640" cellspacing="0" cellpadding="0" style="width:100%; max-width:640px; border-collapse:separate; border-spacing:0; margin-top:14px; background:${emailPalette.card}; border:1px solid ${emailPalette.border}; border-radius:18px; box-shadow:0 8px 18px rgba(68, 48, 22, 0.06);">
+                  <tr>
+                    <td style="padding:16px;">
+                      <h2 style="margin:0 0 8px; color:${emailPalette.title}; font-size:21px; line-height:1.15; font-weight:900;">Sestavine</h2>
+                      <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="border-collapse:collapse;">
+                        ${emailIngredientCardsHtml(recipe.ingredients)}
+                      </table>
+                    </td>
+                  </tr>
+                </table>
+
+                ${recipe.ingredients.length ? `
+                  <table role="presentation" width="640" cellspacing="0" cellpadding="0" style="width:100%; max-width:640px; border-collapse:separate; border-spacing:0; margin-top:14px; background:${emailPalette.greenSoft}; border:1px solid ${emailPalette.greenBorder}; border-radius:18px;">
+                    <tr>
+                      <td style="padding:16px;">
+                        <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="border-collapse:collapse; margin-bottom:8px;">
+                          <tr>
+                            <td style="color:${emailPalette.title}; font-size:20px; font-weight:900; line-height:1.15;">Sestavine iz tr&#382;nice</td>
+                            <td align="right" style="color:#5d7b41; font-size:11px; font-weight:800;">Sve&#382;a izbira</td>
+                          </tr>
+                        </table>
+                        <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="border-collapse:collapse;">
+                          <tr>${emailMarketChipsHtml(recipe.ingredients)}</tr>
+                        </table>
+                      </td>
+                    </tr>
+                  </table>
+                ` : ''}
+
+                <table role="presentation" width="640" cellspacing="0" cellpadding="0" style="width:100%; max-width:640px; border-collapse:separate; border-spacing:0; margin-top:14px; background:${emailPalette.card}; border:1px solid ${emailPalette.border}; border-radius:18px; box-shadow:0 8px 18px rgba(68, 48, 22, 0.06);">
+                  <tr>
+                    <td style="padding:16px;">
+                      <h2 style="margin:0 0 8px; color:${emailPalette.title}; font-size:21px; line-height:1.15; font-weight:900;">Koraki</h2>
+                      ${emailStepsHtml(recipe.steps)}
+                    </td>
+                  </tr>
+                </table>
+
+                ${tipHtml}
+
+                <table role="presentation" width="640" cellspacing="0" cellpadding="0" style="width:100%; max-width:640px; border-collapse:collapse;">
+                  <tr>
+                    <td style="padding:18px 8px 0; text-align:center; color:#665f4e; font-size:12px; font-weight:700; line-height:1.4;">
+                      Recept poslan z Zdravo Jem kioska &middot; Ob&#269;ina Sevnica
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table>
         </div>
       </body>
     </html>
@@ -614,7 +859,8 @@ function buildRecipeEmailText(recipe) {
   const metaLines = [
     prepTimeText(recipe.prepTime) ? `Priprava: ${prepTimeText(recipe.prepTime)}` : '',
     recipe.servings ? `Porcije: ${recipe.servings}` : '',
-    recipe.difficulty ? `Zahtevnost: ${recipe.difficulty}` : ''
+    recipe.difficulty ? `Zahtevnost: ${recipe.difficulty}` : '',
+    recipe.shareUrl ? `Stran recepta: ${recipe.shareUrl}` : ''
   ].filter(Boolean);
   const ingredientLines = recipe.ingredients.length
     ? recipe.ingredients.map((item) => {
@@ -643,7 +889,7 @@ function buildRecipeEmailText(recipe) {
     '',
     'Recept poslan z Zdravo Jem kioska - Obcina Sevnica'
   ]
-    .filter((line) => line !== undefined && line !== null)
+    .filter((line) => line !== undefined && line !== null && line !== '')
     .join('\n');
 }
 
@@ -794,7 +1040,7 @@ async function withRetry(fn, { retries = 3, baseDelayMs = 1000 } = {}) {
   throw lastError;
 }
 
-async function sendRecipeEmailWithGmailSmtp({ gmailUser, gmailAppPassword, toEmail, recipe, htmlBody }) {
+async function sendRecipeEmailWithGmailSmtp({ gmailUser, gmailAppPassword, toEmail, recipe, htmlBody, textBody }) {
   const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
@@ -807,6 +1053,7 @@ async function sendRecipeEmailWithGmailSmtp({ gmailUser, gmailAppPassword, toEma
     from: `"Zdravo Jem" <${gmailUser}>`,
     to: toEmail,
     subject: `Recept: ${recipe.title}`,
+    text: textBody,
     html: htmlBody
   }));
 }
@@ -849,7 +1096,9 @@ function registerIpc() {
         throw new Error('Gmail sender address is not configured.');
       }
 
-      const htmlBody = buildRecipeEmailHtml(recipe);
+      const emailRecipe = normalizeRecipeForEmail(recipe);
+      const htmlBody = buildRecipeEmailHtml(emailRecipe);
+      const textBody = buildRecipeEmailText(emailRecipe);
 
       if (!gmailClientId || !gmailClientSecret || !gmailRefreshToken) {
         if (!gmailAppPassword) {
@@ -860,8 +1109,9 @@ function registerIpc() {
           gmailUser,
           gmailAppPassword,
           toEmail,
-          recipe,
-          htmlBody
+          recipe: emailRecipe,
+          htmlBody,
+          textBody
         });
 
         return { success: true };
@@ -877,7 +1127,7 @@ function registerIpc() {
       const emailLines = [
         `From: "Zdravo Jem" <${gmailUser}>`,
         `To: ${toEmail}`,
-        `Subject: Recept: ${recipe.title}`,
+        `Subject: Recept: ${emailRecipe.title}`,
         'MIME-Version: 1.0',
         'Content-Type: text/html; charset=UTF-8',
         '',
@@ -906,8 +1156,9 @@ function registerIpc() {
           gmailUser,
           gmailAppPassword,
           toEmail,
-          recipe,
-          htmlBody
+          recipe: emailRecipe,
+          htmlBody,
+          textBody
         });
       }
 
@@ -947,7 +1198,7 @@ function registerIpc() {
       margin: 1,
       scale: 8,
       color: {
-        dark: '#6B4423',
+        dark: '#000000',
         light: '#F7F3EC'
       },
       ...options
