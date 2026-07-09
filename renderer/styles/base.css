@@ -1,0 +1,248 @@
+:root {
+  /* Reference palette */
+  --cream: #F7F3EC;
+  --cream-dark: #EDE7DA;
+  --green: #3B6D11;
+  --green-dark: #1a2e0a;
+  --green-light: #EAF3DE;
+  --green-mid: #639922;
+  /* Brown text palette — replaces green for all text (mirrors the green shades). */
+  --brown: #6B4423;
+  --brown-dark: #2E1A0A;
+  --brown-mid: #9A6A2E;
+  --coral: #D85A30;
+  --coral-light: #FAECE7;
+  --amber: #BA7517;
+  --amber-light: #FAEEDA;
+  --text-dark: #1a1a18;
+  --text-mid: #4a4a42;
+  --text-muted: #888780;
+  --border: rgba(0, 0, 0, 0.08);
+  --shadow: 0 2px 12px rgba(0, 0, 0, 0.07);
+
+  /* Legacy aliases (kept so older rules still resolve to the new palette) */
+  --color-bg-card: var(--cream);
+  --color-green-dark: var(--green-dark);
+  --color-green-primary: var(--green);
+  --color-green-accent: var(--green-mid);
+  --color-green-light: var(--green-light);
+  --color-text-primary: var(--text-dark);
+  --color-text-muted: var(--text-muted);
+  --color-white: #ffffff;
+  --color-shadow: rgba(0, 0, 0, 0.07);
+
+  --font-serif: 'Inter', Georgia, 'Times New Roman', serif;
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-rounded: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  /* Compact kiosk metrics */
+  --tap-min: 44px;
+  --nav-h: 72px;
+
+  /* Design surface. The vertical rhythm is fixed (--app-base-h) and uniformly
+     scaled by JS (--app-scale) so the kiosk look is identical everywhere; the
+     width (--app-logical-w) grows to match the viewport so the UI fills the
+     screen edge-to-edge on any aspect ratio — portrait kiosk or landscape
+     laptop — with no letterbox bars and no distortion. */
+  --app-base-h: 854px;
+  --app-logical-w: 480px;
+  --app-scale: 1;
+
+  --radius: 16px;
+  --radius-sm: 10px;
+  --radius-card: 16px;
+  --radius-btn: 12px;
+
+  --space-xs: 8px;
+  --space-sm: 14px;
+  --space-md: 20px;
+  --space-lg: 28px;
+  --space-xl: 40px;
+}
+
+/* Inter — variable font (weights 100–900, roman + italic) used app-wide.
+   Covers Extralight 200, Light 300, Regular 400, Bold 700, Extrabold 800, etc. */
+@font-face {
+  font-family: 'Inter';
+  src: url('../../assets/fonts/InterVariable.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Inter';
+  src: url('../../assets/fonts/InterVariable-Italic.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* Variable fonts: one declaration per family per unicode-range covers all weights. */
+@font-face {
+  font-family: 'Fraunces';
+  src: url('../../assets/fonts/Fraunces-latin.woff2') format('woff2');
+  font-weight: 300 700;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
+    U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215,
+    U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Fraunces';
+  src: url('../../assets/fonts/Fraunces-latinext.woff2') format('woff2');
+  font-weight: 300 700;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304,
+    U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0,
+    U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: 'DM Sans';
+  src: url('../../assets/fonts/DMSans-latin.woff2') format('woff2');
+  font-weight: 300 600;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
+    U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215,
+    U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'DM Sans';
+  src: url('../../assets/fonts/DMSans-latinext.woff2') format('woff2');
+  font-weight: 300 600;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304,
+    U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0,
+    U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: 'Fredoka';
+  src: url('../../assets/fonts/Fredoka-latin.woff2') format('woff2');
+  font-weight: 300 700;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
+    U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215,
+    U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Fredoka';
+  src: url('../../assets/fonts/Fredoka-latinext.woff2') format('woff2');
+  font-weight: 300 700;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304,
+    U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0,
+    U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+* {
+  box-sizing: border-box;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+*::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-sans);
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--text-dark);
+  background: var(--green-dark);
+  overflow: hidden;
+  user-select: none;
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+  /* Center the scaled design surface; the surrounding area (visible only when
+     the screen's aspect ratio differs from the design) is a dark letterbox. */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* The whole UI lives in a fixed-size portrait column that is uniformly scaled
+   to fit the viewport (see --app-scale, set by app.js). Authoring stays at the
+   base size, so the layout looks identical and crisp on a laptop or a kiosk. */
+.app-root {
+  position: relative;
+  flex: none;
+  width: var(--app-logical-w);
+  height: var(--app-base-h);
+  background: var(--cream);
+  overflow: hidden;
+  transform: scale(var(--app-scale));
+  transform-origin: center center;
+  /* Let layout.css reflow grids/lists to the surface width on wide screens. */
+  container-type: inline-size;
+  container-name: app;
+}
+
+body[data-screen="welcome"] {
+  background: var(--green-dark);
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+  color: inherit;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  margin: 0;
+  font-family: var(--font-serif);
+  color: var(--text-dark);
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+h1 {
+  font-size: 28px;
+  letter-spacing: -0.5px;
+}
+
+h2 {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+h3 {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+p {
+  margin: 0;
+  color: var(--text-mid);
+}

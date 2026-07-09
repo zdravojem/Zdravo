@@ -1,0 +1,14 @@
+{
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "rewrites": [
+    {
+      "source": "/recipes/:recipeKey/download",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/recipes/:recipeKey",
+      "destination": "/index.html"
+    }
+  ]
+}
