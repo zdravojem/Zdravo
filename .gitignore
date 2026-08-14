@@ -54,3 +54,6 @@ coverage/
 .cache/
 .parcel-cache/
 .eslintcache
+
+# Scratch/debug files (not part of the app)
+_tmp_*
