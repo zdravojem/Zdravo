@@ -1,4 +1,5 @@
 import { recipeImageSrc } from '../recipe-images.js';
+import { bindTap } from '../tap.js';
 import {
   recipeHasTag,
   recipeServingsText,
@@ -112,11 +113,8 @@ export function bind({ actions, root }) {
 
   const list = root.querySelector('.recipe-browser-list');
   if (list) {
-    list.addEventListener('pointerdown', (event) => {
-      const row = event.target.closest('[data-recipe-id]');
-      if (row) {
-        actions.selectRecipe(Number(row.dataset.recipeId));
-      }
+    bindTap(list, '[data-recipe-id]', (row) => {
+      actions.selectRecipe(Number(row.dataset.recipeId));
     });
   }
 }

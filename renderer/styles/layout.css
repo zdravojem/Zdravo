@@ -2165,12 +2165,16 @@ body[data-screen="games"] .app-root {
 
 .recipe-ingredient-tile strong {
   max-width: 100%;
+  min-width: 0;
   color: #2d332d;
   font-size: 14px;
   font-weight: 800;
   line-height: 1.15;
   hyphens: none;
-  overflow-wrap: normal;
+  /* Slovenian ingredient names are long ("lovorjev list", "petersilj") and the
+     tile clips its overflow, so an unbreakable word gets cut off mid-letter on
+     the narrow portrait column. Break inside a word only when it cannot fit. */
+  overflow-wrap: break-word;
   word-break: normal;
 }
 
@@ -4450,7 +4454,7 @@ body[data-screen="games"] .app-root {
 }
 
 .recipe-ingredient-grid {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
 }
 
@@ -4609,8 +4613,11 @@ body[data-screen="games"] .app-root {
   padding: 7px 6px;
 }
 
+/* Two columns, not three: at the ~480px portrait design width three columns
+   leave roughly 40px for the name next to the 64px photo, which is narrower
+   than most ingredient names. */
 .screen--detail .recipe-ingredient-grid {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
 }
 

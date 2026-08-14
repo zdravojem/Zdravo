@@ -1,4 +1,5 @@
 import { ingredientImageSrc } from '../ingredient-images.js';
+import { bindTap } from '../tap.js';
 
 const categoryImageOrder = [
   'sadje',
@@ -126,21 +127,15 @@ export function bind({ actions, root, state }) {
 
   const categories = root.querySelector('.ingredient-category-grid');
   if (categories) {
-    categories.addEventListener('pointerdown', (event) => {
-      const card = event.target.closest('[data-category]');
-      if (card) {
-        actions.setCategory(card.dataset.category);
-      }
+    bindTap(categories, '[data-category]', (card) => {
+      actions.setCategory(card.dataset.category);
     });
   }
 
   const grid = root.querySelector('.product-browser-grid');
   if (grid) {
-    grid.addEventListener('pointerdown', (event) => {
-      const card = event.target.closest('[data-product]');
-      if (card) {
-        actions.showRecipesForIngredient(card.dataset.product);
-      }
+    bindTap(grid, '[data-product]', (card) => {
+      actions.showRecipesForIngredient(card.dataset.product);
     });
   }
 }

@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, net, protocol, shell } = require('electron');
+const { app, BrowserWindow, ipcMain, net, protocol, screen } = require('electron');
 const path = require('path');
 const fs = require('fs');
 const { pathToFileURL } = require('url');
@@ -13,6 +13,13 @@ let dbPath;
 let db;
 let isQuitting = false;
 let syncManager;
+let mainWindow;
+let activeDisplayId;
+let relaunchPending = false;
+
+app.commandLine.appendSwitch('disable-pinch');
+app.commandLine.appendSwitch('overscroll-history-navigation', '0');
+app.commandLine.appendSwitch('disable-features', 'TouchpadOverscrollHistoryNavigation');
 
 protocol.registerSchemesAsPrivileged([
   {
@@ -1241,7 +1248,10 @@ function closeDatabase() {
 }
 
 function createWindow() {
+  const targetDisplay = screen.getDisplayNearestPoint(screen.getCursorScreenPoint());
+  activeDisplayId = targetDisplay.id;
   const win = new BrowserWindow({
+    ...targetDisplay.bounds,
     fullscreen: true,
     kiosk: true,
     frame: false,
@@ -1253,13 +1263,37 @@ function createWindow() {
       preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true,
       nodeIntegration: false,
+      devTools: !app.isPackaged,
+      zoomFactor: 1,
     },
   });
+
+  mainWindow = win;
 
   win.loadFile(path.join(__dirname, 'renderer', 'index.html'));
 
   win.webContents.on('context-menu', (event) => {
     event.preventDefault();
+  });
+
+  win.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
+  win.webContents.on('will-navigate', (event, url) => {
+    if (!url.startsWith('file:')) {
+      event.preventDefault();
+      writeKioskLog('Blocked navigation', url);
+    }
+  });
+  win.webContents.on('did-finish-load', () => {
+    win.webContents.setZoomFactor(1);
+    win.webContents.setVisualZoomLevelLimits(1, 1).catch(() => {});
+  });
+  win.webContents.on('did-fail-load', (_event, code, description) => {
+    writeKioskLog('Renderer load failed', `${code}: ${description}`);
+    showRecoveryScreen(win);
+  });
+  win.on('unresponsive', () => {
+    writeKioskLog('Renderer became unresponsive');
+    showRecoveryScreen(win);
   });
 
   win.webContents.on('before-input-event', (event, input) => {
@@ -1281,13 +1315,43 @@ function createWindow() {
       event.preventDefault();
     }
   });
+
+  win.on('closed', () => {
+    if (mainWindow === win) mainWindow = undefined;
+  });
+}
+
+function writeKioskLog(message, detail = '') {
+  try {
+    const line = `${new Date().toISOString()} ${message}${detail ? `: ${detail}` : ''}\n`;
+    fs.appendFileSync(path.join(app.getPath('userData'), 'kiosk.log'), line, 'utf8');
+  } catch (_) {
+    // Logging must never become another kiosk failure.
+  }
+}
+
+function showRecoveryScreen(win) {
+  if (!win || win.isDestroyed()) return;
+  const html = `<!doctype html><meta charset="utf-8"><style>html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#f7f3ec;font:clamp(22px,2.1dvw,44px) Inter,Segoe UI,sans-serif;color:#2e1a0a;touch-action:none}button{width:100%;height:100%;border:0;background:transparent;color:inherit;font:inherit;padding:10dvh 10dvw}strong{display:block;font-size:1.5em;margin-bottom:1rem;color:#3b6d11}</style><button onclick="location.reload()"><strong>Nekaj je šlo narobe</strong>Dotaknite se zaslona za ponovni zagon.<br><small>Something went wrong. Tap to restart.</small></button>`;
+  win.loadURL(`data:text/html;charset=utf-8,${encodeURIComponent(html)}`).catch(() => relaunchApp());
+}
+
+function fitWindowToDisplay() {
+  if (!mainWindow || mainWindow.isDestroyed()) return;
+  const displays = screen.getAllDisplays();
+  const display = displays.find((item) => item.id === activeDisplayId) || screen.getPrimaryDisplay();
+  activeDisplayId = display.id;
+  mainWindow.setBounds(display.bounds, false);
+  mainWindow.setKiosk(true);
+  mainWindow.setFullScreen(true);
 }
 
 function relaunchApp() {
-  if (!app.isPackaged || isQuitting) {
+  if (!app.isPackaged || isQuitting || relaunchPending) {
     return;
   }
-
+  relaunchPending = true;
+  writeKioskLog('Relaunching application');
   app.relaunch();
   app.exit(0);
 }
@@ -1311,6 +1375,12 @@ app.whenReady().then(() => {
   registerImageProtocol();
   registerIpc();
   createWindow();
+  screen.on('display-metrics-changed', fitWindowToDisplay);
+  screen.on('display-added', fitWindowToDisplay);
+  screen.on('display-removed', fitWindowToDisplay);
+  if (process.platform === 'win32' && app.isPackaged) {
+    app.setLoginItemSettings({ openAtLogin: true, path: process.execPath });
+  }
   syncManager.runSync('startup').catch((error) => {
     console.warn('Startup sync failed', error);
   });
@@ -1335,6 +1405,7 @@ app.on('child-process-gone', (_event, details) => {
 
 process.on('uncaughtException', (error) => {
   console.error('Uncaught exception', error);
+  writeKioskLog('Uncaught exception', error?.stack || error?.message || String(error));
   if (!isQuitting) {
     relaunchApp();
   }
