@@ -22,6 +22,10 @@
   # itself uses only Node builtins. Skipping them keeps deploys to a few
   # seconds. Drop this line if a future build step needs a package.
   NPM_FLAGS = "--omit=dev"
+  # CF_PUBLIC_BASE_URL is the public R2 base URL for recipe share assets and is
+  # meant to be embedded in client-side code (see recipe-share/app.js), so it
+  # isn't a value secrets scanning needs to flag.
+  SECRETS_SCAN_OMIT_KEYS = "CF_PUBLIC_BASE_URL"
 
 # There is deliberately no `/* -> /index.html` catch-all. The kiosk is a single
 # page with no client-side routing, so a catch-all would only turn missing
