@@ -1,2 +1,8 @@
 [functions.recipe-qr-sync]
 verify_jwt = false
+
+# Sends the recipe email the kiosk used to send from its Electron main process.
+# The kiosk is a public page, so it authenticates with the anon key only; the
+# function itself validates and bounds the payload.
+[functions.send-recipe-email]
+verify_jwt = false

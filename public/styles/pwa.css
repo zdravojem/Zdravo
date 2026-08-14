@@ -1,0 +1,55 @@
+/* =========================================================================
+   PWA chrome — the install affordance and the startup failure screen.
+   Both live inside the scaled .app-root column, so they follow the kiosk
+   design surface like every other control (see base.css --app-scale).
+   ========================================================================= */
+
+/* ---- Kiosk hardening ----
+   The Electron shell disabled pinch zoom and overscroll navigation through
+   Chromium switches. In a browser those are CSS concerns. Element-level rules
+   (the games use touch-action: none) still win, so gameplay is unaffected. */
+html {
+  touch-action: pan-x pan-y;
+  overscroll-behavior: none;
+  -webkit-text-size-adjust: 100%;
+}
+
+img,
+svg {
+  -webkit-user-drag: none;
+  user-select: none;
+}
+
+/* ---- Startup failure (no configuration, or first load with no network) ---- */
+.startup-error {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  padding: var(--space-xl);
+  background: var(--cream);
+  text-align: center;
+}
+
+.startup-error strong {
+  font-family: var(--font-serif);
+  font-size: 28px;
+  color: var(--green);
+}
+
+.startup-error p {
+  max-width: 380px;
+  color: var(--text-mid);
+  line-height: 1.6;
+}
+
+/* The raw Supabase message — small, but on screen, so whoever is fixing the
+   kiosk does not have to open a console to find out what it objected to. */
+.startup-error__detail {
+  font-size: 12px;
+  color: var(--text-muted);
+  word-break: break-word;
+}

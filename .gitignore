@@ -1,16 +1,17 @@
 # Dependencies
 node_modules/
 
-# Electron build output
+# Generated browser configuration.
+# Holds the Supabase URL and anon key and is written by `npm run env:build` —
+# on Netlify from the site's environment variables, locally from .env.local.
+# Never commit it: the values differ per environment.
+public/env.js
+
+# Deploy tooling
+.netlify/
 dist/
 out/
 release/
-github-release/
-
-# Local SQLite databases
-database/*.db
-database/*.db-*
-*.db
 
 # Logs
 logs/
@@ -28,8 +29,13 @@ pnpm-debug.log*
 # Secrets / credentials (never commit)
 credentials.json
 token.json
+supabase-config.json
 *.pem
 *.key
+
+# Supabase CLI local state
+supabase/.temp/
+supabase/.branches/
 
 # OS and editor files
 .DS_Store
