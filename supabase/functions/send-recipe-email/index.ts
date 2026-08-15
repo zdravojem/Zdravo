@@ -645,7 +645,12 @@ async function gmailAccessToken(clientId: string, clientSecret: string, refreshT
   const payload = await response.json().catch(() => ({}));
 
   if (!response.ok) {
-    const error = new Error(payload?.error_description || payload?.error || 'Gmail token refresh failed');
+    const oauthCode = String(payload?.error || '').trim();
+    const oauthDescription = String(payload?.error_description || '').trim();
+    const explanation = [oauthCode, oauthDescription].filter(Boolean).join(': ');
+    const error = new Error(
+      `Gmail OAuth token refresh failed (${response.status})${explanation ? `: ${explanation}` : ''}`
+    );
     (error as Error & { code?: string }).code = payload?.error || '';
     throw error;
   }
@@ -786,9 +791,19 @@ async function deliver(options: {
   const { gmailClientId, gmailClientSecret, gmailRefreshToken } = options;
 
   if (gmailClientId && gmailClientSecret && gmailRefreshToken) {
-    const accessToken = await gmailAccessToken(gmailClientId, gmailClientSecret, gmailRefreshToken);
-    await sendWithGmailApi(accessToken, options);
-    return;
+    try {
+      const accessToken = await gmailAccessToken(gmailClientId, gmailClientSecret, gmailRefreshToken);
+      await sendWithGmailApi(accessToken, options);
+      return;
+    } catch (error) {
+      if (!options.gmailAppPassword) throw error;
+      console.warn(
+        'Gmail API OAuth delivery failed; falling back to authenticated Gmail SMTP.',
+        error instanceof Error ? error.message : error
+      );
+      await sendWithSmtp(options);
+      return;
+    }
   }
 
   const { gmailAppPassword } = options;
