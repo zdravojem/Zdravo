@@ -1,3 +1,5 @@
+import { recipeFieldTranslationsEn } from './recipe-field-translations.js';
+
 const legacyCategoryMap = {
   meso_ribe: 'meso_in_mesni_izdelki',
   mlecni: 'mlecni_izdelki',
@@ -606,6 +608,7 @@ function countUnit(quantity, unit, locale) {
 
 function getRecipeCopy(locale, recipe) {
   const recipeLocale = recipes[getLocale(locale)][recipe.slug] || {};
+  const generatedEnglish = recipeFieldTranslationsEn[String(recipe.id)] || {};
   const englishSteps = Array.isArray(recipe.steps_en)
     ? recipe.steps_en
     : (() => {
@@ -615,11 +618,17 @@ function getRecipeCopy(locale, recipe) {
     // Recipe names are proper titles and must remain in their original form.
     title: recipe.name_sl || recipeLocale.title || '',
     description: getLocale(locale) === 'en'
-      ? (recipe.description_en || recipeLocale.description || recipe.description_sl || '')
+      ? (recipe.description_en || recipeLocale.description || generatedEnglish.description || recipe.description_sl || '')
       : (recipe.description_sl || recipeLocale.description || ''),
-    steps: getLocale(locale) === 'en' && englishSteps.length
-      ? englishSteps
-      : (recipeLocale.steps || JSON.parse(recipe.steps_sl || '[]'))
+    steps: getLocale(locale) === 'en'
+      ? (englishSteps.length ? englishSteps : (generatedEnglish.steps || recipeLocale.steps || JSON.parse(recipe.steps_sl || '[]')))
+      : (recipeLocale.steps || JSON.parse(recipe.steps_sl || '[]')),
+    preparationMethod: getLocale(locale) === 'en'
+      ? (recipe.nacin_priprave_en || recipe.preparation_method_en || generatedEnglish.method || recipe.nacin_priprave || '')
+      : (recipe.nacin_priprave || ''),
+    additionalTip: getLocale(locale) === 'en'
+      ? (recipe.dodatni_nasvet_en || recipe.additional_tip_en || generatedEnglish.tip || recipe.dodatni_nasvet || '')
+      : (recipe.dodatni_nasvet || '')
   };
 }
 

@@ -12,7 +12,7 @@
  * caches on their next load.
  */
 
-const CACHE_VERSION = 'v15';
+const CACHE_VERSION = 'v18';
 const SHELL_CACHE = `zdravo-shell-${CACHE_VERSION}`;
 const ASSET_CACHE = `zdravo-assets-${CACHE_VERSION}`;
 const CURRENT_CACHES = new Set([SHELL_CACHE, ASSET_CACHE]);
@@ -25,6 +25,7 @@ const SHELL_FILES = [
 
   '/app.js',
   '/i18n.js',
+  '/recipe-field-translations.js',
   '/tap.js',
   '/recipe-meta.js',
   '/recipe-images.js',

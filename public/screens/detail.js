@@ -314,11 +314,7 @@ export function render({ state }) {
   );
   const marketList = (marketIngredients.length ? marketIngredients : ingredients).slice(0, 5);
   const suitabilityTags = parseRecipeTags(recipe.tags);
-  const additionalTip = formatTextBlock(
-    state.ui.locale === 'en'
-      ? (recipe.dodatni_nasvet_en || recipe.additional_tip_en || recipe.dodatni_nasvet)
-      : recipe.dodatni_nasvet
-  );
+  const additionalTip = formatTextBlock(recipeCopy.additionalTip);
   const labels = detailLabels(state.ui.locale);
   const difficulty = recipe.difficulty ? state.ui.translateDifficulty(recipe.difficulty) : '';
 
