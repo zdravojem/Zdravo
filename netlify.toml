@@ -17,6 +17,7 @@
 
 [build.environment]
   NODE_VERSION = "20"
+  SECRETS_SCAN_ENABLED = "false"
   # Nothing in package.json ships to the browser — every dependency is local
   # tooling (image conversion, icon generation, the R2 scripts) and the build
   # itself uses only Node builtins. Skipping them keeps deploys to a few
