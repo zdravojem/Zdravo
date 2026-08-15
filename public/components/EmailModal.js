@@ -7,7 +7,7 @@ function escapeHtml(value) {
     .replace(/'/g, '&#39;');
 }
 
-export function renderEmailModal({ recipe, share }) {
+export function renderEmailModal({ recipe, share, locale = 'sl' }) {
   if (!share || share.mode !== 'email') {
     return '';
   }
@@ -18,6 +18,15 @@ export function renderEmailModal({ recipe, share }) {
   const loading = Boolean(share.loading);
   const success = Boolean(share.success);
   const error = share.error || '';
+  const copy = locale === 'en'
+    ? {
+        title: 'Send recipe by email', close: 'Close', sent: 'Recipe sent! Check your email inbox.',
+        email: 'Email address', sending: 'Sending...', cancel: 'Cancel', send: 'Send'
+      }
+    : {
+        title: 'Pošlji recept na e-pošto', close: 'Zapri', sent: 'Recept poslan! Preverite svoj e-poštni predal.',
+        email: 'E-poštni naslov', sending: 'Pošiljam...', cancel: 'Prekliči', send: 'Pošlji'
+      };
 
   return `
     <div
@@ -27,18 +36,18 @@ export function renderEmailModal({ recipe, share }) {
       <div
         role="dialog"
         aria-modal="true"
-        aria-label="Po&#353;lji recept na e-po&#353;to"
+        aria-label="${escapeHtml(copy.title)}"
         style="width:min(92vw, 520px); background:#fff8ea; border:2px solid ${emailBrown}; border-radius:18px; box-shadow:0 20px 70px rgba(0, 0, 0, 0.28); overflow:hidden; font-family:Arial, sans-serif;"
       >
         <div style="position:relative; background:${emailBrown}; color:#fff8ea; padding:22px ${success ? '72px' : '24px'} 22px 24px;">
-          <h2 style="margin:0; font-size:24px; line-height:1.2; font-weight:800; color:#fff8ea;">Po&#353;lji recept na e-po&#353;to</h2>
+          <h2 style="margin:0; font-size:24px; line-height:1.2; font-weight:800; color:#fff8ea;">${escapeHtml(copy.title)}</h2>
           <p class="notranslate" translate="no" style="margin:8px 0 0; font-size:15px; line-height:1.35; color:#f7e8c7;">${escapeHtml(recipeTitle)}</p>
           ${success ? `
             <button
               type="button"
               data-action="close-email-modal"
-              aria-label="Zapri"
-              title="Zapri"
+              aria-label="${escapeHtml(copy.close)}"
+              title="${escapeHtml(copy.close)}"
               style="position:absolute; top:16px; right:18px; width:40px; height:40px; display:grid; place-items:center; border:0; border-radius:999px; padding:0; background:rgba(255,248,234,0.18); color:#fff8ea; font-size:31px; font-weight:400; line-height:1; cursor:pointer;"
             >
               <span aria-hidden="true">&times;</span>
@@ -48,7 +57,7 @@ export function renderEmailModal({ recipe, share }) {
 
         <div style="padding:24px; background:#fff8ea;">
           ${success ? `
-            <p style="margin:0; color:${emailBrown}; font-size:17px; line-height:1.4; font-weight:800;">&#9989; Recept poslan! Preverite svoj e-po&#353;tni predal.</p>
+            <p style="margin:0; color:${emailBrown}; font-size:17px; line-height:1.4; font-weight:800;">&#9989; ${escapeHtml(copy.sent)}</p>
 
             <div style="display:flex; justify-content:center; margin-top:24px;">
               <button
@@ -56,12 +65,12 @@ export function renderEmailModal({ recipe, share }) {
                 data-action="close-email-modal"
                 style="min-height:48px; border:2px solid ${emailBrown}; border-radius:12px; padding:0 32px; background:${emailBrown}; color:#fff8ea; font-size:16px; font-weight:800;"
               >
-                Zapri
+                ${escapeHtml(copy.close)}
               </button>
             </div>
           ` : `
             <label for="recipe-email-input" style="display:block; margin:0 0 8px; color:${emailBrown}; font-size:14px; font-weight:800;">
-              E-po&#353;tni naslov
+              ${escapeHtml(copy.email)}
             </label>
             <input
               id="recipe-email-input"
@@ -76,7 +85,7 @@ export function renderEmailModal({ recipe, share }) {
             />
 
             ${loading ? `
-              <p style="margin:16px 0 0; color:${emailBrown}; font-size:15px; font-weight:800;">Po&#353;iljam...</p>
+              <p style="margin:16px 0 0; color:${emailBrown}; font-size:15px; font-weight:800;">${escapeHtml(copy.sending)}</p>
             ` : ''}
 
             ${error ? `
@@ -89,7 +98,7 @@ export function renderEmailModal({ recipe, share }) {
                 data-action="close-email-modal"
                 style="min-height:48px; border:2px solid ${emailBrown}; border-radius:12px; padding:0 18px; background:#fffdf8; color:${emailBrown}; font-size:16px; font-weight:800;"
               >
-                Prekli&#269;i
+                ${escapeHtml(copy.cancel)}
               </button>
               <button
                 type="button"
@@ -97,7 +106,7 @@ export function renderEmailModal({ recipe, share }) {
                 ${loading ? 'disabled' : ''}
                 style="min-height:48px; border:2px solid ${emailBrown}; border-radius:12px; padding:0 20px; background:${emailBrown}; color:#fff8ea; font-size:16px; font-weight:800;"
               >
-                ${loading ? 'Po&#353;iljam...' : 'Po&#353;lji'}
+                ${escapeHtml(loading ? copy.sending : copy.send)}
               </button>
             </div>
           `}

@@ -90,7 +90,6 @@
     X-Frame-Options = "DENY"
     Referrer-Policy = "strict-origin-when-cross-origin"
     Permissions-Policy = "geolocation=(), microphone=(), camera=(), payment=()"
-    # 'unsafe-inline' is required for style-src because screens and Google's
-    # hidden translation widget inject inline styles. Narrow *.supabase.co to
-    # your own project host if you want this tighter.
-    Content-Security-Policy = "default-src 'self'; script-src 'self' https://translate.google.com https://translate.googleapis.com https://www.gstatic.com; style-src 'self' 'unsafe-inline' https://translate.googleapis.com https://www.gstatic.com; img-src 'self' data: https://*.supabase.co https://*.r2.dev https://translate.google.com https://www.gstatic.com; font-src 'self'; connect-src 'self' https://*.supabase.co https://translate.google.com https://translate.googleapis.com https://translate-pa.googleapis.com; frame-src https://translate.google.com; base-uri 'self'; form-action 'none'; object-src 'none'; frame-ancestors 'none'"
+    # 'unsafe-inline' is required for style-src because screens use inline
+    # style attributes. Narrow *.supabase.co to your own project host if needed.
+    Content-Security-Policy = "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://*.supabase.co https://*.r2.dev; font-src 'self'; connect-src 'self' https://*.supabase.co; base-uri 'self'; form-action 'none'; object-src 'none'; frame-ancestors 'none'"

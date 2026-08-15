@@ -314,7 +314,11 @@ export function render({ state }) {
   );
   const marketList = (marketIngredients.length ? marketIngredients : ingredients).slice(0, 5);
   const suitabilityTags = parseRecipeTags(recipe.tags);
-  const additionalTip = formatTextBlock(recipe.dodatni_nasvet);
+  const additionalTip = formatTextBlock(
+    state.ui.locale === 'en'
+      ? (recipe.dodatni_nasvet_en || recipe.additional_tip_en || recipe.dodatni_nasvet)
+      : recipe.dodatni_nasvet
+  );
   const labels = detailLabels(state.ui.locale);
   const difficulty = recipe.difficulty ? state.ui.translateDifficulty(recipe.difficulty) : '';
 
@@ -446,7 +450,7 @@ export function render({ state }) {
         </div>
       </div>
       ${renderShareModal(state)}
-      ${renderEmailModal({ recipe: recipeCopy, share: state.recipeShare })}
+      ${renderEmailModal({ recipe: recipeCopy, share: state.recipeShare, locale: state.ui.locale })}
     </section>
   `;
 }

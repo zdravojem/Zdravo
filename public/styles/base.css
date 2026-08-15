@@ -60,37 +60,6 @@
   --space-xl: 40px;
 }
 
-/* Google Translate runs invisibly behind the existing SL/EN controls. Keep
-   its injected toolbar from changing the kiosk layout or adding browser UI. */
-html,
-body {
-  top: 0 !important;
-  margin-top: 0 !important;
-}
-
-.goog-te-banner-frame,
-iframe.goog-te-banner-frame,
-iframe[src*='translate.google'],
-iframe[title='Language Translate Widget'],
-.VIpgJd-ZVi9od-ORHb-OEVmcd,
-.VIpgJd-ZVi9od-aZ2wEe-wOHMyf,
-.VIpgJd-ZVi9od-aZ2wEe,
-[class*='VIpgJd-ZVi9od-aZ2wEe'],
-.goog-te-gadget-icon,
-.goog-te-gadget-simple,
-body > .skiptranslate,
-#goog-gt-tt,
-.goog-te-balloon-frame,
-.goog-te-spinner-pos {
-  display: none !important;
-  visibility: hidden !important;
-}
-
-font.goog-text-highlight {
-  background: inherit !important;
-  box-shadow: none !important;
-}
-
 /* Inter — variable font (weights 100–900, roman + italic) used app-wide.
    Covers Extralight 200, Light 300, Regular 400, Bold 700, Extrabold 800, etc. */
 @font-face {

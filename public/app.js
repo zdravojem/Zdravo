@@ -11,17 +11,17 @@ import * as store from './data/store.js';
 import { generateQrSvg } from './data/qr.js';
 import { sendRecipeEmail as sendRecipeEmailRequest } from './data/email.js';
 import { config, isSupabaseConfigured } from './data/config.js';
-import {
-  initializeGoogleWebsiteTranslator,
-  isEnglishTranslationActive,
-  setEnglishTranslation
-} from './google-translate.js';
 
 const appRoot = document.getElementById('app');
 const localeStorageKey = 'zdravo.locale';
 
 function loadLocale() {
-  return isEnglishTranslationActive() ? 'en' : 'sl';
+  try {
+    const savedLocale = window.localStorage.getItem(localeStorageKey);
+    return savedLocale === 'en' ? 'en' : 'sl';
+  } catch (error) {
+    return 'sl';
+  }
 }
 
 function saveLocale(locale) {
@@ -631,7 +631,9 @@ const actions = {
 
     const toEmail = String(state.recipeShare.toEmail || '').trim();
     if (!toEmail.includes('@')) {
-      state.recipeShare.error = 'Vnesite veljaven e-po\u0161tni naslov.';
+      state.recipeShare.error = state.locale === 'en'
+        ? 'Enter a valid email address.'
+        : 'Vnesite veljaven e-po\u0161tni naslov.';
       render();
       return;
     }
@@ -657,7 +659,9 @@ const actions = {
         state.recipeShare.success = true;
         state.recipeShare.error = '';
       } else {
-        state.recipeShare.error = result?.error || 'Recepta ni bilo mogo\u010de poslati.';
+        state.recipeShare.error = result?.error || (state.locale === 'en'
+          ? 'The recipe could not be sent.'
+          : 'Recepta ni bilo mogo\u010de poslati.');
       }
       render();
       if (state.recipeShare?.success) {
@@ -673,7 +677,9 @@ const actions = {
       }
       console.warn('Failed to send recipe email', error);
       state.recipeShare.loading = false;
-      state.recipeShare.error = error.message || 'Recepta ni bilo mogo\u010de poslati.';
+      state.recipeShare.error = error.message || (state.locale === 'en'
+        ? 'The recipe could not be sent.'
+        : 'Recepta ni bilo mogo\u010de poslati.');
       render();
     }
   },
@@ -880,9 +886,7 @@ async function syncWithSupabase(trigger = 'manual') {
 
 actions.setLocale = async function setLocale(locale) {
   const normalizedLocale = locale === 'en' ? 'en' : 'sl';
-  const translationIsActive = isEnglishTranslationActive();
-  const shouldTranslate = normalizedLocale === 'en';
-  if (translationIsActive === shouldTranslate && normalizedLocale === state.locale) {
+  if (normalizedLocale === state.locale) {
     return;
   }
 
@@ -896,7 +900,6 @@ actions.setLocale = async function setLocale(locale) {
   }
 
   render();
-  setEnglishTranslation(shouldTranslate);
 };
 
 function captureFocus() {
@@ -1064,7 +1067,6 @@ async function init() {
   });
 
   render();
-  initializeGoogleWebsiteTranslator();
   startPeriodicRefresh();
 
   // A warm start painted cached content; let the startup read finish and

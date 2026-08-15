@@ -91,13 +91,59 @@ const difficulties = {
     Zahtevna: 'Zahtevna'
   },
   en: {
-    1: 'Enostavna',
-    2: 'Normalna',
-    3: 'Zahtevna',
-    Enostavna: 'Enostavna',
-    Normalna: 'Normalna',
-    Zahtevna: 'Zahtevna'
+    1: 'Easy',
+    2: 'Medium',
+    3: 'Hard',
+    Enostavna: 'Easy',
+    Normalna: 'Medium',
+    Zahtevna: 'Hard'
   }
+};
+
+const ingredientLabelsEn = {
+  'ajdova kaša': 'buckwheat groats', 'ajdova moka': 'buckwheat flour', banana: 'banana',
+  'bbq omaka': 'BBQ sauce', 'bela moka': 'white flour', 'bela pšenična moka': 'white wheat flour',
+  'beli vinski kis': 'white wine vinegar', 'belo vino': 'white wine', borovnice: 'blueberries',
+  buča: 'pumpkin', 'buča hokaido': 'Hokkaido pumpkin', bučke: 'zucchini',
+  'bučna semena': 'pumpkin seeds', 'bučno olje': 'pumpkin seed oil', cimet: 'cinnamon',
+  cviček: 'Cviček wine', čebula: 'onion', česen: 'garlic', 'češplje / slive': 'plums',
+  drobnjak: 'chives', drobtine: 'breadcrumbs', 'domače klobase': 'homemade sausages',
+  fižol: 'beans', 'goveja juha': 'beef broth', 'goveja jušna osnova': 'beef stock',
+  'goveje kosti': 'beef bones', 'goveje meso': 'beef', grah: 'peas', gorčica: 'mustard',
+  hren: 'horseradish', jabolka: 'apples', jajca: 'eggs', ješprenj: 'pearl barley',
+  jogurt: 'yogurt', 'jušna zelenjava': 'soup vegetables', kis: 'vinegar',
+  'kisla repa': 'sour turnip', 'kisla smetana': 'sour cream', 'kislo zelje': 'sauerkraut',
+  klobase: 'sausages', koleraba: 'kohlrabi', korenček: 'carrot', korenje: 'carrots',
+  'koruzna moka': 'corn flour', 'koruzni zdrob / polenta': 'cornmeal / polenta', krap: 'carp',
+  krompir: 'potatoes', kruh: 'bread', kumina: 'caraway', kvas: 'yeast', limona: 'lemon',
+  maslo: 'butter', med: 'honey', mleko: 'milk', 'mleta rdeča paprika': 'ground red pepper',
+  'mleta sladka paprika': 'sweet paprika', 'mleto meso': 'minced meat', moka: 'flour',
+  ocvirki: 'pork cracklings', 'olivno olje': 'olive oil', olje: 'oil',
+  'ovseni kosmiči': 'oat flakes', panceta: 'pancetta', paradižnik: 'tomatoes',
+  'pasiran paradižnik': 'tomato purée', pečenica: 'pork sausage', 'piščančje meso': 'chicken',
+  'pirina moka': 'spelt flour', por: 'leek', postrv: 'trout', 'prekajena slanina': 'smoked bacon',
+  'prekajeno meso': 'smoked meat', 'prosena kaša': 'millet', 'pšenična moka': 'wheat flour',
+  'pšenični zdrob': 'wheat semolina', 'rdeče vino': 'red wine', 'rdeče zelje': 'red cabbage',
+  redkvice: 'radishes', riž: 'rice', rum: 'rum', rumenjaki: 'egg yolks', 'ržena moka': 'rye flour',
+  sir: 'cheese', skuta: 'curd cheese', sladilo: 'sweetener', 'sladka smetana': 'heavy cream',
+  sladkor: 'sugar', slanina: 'bacon', slive: 'plums', sol: 'salt', smetana: 'cream',
+  'suh fižol': 'dried beans', 'suhe brusnice': 'dried cranberries', 'suhe slive': 'prunes',
+  'suhi jurčki': 'dried porcini mushrooms', 'svinjska rebra': 'pork ribs',
+  'svinjski vrat': 'pork neck', 'svinjski kare': 'pork loin', 'svež kruh': 'fresh bread',
+  'sveže gobe': 'fresh mushrooms', vanilija: 'vanilla', 'vlečeno testo': 'filo pastry',
+  'zajčje meso': 'rabbit meat', zelena: 'celery', zelje: 'cabbage',
+  'arašidovo maslo': 'peanut butter', beljaki: 'egg whites',
+  'bourbon vanilijev sladkor': 'Bourbon vanilla sugar', 'cimetova palčka': 'cinnamon stick',
+  'čokolada / sadni preliv': 'chocolate / fruit topping', 'gomoljna zelena': 'celeriac',
+  gobe: 'mushrooms', 'jušna osnova': 'stock', 'kakavova zrna': 'cocoa nibs',
+  'limonin sok': 'lemon juice', 'kokosov čips': 'coconut chips', 'kokosova moka': 'coconut flour',
+  koromač: 'fennel', 'lovorjev list': 'bay leaf', majaron: 'marjoram', mast: 'lard',
+  melisa: 'lemon balm', 'mlada špinača': 'baby spinach', 'muškatni orešček': 'nutmeg',
+  origano: 'oregano', orehi: 'walnuts', 'paradižnikova mezga': 'tomato paste', pehtran: 'tarragon',
+  'piškotne drobtine': 'biscuit crumbs', poper: 'pepper', peteršilj: 'parsley',
+  'peteršiljeva korenina': 'parsley root', 'rjavi sladkor': 'brown sugar', rožmarin: 'rosemary',
+  rozine: 'raisins', šetraj: 'savory', timijan: 'thyme', 'vanilijev sladkor': 'vanilla sugar',
+  voda: 'water', želatina: 'gelatine'
 };
 
 const units = {
@@ -560,11 +606,20 @@ function countUnit(quantity, unit, locale) {
 
 function getRecipeCopy(locale, recipe) {
   const recipeLocale = recipes[getLocale(locale)][recipe.slug] || {};
+  const englishSteps = Array.isArray(recipe.steps_en)
+    ? recipe.steps_en
+    : (() => {
+        try { return JSON.parse(recipe.steps_en || '[]'); } catch { return []; }
+      })();
   return {
     // Recipe names are proper titles and must remain in their original form.
     title: recipe.name_sl || recipeLocale.title || '',
-    description: recipeLocale.description || recipe.description_sl || '',
-    steps: recipeLocale.steps || JSON.parse(recipe.steps_sl || '[]')
+    description: getLocale(locale) === 'en'
+      ? (recipe.description_en || recipeLocale.description || recipe.description_sl || '')
+      : (recipe.description_sl || recipeLocale.description || ''),
+    steps: getLocale(locale) === 'en' && englishSteps.length
+      ? englishSteps
+      : (recipeLocale.steps || JSON.parse(recipe.steps_sl || '[]'))
   };
 }
 
@@ -588,7 +643,8 @@ export function buildUi(locale) {
       return difficulties[normalizedLocale][level] || '';
     },
     translateIngredient(name) {
-      return name;
+      if (normalizedLocale !== 'en') return name;
+      return ingredientLabelsEn[String(name || '').trim().toLowerCase()] || name;
     },
     translateUnit(quantity, unit) {
       return countUnit(quantity, unit, normalizedLocale);
