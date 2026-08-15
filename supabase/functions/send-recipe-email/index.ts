@@ -3,8 +3,8 @@
 // The kiosk used to be an Electron app, and its main process held the Gmail
 // credentials and built the recipe email. A PWA runs entirely in the browser and
 // can do neither, so that code moved here unchanged in behaviour: same image URL
-// resolution, same HTML and plain-text layout, same Gmail app-password path,
-// with OAuth kept only as a fallback when SMTP is not configured.
+// resolution and same HTML/plain-text layout. Gmail API OAuth is preferred,
+// with the app-password SMTP path retained for installations without OAuth.
 //
 // Deploy:  supabase functions deploy send-recipe-email
 // Secrets: supabase secrets set GMAIL_USER=... GMAIL_APP_PASSWORD=... \
@@ -626,6 +626,10 @@ function encodeBase64Url(bytes: Uint8Array): string {
   return encodeBase64(bytes).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 }
 
+function encodeMimeBase64(value: string): string {
+  return encodeBase64(new TextEncoder().encode(value)).match(/.{1,76}/g)?.join('\r\n') || '';
+}
+
 async function gmailAccessToken(clientId: string, clientSecret: string, refreshToken: string): Promise<string> {
   const response = await fetch('https://oauth2.googleapis.com/token', {
     method: 'POST',
@@ -651,20 +655,50 @@ async function gmailAccessToken(clientId: string, clientSecret: string, refreshT
 
 async function sendWithGmailApi(
   accessToken: string,
-  { gmailUser, toEmail, recipe, htmlBody }: { gmailUser: string; toEmail: string; recipe: EmailRecipe; htmlBody: string }
+  {
+    gmailUser,
+    toEmail,
+    recipe,
+    htmlBody,
+    textBody
+  }: {
+    gmailUser: string;
+    toEmail: string;
+    recipe: EmailRecipe;
+    htmlBody: string;
+    textBody: string;
+  }
 ): Promise<void> {
   const compactHtmlBody = compactEmailHtml(htmlBody);
+  const compactTextBody = compactEmailText(textBody);
+  const boundary = `zdravo-jem-${crypto.randomUUID()}`;
+  const senderDomain = gmailUser.split('@')[1] || 'gmail.com';
+  const subject = `Recept: ${recipe.title}`;
   const raw = encodeBase64Url(
     new TextEncoder().encode(
       [
         `From: "Zdravo Jem" <${gmailUser}>`,
+        `Reply-To: ${gmailUser}`,
         `To: ${toEmail}`,
-        `Subject: =?UTF-8?B?${encodeBase64(new TextEncoder().encode(`Recept: ${recipe.title}`))}?=`,
+        `Subject: =?UTF-8?B?${encodeBase64(new TextEncoder().encode(subject))}?=`,
+        `Date: ${new Date().toUTCString()}`,
+        `Message-ID: <${crypto.randomUUID()}@${senderDomain}>`,
         'MIME-Version: 1.0',
-        'Content-Type: text/html; charset=UTF-8',
+        `Content-Type: multipart/alternative; boundary="${boundary}"`,
         '',
-        compactHtmlBody
-      ].join('\n')
+        `--${boundary}`,
+        'Content-Type: text/plain; charset=UTF-8',
+        'Content-Transfer-Encoding: base64',
+        '',
+        encodeMimeBase64(compactTextBody),
+        `--${boundary}`,
+        'Content-Type: text/html; charset=UTF-8',
+        'Content-Transfer-Encoding: base64',
+        '',
+        encodeMimeBase64(compactHtmlBody),
+        `--${boundary}--`,
+        ''
+      ].join('\r\n')
     )
   );
 
@@ -735,12 +769,8 @@ async function sendWithSmtp({
 }
 
 /**
- * Delivers through the simplest healthy credential.
- *
- * The kiosk should not depend on a Gmail refresh token when an app password is
- * available, because the token can expire or be revoked while SMTP keeps
- * working. If SMTP is configured, use it directly. Otherwise, fall back to the
- * OAuth route for setups that have not enabled an app password yet.
+ * Prefer Gmail API OAuth when configured. SMTP remains available for older
+ * installations that only have an app password.
  */
 async function deliver(options: {
   gmailUser: string;
@@ -753,18 +783,18 @@ async function deliver(options: {
   htmlBody: string;
   textBody: string;
 }): Promise<void> {
-  const { gmailAppPassword } = options;
-
-  if (gmailAppPassword) {
-    await sendWithSmtp(options);
-    return;
-  }
-
   const { gmailClientId, gmailClientSecret, gmailRefreshToken } = options;
 
   if (gmailClientId && gmailClientSecret && gmailRefreshToken) {
     const accessToken = await gmailAccessToken(gmailClientId, gmailClientSecret, gmailRefreshToken);
     await sendWithGmailApi(accessToken, options);
+    return;
+  }
+
+  const { gmailAppPassword } = options;
+
+  if (gmailAppPassword) {
+    await sendWithSmtp(options);
     return;
   }
 

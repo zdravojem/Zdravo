@@ -12,7 +12,7 @@
  * caches on their next load.
  */
 
-const CACHE_VERSION = 'v3';
+const CACHE_VERSION = 'v14';
 const SHELL_CACHE = `zdravo-shell-${CACHE_VERSION}`;
 const ASSET_CACHE = `zdravo-assets-${CACHE_VERSION}`;
 const CURRENT_CACHES = new Set([SHELL_CACHE, ASSET_CACHE]);
@@ -24,6 +24,7 @@ const SHELL_FILES = [
   '/manifest.webmanifest',
 
   '/app.js',
+  '/google-translate.js',
   '/i18n.js',
   '/tap.js',
   '/recipe-meta.js',
@@ -64,6 +65,10 @@ const SHELL_FILES = [
   // The two images on the screens a visitor always sees first.
   '/assets/images/welcome-poster.webp',
   '/assets/images/home-hero.webp',
+  '/assets/images/home-hero.png',
+  '/assets/images/games/header.png',
+  '/assets/images/games/detective/header.en.png',
+  '/assets/images/ui/additional-advice-bulb.png',
 
   '/assets/icons/pwa-192.png',
   '/assets/icons/pwa-512.png',

@@ -30,56 +30,77 @@ export function renderEmailModal({ recipe, share }) {
         aria-label="Po&#353;lji recept na e-po&#353;to"
         style="width:min(92vw, 520px); background:#fff8ea; border:2px solid ${emailBrown}; border-radius:18px; box-shadow:0 20px 70px rgba(0, 0, 0, 0.28); overflow:hidden; font-family:Arial, sans-serif;"
       >
-        <div style="background:${emailBrown}; color:#fff8ea; padding:22px 24px;">
+        <div style="position:relative; background:${emailBrown}; color:#fff8ea; padding:22px ${success ? '72px' : '24px'} 22px 24px;">
           <h2 style="margin:0; font-size:24px; line-height:1.2; font-weight:800; color:#fff8ea;">Po&#353;lji recept na e-po&#353;to</h2>
-          <p style="margin:8px 0 0; font-size:15px; line-height:1.35; color:#f7e8c7;">${escapeHtml(recipeTitle)}</p>
-        </div>
-
-        <div style="padding:24px; background:#fff8ea;">
-          <label for="recipe-email-input" style="display:block; margin:0 0 8px; color:${emailBrown}; font-size:14px; font-weight:800;">
-            E-po&#353;tni naslov
-          </label>
-          <input
-            id="recipe-email-input"
-            data-email-input="true"
-            type="email"
-            inputmode="email"
-            autocomplete="email"
-            value="${escapeHtml(email)}"
-            placeholder="marija.novak@gmail.com"
-            ${loading || success ? 'disabled' : ''}
-            style="box-sizing:border-box; width:100%; min-height:52px; border:2px solid ${emailBrown}; border-radius:12px; padding:0 16px; font-size:18px; color:${emailBrown}; background:#fffdf8; outline:none;"
-          />
-
-          ${loading ? `
-            <p style="margin:16px 0 0; color:${emailBrown}; font-size:15px; font-weight:800;">Po&#353;iljam...</p>
-          ` : ''}
-
+          <p class="notranslate" translate="no" style="margin:8px 0 0; font-size:15px; line-height:1.35; color:#f7e8c7;">${escapeHtml(recipeTitle)}</p>
           ${success ? `
-            <p style="margin:16px 0 0; color:${emailBrown}; font-size:15px; font-weight:800;">&#9989; Recept poslan! Preverite svoj e-po&#353;tni predal.</p>
-          ` : ''}
-
-          ${error ? `
-            <p style="margin:16px 0 0; color:#b00020; font-size:15px; font-weight:800;">${escapeHtml(error)}</p>
-          ` : ''}
-
-          <div style="display:flex; gap:12px; justify-content:flex-end; margin-top:24px;">
             <button
               type="button"
               data-action="close-email-modal"
-              style="min-height:48px; border:2px solid ${emailBrown}; border-radius:12px; padding:0 18px; background:#fffdf8; color:${emailBrown}; font-size:16px; font-weight:800;"
+              aria-label="Zapri"
+              title="Zapri"
+              style="position:absolute; top:16px; right:18px; width:40px; height:40px; display:grid; place-items:center; border:0; border-radius:999px; padding:0; background:rgba(255,248,234,0.18); color:#fff8ea; font-size:31px; font-weight:400; line-height:1; cursor:pointer;"
             >
-              Prekli&#269;i
+              <span aria-hidden="true">&times;</span>
             </button>
-            <button
-              type="button"
-              data-action="send-recipe-email"
-              ${loading || success ? 'disabled' : ''}
-              style="min-height:48px; border:2px solid ${emailBrown}; border-radius:12px; padding:0 20px; background:${emailBrown}; color:#fff8ea; font-size:16px; font-weight:800;"
-            >
-              ${loading ? 'Po&#353;iljam...' : 'Po&#353;lji'}
-            </button>
-          </div>
+          ` : ''}
+        </div>
+
+        <div style="padding:24px; background:#fff8ea;">
+          ${success ? `
+            <p style="margin:0; color:${emailBrown}; font-size:17px; line-height:1.4; font-weight:800;">&#9989; Recept poslan! Preverite svoj e-po&#353;tni predal.</p>
+
+            <div style="display:flex; justify-content:center; margin-top:24px;">
+              <button
+                type="button"
+                data-action="close-email-modal"
+                style="min-height:48px; border:2px solid ${emailBrown}; border-radius:12px; padding:0 32px; background:${emailBrown}; color:#fff8ea; font-size:16px; font-weight:800;"
+              >
+                Zapri
+              </button>
+            </div>
+          ` : `
+            <label for="recipe-email-input" style="display:block; margin:0 0 8px; color:${emailBrown}; font-size:14px; font-weight:800;">
+              E-po&#353;tni naslov
+            </label>
+            <input
+              id="recipe-email-input"
+              data-email-input="true"
+              type="email"
+              inputmode="email"
+              autocomplete="email"
+              value="${escapeHtml(email)}"
+              placeholder="marija.novak@gmail.com"
+              ${loading ? 'disabled' : ''}
+              style="box-sizing:border-box; width:100%; min-height:52px; border:2px solid ${emailBrown}; border-radius:12px; padding:0 16px; font-size:18px; color:${emailBrown}; background:#fffdf8; outline:none;"
+            />
+
+            ${loading ? `
+              <p style="margin:16px 0 0; color:${emailBrown}; font-size:15px; font-weight:800;">Po&#353;iljam...</p>
+            ` : ''}
+
+            ${error ? `
+              <p style="margin:16px 0 0; color:#b00020; font-size:15px; font-weight:800;">${escapeHtml(error)}</p>
+            ` : ''}
+
+            <div style="display:flex; gap:12px; justify-content:flex-end; margin-top:24px;">
+              <button
+                type="button"
+                data-action="close-email-modal"
+                style="min-height:48px; border:2px solid ${emailBrown}; border-radius:12px; padding:0 18px; background:#fffdf8; color:${emailBrown}; font-size:16px; font-weight:800;"
+              >
+                Prekli&#269;i
+              </button>
+              <button
+                type="button"
+                data-action="send-recipe-email"
+                ${loading ? 'disabled' : ''}
+                style="min-height:48px; border:2px solid ${emailBrown}; border-radius:12px; padding:0 20px; background:${emailBrown}; color:#fff8ea; font-size:16px; font-weight:800;"
+              >
+                ${loading ? 'Po&#353;iljam...' : 'Po&#353;lji'}
+              </button>
+            </div>
+          `}
         </div>
       </div>
     </div>

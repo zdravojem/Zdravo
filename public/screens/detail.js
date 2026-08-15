@@ -248,7 +248,6 @@ function shareCopy(locale) {
       title: 'Scan the QR code',
       description: 'Scan this code on your phone to open and save this recipe page.',
       loading: 'Preparing QR code...',
-      openPage: 'Open page',
       close: 'Close'
     };
   }
@@ -257,7 +256,6 @@ function shareCopy(locale) {
     title: 'Skeniraj QR kodo',
     description: 'Skeniraj to kodo na telefonu, da odpre&#353; stran recepta za shranjevanje.',
     loading: 'Pripravljam QR kodo ...',
-    openPage: 'Odpri stran',
     close: 'Zapri'
   };
 }
@@ -285,7 +283,6 @@ function renderShareModal(state) {
         </div>
         ${share.error ? `<p class="recipe-share-modal__error">${share.error}</p>` : ''}
         <div class="recipe-share-modal__actions">
-          <button class="btn btn--outline" data-action="open-qr-link">${copy.openPage}</button>
           <button class="btn btn--primary" data-action="close-share">${copy.close}</button>
         </div>
       </div>
@@ -342,7 +339,7 @@ export function render({ state }) {
             </div>
             <div class="recipe-hero__copy">
               <span class="recipe-hero__eyebrow">${labels.eyebrow}</span>
-              <h1>${recipeCopy.title}</h1>
+              <h1 class="notranslate" translate="no">${recipeCopy.title}</h1>
               <p>${recipeCopy.description}</p>
               <img class="recipe-hero__flower" src="../assets/images/recipes/flower2.webp" alt="" aria-hidden="true" />
               <div class="recipe-stat-grid">
@@ -441,6 +438,7 @@ export function render({ state }) {
             <section class="recipe-card-panel recipe-tip-panel">
               <div class="recipe-section-title">
                 <h2>${state.ui.locale === 'en' ? 'Additional advice' : 'Dodatni nasvet'}</h2>
+                <img class="recipe-tip-panel__bulb" src="../assets/images/ui/additional-advice-bulb.png" alt="" aria-hidden="true" />
               </div>
               <p>${additionalTip}</p>
             </section>
@@ -542,11 +540,6 @@ export function bind({ actions, root }) {
 
     if (action === 'share-qr') {
       actions.openRecipeQrShare();
-      return;
-    }
-
-    if (action === 'open-qr-link') {
-      actions.openRecipeShareLink();
       return;
     }
 

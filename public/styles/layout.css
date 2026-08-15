@@ -57,8 +57,13 @@ body[data-screen="welcome"] .language-switcher__button.is-active {
 }
 
 .language-switcher__code {
-  font-size: 13px;
+  font-size: 0;
   letter-spacing: 0.5px;
+}
+
+.language-switcher__code::before {
+  content: attr(data-code);
+  font-size: 13px;
 }
 
 .language-switcher__label {
@@ -1930,6 +1935,18 @@ body[data-screen="games"] .app-root {
   border-color: #dcebcf;
 }
 
+.recipe-tip-panel .recipe-section-title {
+  justify-content: flex-start;
+  gap: 9px;
+}
+
+.recipe-tip-panel__bulb {
+  width: 24px;
+  height: 24px;
+  flex: 0 0 24px;
+  object-fit: contain;
+}
+
 .recipe-qr {
   position: relative;
   width: 34px;
@@ -2057,11 +2074,16 @@ body[data-screen="games"] .app-root {
   color: var(--qr-share-brown);
 }
 
+/* A single Close button, centred — the QR code is the point of this dialog and
+   the "open page" shortcut had no use on a kiosk with no browser to open. */
 .recipe-share-modal__actions {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
+  display: flex;
+  justify-content: center;
   margin-top: 18px;
+}
+
+.recipe-share-modal__actions .btn {
+  min-width: 180px;
 }
 
 @keyframes recipeSpin {
@@ -3685,11 +3707,6 @@ body[data-screen="games"] .app-root {
   white-space: nowrap;
 }
 
-.home-market-badge__leaf {
-  width: 15px;
-  height: 15px;
-  flex: none;
-}
 
 /* --- Ingredient carousel: paged 5-column x 2-row grids --- */
 .home-category-carousel {

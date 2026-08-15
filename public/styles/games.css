@@ -3737,10 +3737,13 @@ body[data-game-active="true"] .language-switcher {
 .gm-answer-btn.is-correct::before {
   content: "\2713";
   position: absolute;
-  top: -9px;
-  right: -9px;
+  top: 6px;
+  right: 6px;
+  left: auto;
   width: 26px;
   height: 26px;
+  aspect-ratio: 1;
+  box-sizing: border-box;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -5137,6 +5140,12 @@ body[data-game-active="true"] .language-switcher {
   min-width: 92px;
   background: linear-gradient(180deg, #9fb973 0%, #82a851 100%);
   box-shadow: 0 7px 14px rgba(130, 168, 81, 0.24);
+}
+
+.gm-puzzle .gm-btn--finish {
+  min-width: 216px;
+  background: linear-gradient(180deg, #7a5230 0%, #5b3b1f 100%);
+  box-shadow: 0 7px 14px rgba(91, 59, 31, 0.24);
 }
 
 .gm-puzzle--grid-4 .gm-progress-card {

@@ -11,17 +11,17 @@ import * as store from './data/store.js';
 import { generateQrSvg } from './data/qr.js';
 import { sendRecipeEmail as sendRecipeEmailRequest } from './data/email.js';
 import { config, isSupabaseConfigured } from './data/config.js';
+import {
+  initializeGoogleWebsiteTranslator,
+  isEnglishTranslationActive,
+  setEnglishTranslation
+} from './google-translate.js';
 
 const appRoot = document.getElementById('app');
 const localeStorageKey = 'zdravo.locale';
 
 function loadLocale() {
-  try {
-    const savedLocale = window.localStorage.getItem(localeStorageKey);
-    return savedLocale === 'en' ? 'en' : 'sl';
-  } catch (error) {
-    return 'sl';
-  }
+  return isEnglishTranslationActive() ? 'en' : 'sl';
 }
 
 function saveLocale(locale) {
@@ -198,6 +198,12 @@ const shellNavIcons = {
 
 const IDLE_MS = 120000;
 let idleTimer;
+let emailSuccessCloseTimer;
+
+function clearEmailSuccessCloseTimer() {
+  window.clearTimeout(emailSuccessCloseTimer);
+  emailSuccessCloseTimer = undefined;
+}
 
 function escapeHtml(value) {
   return String(value ?? '')
@@ -592,6 +598,7 @@ const actions = {
       return;
     }
 
+    clearEmailSuccessCloseTimer();
     state.recipeShare = {
       mode: 'email',
       toEmail: '',
@@ -629,6 +636,7 @@ const actions = {
       return;
     }
 
+    clearEmailSuccessCloseTimer();
     state.recipeShare.loading = true;
     state.recipeShare.error = '';
     state.recipeShare.success = false;
@@ -652,6 +660,13 @@ const actions = {
         state.recipeShare.error = result?.error || 'Recepta ni bilo mogo\u010de poslati.';
       }
       render();
+      if (state.recipeShare?.success) {
+        emailSuccessCloseTimer = window.setTimeout(() => {
+          if (state.recipeShare?.mode === 'email' && state.recipeShare.success) {
+            actions.closeRecipeShare();
+          }
+        }, 5000);
+      }
     } catch (error) {
       if (!state.recipeShare || state.recipeShare.mode !== 'email') {
         return;
@@ -735,19 +750,8 @@ const actions = {
       render();
     }
   },
-  async openRecipeShareLink() {
-    const url = state.recipeShare?.url;
-    if (!url) {
-      return;
-    }
-
-    try {
-      window.open(url, '_blank', 'noopener,noreferrer');
-    } catch (error) {
-      console.warn('Failed to open recipe share page', error);
-    }
-  },
   closeRecipeShare() {
+    clearEmailSuccessCloseTimer();
     if (!state.recipeShare) {
       return;
     }
@@ -876,7 +880,9 @@ async function syncWithSupabase(trigger = 'manual') {
 
 actions.setLocale = async function setLocale(locale) {
   const normalizedLocale = locale === 'en' ? 'en' : 'sl';
-  if (normalizedLocale === state.locale) {
+  const translationIsActive = isEnglishTranslationActive();
+  const shouldTranslate = normalizedLocale === 'en';
+  if (translationIsActive === shouldTranslate && normalizedLocale === state.locale) {
     return;
   }
 
@@ -890,6 +896,7 @@ actions.setLocale = async function setLocale(locale) {
   }
 
   render();
+  setEnglishTranslation(shouldTranslate);
 };
 
 function captureFocus() {
@@ -929,7 +936,7 @@ function render() {
   document.documentElement.lang = state.locale;
   document.title = state.ui.copy.appTitle;
   appRoot.innerHTML = `
-    <div class="language-switcher" role="group" aria-label="${state.ui.copy.languageSelector}">
+    <div class="language-switcher notranslate" translate="no" role="group" aria-label="${state.ui.copy.languageSelector}">
       ${['sl', 'en']
         .map(
           (locale) => `
@@ -939,7 +946,7 @@ function render() {
               data-locale="${locale}"
               aria-pressed="${state.locale === locale}"
             >
-              <span class="language-switcher__code">${locale.toUpperCase()}</span>
+              <span class="language-switcher__code notranslate" translate="no" data-code="${locale.toUpperCase()}">${locale.toUpperCase()}</span>
               <span class="language-switcher__label">${state.ui.languageNames[locale]}</span>
             </button>
           `
@@ -1057,6 +1064,7 @@ async function init() {
   });
 
   render();
+  initializeGoogleWebsiteTranslator();
   startPeriodicRefresh();
 
   // A warm start painted cached content; let the startup read finish and

@@ -75,7 +75,7 @@ export function render({ state }) {
                           <img src="${recipeImageSrc(recipe, { variant: 'card' })}" alt="${copy.title}" loading="lazy" decoding="async" />
                         </span>
                         <span class="recipe-browser-row__body">
-                          <strong>${copy.title}</strong>
+                          <strong class="notranslate" translate="no">${copy.title}</strong>
                           <span class="recipe-browser-row__meta">
                             <span class="recipe-browser-row__meta-item">
                               ${recipeBrowserMetaIcons.time}

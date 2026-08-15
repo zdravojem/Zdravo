@@ -561,7 +561,8 @@ function countUnit(quantity, unit, locale) {
 function getRecipeCopy(locale, recipe) {
   const recipeLocale = recipes[getLocale(locale)][recipe.slug] || {};
   return {
-    title: recipeLocale.title || recipe.name_sl,
+    // Recipe names are proper titles and must remain in their original form.
+    title: recipe.name_sl || recipeLocale.title || '',
     description: recipeLocale.description || recipe.description_sl || '',
     steps: recipeLocale.steps || JSON.parse(recipe.steps_sl || '[]')
   };

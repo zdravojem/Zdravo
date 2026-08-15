@@ -14,11 +14,13 @@ const IMGS = {
   puzzle_banner: '../assets/images/games/puzzle-banner.webp',
   detective_banner: '../assets/images/games/detective-banner.webp',
   detective_header: '../assets/images/games/detective/header.webp',
+  detective_header_en: '../assets/images/games/detective/header.en.png',
   detective_leaf: '../assets/images/games/detective/leaf-left.webp',
   detective_divider: '../assets/images/games/detective/divider.webp',
   detective_mascot: '../assets/images/games/detective/mascot.webp',
   detective_reward: '../assets/images/games/detective/reward.webp',
   puzzle_header:   '../assets/images/games/header.webp',
+  puzzle_header_en: '../assets/images/games/header.png',
   farm_plate_1: '../assets/images/games/1.webp',
   farm_plate_2: '../assets/images/games/2.webp',
   farm_plate_3: '../assets/images/games/3.webp',
@@ -93,9 +95,12 @@ const GL = {
     restartMsg: 'Ali želiš začeti znova? Trenutni rezultat bo izgubljen.',
     restartConfirm: 'Začni znova',
     restartCancel: 'Nadaljuj igro',
+    replayTitle: 'Kako želiš nadaljevati?',
+    replayMsg: 'Nadaljuj z zbranimi točkami ali začni znova od začetka.',
     puzzleComplete: 'Sestavljanka je končana!',
     puzzleCompleteTitle: 'Končano',
-    puzzleCompleteEmpty: 'Vsi koščki so že na mestu.'
+    puzzleCompleteEmpty: 'Vsi koščki so že na mestu.',
+    puzzleFinish: 'Zaključi'
   },
   en: {
     correctMsg: (pts) => `Excellent! +${pts} points`,
@@ -138,9 +143,12 @@ const GL = {
     restartMsg: 'Do you want to start again? The current score will be lost.',
     restartConfirm: 'Start again',
     restartCancel: 'Continue game',
+    replayTitle: 'How would you like to play?',
+    replayMsg: 'Continue with your collected points or start again from zero.',
     puzzleComplete: 'Puzzle complete!',
     puzzleCompleteTitle: 'Done',
-    puzzleCompleteEmpty: 'All pieces are in place.'
+    puzzleCompleteEmpty: 'All pieces are in place.',
+    puzzleFinish: 'Complete'
   }
 };
 
@@ -770,7 +778,7 @@ const DETECTIVE_RECIPE_INFO = {
 function _detectiveRecipeCard(question, locale) {
   const info = question && DETECTIVE_RECIPE_INFO[question.recipe];
   if (!info) return null;
-  return { img: rImg(info.slug), name: _lv(info.name, locale) };
+  return { img: rImg(info.slug), name: info.name.sl || info.name.en || '' };
 }
 
 const DETECTIVE_EXTRA_ANSWERS = [
@@ -798,6 +806,9 @@ let _lastPuzzleScenarioId = null;
 let _lastPicturePuzzleSource = null;
 let _lastDetectiveQuestionIds = [];
 let _puzzleStartToken = 0;
+
+// How long the completed puzzle stays on screen before the results panel.
+const PUZZLE_COMPLETE_HOLD_MS = 10000;
 const _lastPuzzlePrePlaceKeys = new Map();
 const PICTURE_PUZZLE_GRIDS = {
   easy: { rows: 3, cols: 3 },
@@ -1363,7 +1374,6 @@ function renderPuzzle(locale) {
   const completed = !!gs.puzzle.completed;
   const isJigsawPuzzle = !!sc.jigsaw;
   const piecesTitle = completed ? g.puzzleCompleteTitle : g.pieces;
-  const hintLabel = completed ? g.puzzleCompleteTitle : g.hint;
 
   // Build board slots HTML
   let boardHtml = '';
@@ -1430,7 +1440,7 @@ function renderPuzzle(locale) {
         </div>
       </div>
       <div class="gm-puzzle__content">
-<img class="gm-puzzle-banner" src="${IMGS.puzzle_header}" alt="${_lv(sc.title, locale)}" draggable="false" onerror="this.style.display='none'">
+<img class="gm-puzzle-banner" src="${locale === 'en' ? IMGS.puzzle_header_en : IMGS.puzzle_header}" alt="${_lv(sc.title, locale)}" draggable="false" onerror="this.style.display='none'">
         ${completed ? `<div class="gm-puzzle__complete">${g.puzzleComplete}</div>` : ''}
         <div class="gm-puzzle__area">
           <div class="gm-board${isJigsawPuzzle ? ' gm-board--jigsaw' : ''}" id="gm-board" style="--gm-grid-cols:${grid.cols};--gm-grid-rows:${grid.rows};">${boardHtml}</div>
@@ -1451,14 +1461,18 @@ function renderPuzzle(locale) {
         </div>
       </div>
       <div class="gm-puzzle__actions">
-        <button class="gm-btn gm-btn--hint ${hintDisabled}" id="gm-hint-btn" data-gm-action="hint">
-          ${GM_ICONS.bulb}
-          ${completed ? `${hintLabel}` : `${g.hint}<span class="gm-hint-count-wrap">(<span id="gm-hint-count">${hintsLeft}</span>)</span>`}
-        </button>
-        <button class="gm-btn gm-btn--restart" data-gm-action="confirm-restart">
-          ${GM_ICONS.restart}
-          ${g.restart}
-        </button>
+        ${completed ? `
+          <button class="gm-btn gm-btn--finish" data-gm-action="finish-puzzle">${g.puzzleFinish}</button>
+        ` : `
+          <button class="gm-btn gm-btn--hint ${hintDisabled}" id="gm-hint-btn" data-gm-action="hint">
+            ${GM_ICONS.bulb}
+            ${g.hint}<span class="gm-hint-count-wrap">(<span id="gm-hint-count">${hintsLeft}</span>)</span>
+          </button>
+          <button class="gm-btn gm-btn--restart" data-gm-action="confirm-restart">
+            ${GM_ICONS.restart}
+            ${g.restart}
+          </button>
+        `}
       </div>
       ${renderDragGhost()}
       ${renderToast()}
@@ -1566,7 +1580,7 @@ function renderDetective(locale) {
     <section class="gm-detective">
       <div class="gm-detective__content">
         <button class="gm-det-back" data-gm-action="confirm-back" aria-label="${locale === 'en' ? 'Back' : 'Nazaj'}">&#8592;</button>
-        <img class="gm-det-header-img" src="${IMGS.detective_header}" alt="" draggable="false" onerror="this.style.display='none'">
+        <img class="gm-det-header-img" src="${locale === 'en' ? IMGS.detective_header_en : IMGS.detective_header}" alt="" draggable="false" onerror="this.style.display='none'">
 
         <div class="gm-det-stats">
           <div class="gm-det-stat gm-det-stat--time" id="gm-timer-badge">
@@ -1596,7 +1610,7 @@ function renderDetective(locale) {
             </span>
             <span class="gm-det-recipe__copy">
               <small>${locale === 'en' ? 'Recipe' : 'Recept'}:</small>
-              <strong>${recipeCard.name}</strong>
+              <strong class="notranslate" translate="no">${recipeCard.name}</strong>
             </span>
             <img class="gm-det-recipe__icon" src="${IMGS.detective_leaf}" alt="" draggable="false" onerror="this.style.display='none'">
           </div>
@@ -1706,11 +1720,12 @@ function renderModal(type, locale) {
       </div>
     </div>`;
   }
+  const isReplayChoice = _gameState?.subScreen === 'end';
   return `<div class="gm-modal-overlay" id="gm-modal-restart" style="display:none">
     <div class="gm-modal" role="dialog" aria-modal="true">
-      <h3>${g.restartGame}</h3><p>${g.restartMsg}</p>
+      <h3>${isReplayChoice ? g.replayTitle : g.restartGame}</h3><p>${isReplayChoice ? g.replayMsg : g.restartMsg}</p>
       <div class="gm-modal__btns">
-        <button class="gm-modal-btn gm-modal-btn--cancel" data-gm-action="close-modal-restart">${g.restartCancel}</button>
+        <button class="gm-modal-btn gm-modal-btn--cancel" data-gm-action="${isReplayChoice ? 'continue-game' : 'close-modal-restart'}">${g.restartCancel}</button>
         <button class="gm-modal-btn gm-modal-btn--confirm" data-gm-action="do-restart">${g.restartConfirm}</button>
       </div>
     </div>
@@ -1835,10 +1850,11 @@ function _closeModal(id, actions) {
 // ---------------------------------------------------------------------------
 // Puzzle logic
 // ---------------------------------------------------------------------------
-async function _startPuzzle(actions) {
+async function _startPuzzle(actions, preserveScore = false) {
   if (!_gameState || _gameState.isStarting) return;
 
   const difficulty = _gameState.difficulty;
+  const startingScore = preserveScore ? (_gameState.score || 0) : 0;
   const cfg = DIFF_CONFIG[difficulty];
   const baseScenario = _pickPuzzleScenario();
   const source = _pickFarmToPlatePuzzleImage();
@@ -1880,7 +1896,7 @@ async function _startPuzzle(actions) {
   _gameState = {
     ..._gameState,
     subScreen: 'puzzle',
-    score: 0,
+    score: startingScore,
     timeLeft: cfg.time,
     lastPuzzleIdx: idx,
     endRecipe: null,
@@ -2074,11 +2090,25 @@ function _onDrop(pos, actions) {
         piecesContainer.innerHTML = `<div class="gm-pieces-empty">${g.puzzleCompleteEmpty}</div>`;
       }
 
+      const actionsEl = _rootEl.querySelector('.gm-puzzle__actions');
+      if (actionsEl) {
+        actionsEl.innerHTML = `<button class="gm-btn gm-btn--finish" data-gm-action="finish-puzzle">${g.puzzleFinish}</button>`;
+      }
+
+      // Hold on the finished picture before showing the score. Solving it is
+      // the payoff, and cutting away after a beat gave nobody time to look at
+      // what they had assembled.
+      const completedToken = _puzzleStartToken;
       setTimeout(() => {
-        if (_gameState && _gameState.subScreen === 'puzzle' && _gameState.puzzle.completed) {
+        if (
+          _gameState &&
+          _puzzleStartToken === completedToken &&
+          _gameState.subScreen === 'puzzle' &&
+          _gameState.puzzle.completed
+        ) {
           _endGame(actions, true);
         }
-      }, 900);
+      }, PUZZLE_COMPLETE_HOLD_MS);
     }
   } else {
     // Wrong slot
@@ -2142,15 +2172,16 @@ function _useHint() {
 // ---------------------------------------------------------------------------
 // Detective logic
 // ---------------------------------------------------------------------------
-function _startDetective(actions) {
+function _startDetective(actions, preserveScore = false) {
   const cfg = DIFF_CONFIG[_gameState.difficulty];
+  const startingScore = preserveScore ? (_gameState.score || 0) : 0;
   const qs = _pickDetectiveQuestions();
   _lastDetectiveQuestionIds = qs.map((question) => question.id);
 
   _gameState = {
     ..._gameState,
     subScreen: 'detective',
-    score: 0,
+    score: startingScore,
     timeLeft: cfg.time,
     endRecipe: qs[0] ? qs[0].recipe : 'honey_breakfast',
     det: { questions: qs, currentQ: 0, correct: 0, combo: 0, hintsUsed: 0, wrongAttempts: 0, hintUsedQ: false, answerOrders: {} }
@@ -2406,10 +2437,24 @@ export function bind({ state, actions, root }) {
       else _startDetective(actions);
       return;
     }
+    if (action === 'continue-game') {
+      _hideModal('gm-modal-restart');
+      const game = _gameState.game;
+      if (game === 'puzzle') _startPuzzle(actions, true);
+      else _startDetective(actions, true);
+      return;
+    }
 
     // ---- PUZZLE ----
     if (action === 'hint') {
       if (!target.classList.contains('gm-btn--disabled')) _useHint();
+      return;
+    }
+    if (action === 'finish-puzzle') {
+      if (_gameState?.subScreen === 'puzzle' && _gameState.puzzle?.completed) {
+        target.disabled = true;
+        _endGame(actions, true);
+      }
       return;
     }
 

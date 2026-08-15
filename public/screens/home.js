@@ -7,6 +7,7 @@ import {
 } from '../recipe-meta.js';
 
 const heroImageSrc = '../assets/images/home-hero.webp';
+const heroImageEnglishSrc = '../assets/images/home-hero.png';
 
 const categoryImageOrder = [
   'sadje',
@@ -281,15 +282,6 @@ function renderHomeNav(state) {
         )
         .join('')}
     </nav>
-  `;
-}
-
-function renderMarketLeafIcon() {
-  return `
-    <svg class="home-market-badge__leaf" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-      <path d="M19.5 5.2c-5.9 0-10.6 4.4-10.6 9.8 0 2.6 2.1 4.8 4.8 4.8 6.1 0 10.8-5.7 10.8-12.2 0-1.6-1.2-2.4-2.7-2.4-1.2 0-1.7 0-2.3 0z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" />
-      <path d="M8.2 18.2c3-1.4 6.3-4.7 8.7-9.1" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" />
-    </svg>
   `;
 }
 
@@ -901,7 +893,7 @@ function renderFeaturedRecipeCard({ locale, recipe, state, loopIndex = 0 }) {
         <img src="${recipeImageSrc(recipe, { variant: 'card' })}" alt="${title}" loading="lazy" decoding="async" />
       </span>
       <span class="home-recipe-card__body">
-        <span class="home-recipe-card__title">${title}</span>
+        <span class="home-recipe-card__title notranslate" translate="no">${title}</span>
         ${metaHtml}
       </span>
     </button>
@@ -930,6 +922,7 @@ function renderHomeGameCard({ game, locale }) {
 }
 
 function heroImage(locale) {
+  const imageSrc = locale === 'en' ? heroImageEnglishSrc : heroImageSrc;
   const label = locale === 'en'
     ? 'Zdravo Jem banner: choose market products and discover what you can prepare.'
     : 'Pasica Zdravo Jem: izberi izdelke s tržnice in odkrij, kaj lahko pripraviš.';
@@ -937,7 +930,7 @@ function heroImage(locale) {
   return `
     <img
       class="home-hero__image"
-      src="${heroImageSrc}"
+      src="${imageSrc}"
       alt="${label}"
       loading="eager"
       decoding="async"
@@ -962,7 +955,7 @@ export function render({ state }) {
       <section class="home-section home-section--categories">
         <div class="home-section__header">
           <h2>${state.ui.copy.homeMarketTitle}</h2>
-          <span class="home-market-badge">${state.ui.copy.homeMarketBadge}${renderMarketLeafIcon()}</span>
+          <span class="home-market-badge">${state.ui.copy.homeMarketBadge}</span>
         </div>
         <div class="home-category-carousel" data-category-carousel>
           ${chunkArray(categoryCards, 10)
