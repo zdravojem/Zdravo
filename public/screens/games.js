@@ -1981,21 +1981,46 @@ function _positionGhost(ghost, clientX, clientY) {
 // while mouse dragging worked.
 function _pointerDragStart(piece, el, ev) {
   if (ev.pointerType === 'mouse' && ev.button !== 0) return;
+  _dragData = {
+    piece,
+    el,
+    pointerId: ev.pointerId,
+    pointerType: ev.pointerType,
+    startX: ev.clientX,
+    startY: ev.clientY
+  };
+
+  // Mouse dragging should feel immediate. On a touchscreen, wait until the
+  // gesture has moved sideways toward the board so a vertical swipe can scroll
+  // the pieces tray instead of being captured as a drag.
+  if (ev.pointerType !== 'mouse') return;
+  _activatePointerDrag(ev);
+}
+
+function _activatePointerDrag(ev) {
+  if (!_dragData || _dragActive) return;
   ev.preventDefault();
-  _dragData = { piece, el };
   _dragActive = true;
-  el.classList.add('is-dragging');
-  el.setPointerCapture?.(ev.pointerId);
+  _dragData.el.classList.add('is-dragging');
+  _dragData.el.setPointerCapture?.(ev.pointerId);
   const ghost = _rootEl.querySelector('#gm-drag-ghost');
   const gImg = _rootEl.querySelector('#gm-ghost-img');
   const gLbl = _rootEl.querySelector('#gm-ghost-label');
-  if (ghost) { ghost.style.display = 'flex'; ghost.classList.toggle('is-jigsaw', !!piece.shape); }
-  if (gImg) { gImg.src = piece.img; gImg.style.display = 'block'; }
-  if (gLbl) { gLbl.textContent = _pieceLabel(piece, _gameState.locale); }
+  if (ghost) { ghost.style.display = 'flex'; ghost.classList.toggle('is-jigsaw', !!_dragData.piece.shape); }
+  if (gImg) { gImg.src = _dragData.piece.img; gImg.style.display = 'block'; }
+  if (gLbl) { gLbl.textContent = _pieceLabel(_dragData.piece, _gameState.locale); }
   _positionGhost(ghost, ev.clientX, ev.clientY);
 }
 
 function _pointerDragMove(ev) {
+  if (!_dragData || ev.pointerId !== _dragData.pointerId) return;
+  if (!_dragActive) {
+    const dx = ev.clientX - _dragData.startX;
+    const dy = ev.clientY - _dragData.startY;
+    if (Math.hypot(dx, dy) < 10) return;
+    if (_dragData.pointerType !== 'mouse' && Math.abs(dy) > Math.abs(dx)) return;
+    _activatePointerDrag(ev);
+  }
   if (!_dragActive) return;
   ev.preventDefault();
   const ghost = _rootEl && _rootEl.querySelector('#gm-drag-ghost');
@@ -2005,7 +2030,11 @@ function _pointerDragMove(ev) {
 }
 
 function _pointerDragEnd(ev, actions) {
-  if (!_dragActive) return;
+  if (!_dragActive) {
+    _dragData = null;
+    _dropSlotTarget = null;
+    return;
+  }
   _dragActive = false;
   if (_dragData && _dragData.el.hasPointerCapture?.(ev.pointerId)) {
     _dragData.el.releasePointerCapture(ev.pointerId);

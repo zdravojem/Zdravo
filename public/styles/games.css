@@ -26,7 +26,7 @@ body[data-game-active="true"] .language-switcher {
   overflow: hidden;
   -webkit-overflow-scrolling: touch;
   overscroll-behavior: none;
-  touch-action: none;
+  touch-action: manipulation;
   scrollbar-width: none;
 }
 
@@ -4743,10 +4743,14 @@ body[data-game-active="true"] .language-switcher {
 }
 
 .gm-puzzle__content {
-  flex: 0 0 auto;
+  /* Fill only the space left between the fixed header and bottom controls.
+     The previous fixed content height pushed the controls outside the kiosk's
+     clipped 854px design surface on some large-screen aspect ratios. */
+  flex: 1 1 auto;
   min-height: 0;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
   padding: 0 14px;
   z-index: 1;
 }
@@ -4774,11 +4778,12 @@ body[data-game-active="true"] .language-switcher {
 }
 
 .gm-puzzle__area {
-  flex: 0 0 auto;
+  flex: 1 1 auto;
+  min-height: 0;
   display: grid;
   grid-template-columns: minmax(0, 1fr) 104px;
   gap: 10px;
-  height: 386px;
+  height: auto;
 }
 
 .gm-board {
@@ -4942,6 +4947,13 @@ body[data-game-active="true"] .language-switcher {
   align-items: center;
   padding: 0 3px 2px;
   scrollbar-width: none;
+  overscroll-behavior-y: contain;
+  touch-action: pan-y;
+  -webkit-overflow-scrolling: touch;
+}
+
+#gm-pieces-container .gm-piece {
+  touch-action: pan-y;
 }
 
 #gm-pieces-container::-webkit-scrollbar {
@@ -5100,6 +5112,7 @@ body[data-game-active="true"] .language-switcher {
 
 .gm-puzzle__actions {
   flex-shrink: 0;
+  flex-direction: row;
   min-height: 64px;
   display: flex;
   justify-content: center;
@@ -5224,7 +5237,7 @@ body[data-game-active="true"] .language-switcher {
   }
 
   .gm-puzzle__area {
-    height: 386px;
+    height: auto;
   }
 
   .gm-puzzle__progress {
