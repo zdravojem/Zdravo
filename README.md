@@ -1,4 +1,4 @@
-# Zdravo Jem TEST
+# Zdravo Jem TEST noW
 
 Zdravo Jem ("I Eat Healthy") is a virtual culinary assistant for a Slovenian farmers' market kiosk,
 built for a 55" portrait touchscreen. It is an installable PWA: a set of plain ES modules served as
