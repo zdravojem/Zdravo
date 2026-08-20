@@ -1,28 +1,41 @@
-# Supabase Sync In Packaged Builds
+# Supabase Content In The Kiosk PWA
 
-The Electron app syncs from Supabase with the anon key and stores everything in
-local SQLite plus local files under Electron `userData`.
+The kiosk reads its content straight from Supabase with the anon key. There is no
+local database any more: the three content tables are fetched whole on start,
+held in memory, and re-read on a timer (`ZDRAVO_REFRESH_INTERVAL_MS`, five
+minutes by default) so an edit in the admin app reaches an unattended kiosk on
+its own. The last successful read is kept in `localStorage` so a cold start works
+with the network down.
 
-In development, `npm start` can read:
+Hard deletes need no reconciliation step: every read replaces the whole
+catalogue, so a row that disappears from Supabase disappears from the kiosk on
+the next read.
 
-- `Zdravo/.env.local`
-- `admin/recipe-admin/.env.local`
+## Configuration
 
-In packaged builds, the app can read either `.env.local` or
-`supabase-config.json` from these locations:
-
-- Electron `userData`
-- The folder next to the compiled `.exe`
-- The packaged `resources` folder
-
-If `Zdravo/.env.local` exists when you run `npm run pack` or `npm run dist`,
-`electron-builder` copies it to `resources/.env.local`.
-
-Example `.env.local`:
+The browser reads `public/env.js`, generated from `.env.local` by
+`npm run env:build`:
 
 ```env
 SUPABASE_URL=https://your-project-ref.supabase.co
 SUPABASE_ANON_KEY=your-anon-key
+```
+
+These Vite-style names are also accepted as sources:
+
+```env
+VITE_PUBLIC_SUPABASE_URL=https://your-project-ref.supabase.co
+VITE_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+```
+
+**Only the anon key.** `public/env.js` is downloaded by every visitor of the
+kiosk URL. `npm run env:build` refuses to write a `service_role` key into it.
+
+The remaining values in `.env.local` — the service-role key, the Gmail
+credentials, the R2 keys — are used only by the Node scripts in `scripts/` and by
+the Edge Functions, and never reach the browser:
+
+```env
 SUPABASE_SERVICE_ROLE_KEY=your-service-role-key-for-qr-url-updates
 ZDRAVO_PUBLIC_RECIPE_BASE_URL=https://recipes.your-domain.com
 ZDRAVO_PUBLIC_RECIPE_AUTO_DOWNLOAD=true
@@ -35,39 +48,15 @@ R2_PUBLIC_BASE_URL=https://recipes.your-domain.com
 R2_RECIPE_PREFIX=recipes
 ```
 
-These Vite-style names are also supported:
+## Row Level Security
 
-```env
-VITE_PUBLIC_SUPABASE_URL=https://your-project-ref.supabase.co
-VITE_PUBLIC_SUPABASE_PUBLISHABLE_KEY=your-publishable-or-anon-key
-```
+The anon role needs read access to `recipes`, `ingredients`,
+`recipe_ingredients` and to the `recipe-images` / `ingredient-images` storage
+buckets. `supabase-kiosk-read-policies.sql` grants exactly that; writes stay
+restricted to your admin policies.
 
-Example `supabase-config.json`:
-
-```json
-{
-  "url": "https://your-project-ref.supabase.co",
-  "anonKey": "your-anon-key",
-  "serviceRoleKey": "your-service-role-key-for-qr-url-updates",
-  "publicRecipeBaseUrl": "https://recipes.your-domain.com",
-  "publicRecipeAutoDownload": true,
-  "r2AccountId": "your-cloudflare-account-id",
-  "r2AccessKeyId": "your-r2-access-key-id",
-  "r2SecretAccessKey": "your-r2-secret-access-key",
-  "r2Bucket": "your-r2-bucket-name",
-  "r2PublicBaseUrl": "https://recipes.your-domain.com",
-  "recipeQrPrefix": "recipes"
-}
-```
-
-The packaged app uses a different SQLite database from `npm start`, located in
-Electron `userData`. On first launch with Supabase config present, it downloads
-new/updated recipes, ingredients, recipe ingredients, and images.
-
-Hard deletes are handled by reconciliation: each sync fetches the current
-Supabase recipe and ingredient IDs, then removes local rows that were previously
-synced but no longer exist remotely. Bundled seed rows without Supabase
-timestamps are left in place.
+Both image buckets must be **public**, because an `<img>` tag cannot send the
+`apikey` header a private bucket requires.
 
 ## Public QR Recipe Pages
 
@@ -122,9 +111,9 @@ The event-driven automation:
 - updates `recipes.qr_url` with the public R2 URL and bumps `updated_at` so
   kiosks pull the change on the next Supabase sync.
 
-After the kiosk syncs from Supabase, local SQLite stores `qr_url`. The QR modal
-uses `recipes.qr_url` only. If it is missing, the kiosk shows that the QR page is
-not ready yet instead of generating a localhost or same-network fallback URL.
+The QR modal uses `recipes.qr_url` only. If it is missing, the kiosk re-reads the
+catalogue once and, if it is still missing, shows that the QR page is not ready
+yet instead of generating a localhost or same-network fallback URL.
 
 ### Edge Function Secrets
 
@@ -211,7 +200,7 @@ Supabase Database Webhook
 -> referenced recipe/ingredient images checked and mirrored when a recipe page refreshes
 -> Cloudflare R2 HTML upload
 -> recipes.qr_url update
--> Electron sync pulls qr_url on next network connection
+-> kiosk picks up qr_url on its next Supabase read
 ```
 
 The Edge Function ignores the `qr_url` write-back update, so it will not loop.

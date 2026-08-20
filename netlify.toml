@@ -1,0 +1,100 @@
+# Netlify deployment for the Zdravo Jem kiosk.
+#
+# The site is static: public/ is uploaded as-is. The only build step generates
+# public/env.js (the Supabase URL and anon key), which is gitignored so the same
+# repository can serve different environments.
+#
+# Set these in Netlify -> Site configuration -> Environment variables:
+#   SUPABASE_URL        https://<project-ref>.supabase.co
+#   SUPABASE_ANON_KEY   the project's anon / publishable key (never service_role)
+#
+# The build fails loudly if either is missing or if Supabase rejects the key, so
+# a misconfigured deploy never reaches the kiosk.
+
+[build]
+  publish = "public"
+  command = "npm run build"
+
+[build.environment]
+  NODE_VERSION = "20"
+  # Nothing in package.json ships to the browser — every dependency is local
+  # tooling (image conversion, icon generation, the R2 scripts) and the build
+  # itself uses only Node builtins. Skipping them keeps deploys to a few
+  # seconds. Drop this line if a future build step needs a package.
+  NPM_FLAGS = "--omit=dev"
+  # CF_PUBLIC_BASE_URL is the public R2 base URL for recipe share assets and is
+  # meant to be embedded in client-side code (see recipe-share/app.js), so it
+  # isn't a value secrets scanning needs to flag.
+  SECRETS_SCAN_OMIT_KEYS = "CF_PUBLIC_BASE_URL"
+
+# There is deliberately no `/* -> /index.html` catch-all. The kiosk is a single
+# page with no client-side routing, so a catch-all would only turn missing
+# assets into 200 responses containing HTML — which the service worker would
+# then cache as if it were an image.
+
+# ---------------------------------------------------------------------------
+# Caching
+#
+# The service worker is the real cache; these headers only decide how quickly a
+# new deploy is noticed. The two files that must never be pinned are sw.js
+# (a stale worker freezes the whole app) and env.js (configuration).
+# ---------------------------------------------------------------------------
+
+[[headers]]
+  for = "/sw.js"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/env.js"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/index.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/manifest.webmanifest"
+  [headers.values]
+    Cache-Control = "public, max-age=3600"
+
+# Artwork filenames are stable rather than content-hashed, so this is a week
+# rather than a year: long enough to matter, short enough that replacing an
+# image does not need a cache purge.
+[[headers]]
+  for = "/assets/images/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"
+
+[[headers]]
+  for = "/assets/fonts/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/assets/icons/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"
+
+# ---------------------------------------------------------------------------
+# Security headers
+#
+# The kiosk talks to Supabase (REST, Storage, Edge Functions) and to the R2 host
+# serving the recipe share pages. Everything else is same-origin, so the policy
+# can be tight. Update connect-src/img-src if you move to another project.
+# ---------------------------------------------------------------------------
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "DENY"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "geolocation=(), microphone=(), camera=(), payment=()"
+    # The app has no inline <script> and never calls eval, so script-src needs no
+    # escape hatches. 'unsafe-inline' is required for style-src only because the
+    # screens use inline style="" attributes. Narrow *.supabase.co to your own
+    # project host if you want this tighter.
+    Content-Security-Policy = "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://*.supabase.co https://*.r2.dev; font-src 'self'; connect-src 'self' https://*.supabase.co; base-uri 'self'; form-action 'none'; object-src 'none'; frame-ancestors 'none'"
