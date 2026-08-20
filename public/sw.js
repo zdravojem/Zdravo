@@ -64,6 +64,7 @@ const SHELL_FILES = [
 
   // The two images on the screens a visitor always sees first.
   '/assets/images/welcome-poster.webp',
+  '/assets/images/welcome-poster2.webp',
   '/assets/images/home-hero.webp',
   '/assets/images/home-hero.png',
   '/assets/images/games/header.png',

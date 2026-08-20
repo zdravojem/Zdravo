@@ -141,6 +141,7 @@ body[data-screen="welcome"] .language-switcher__button.is-active {
 }
 
 .welcome-poster-wrap {
+  position: relative;
   flex: 1;
   min-height: 0;
   width: 100%;
@@ -155,6 +156,17 @@ body[data-screen="welcome"] .language-switcher__button.is-active {
   object-position: center;
   user-select: none;
   -webkit-user-drag: none;
+}
+
+.welcome-poster--second {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.welcome-poster--second.is-visible {
+  opacity: 1;
 }
 
 .welcome-card {

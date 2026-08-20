@@ -1,0 +1,577 @@
+%PDF-1.4
+%‚„œ”
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Count 9 /Kids [7 0 R 9 0 R 11 0 R 13 0 R 15 0 R 17 0 R 19 0 R 21 0 R 23 0 R] >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>
+endobj
+5 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Courier >>
+endobj
+6 0 obj
+<< /Length 896 >>
+stream
+0.96 0.94 0.87 rg 0 0 595.28 841.89 re f
+0.35 0.55 0.18 rg 0 650 595.28 191.89 re f
+BT /F2 34 Tf 1 1 1 rg 1 0 0 1 54.00 720.00 Tm (ZDRAVO JEM) Tj ET
+BT /F2 24 Tf 1 1 1 rg 1 0 0 1 54.00 675.00 Tm (Project Documentation) Tj ET
+BT /F1 13 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 615.00 Tm (Technical, deployment, operations, and maintenance guide) Tj ET
+BT /F2 12 Tf 0.35 0.55 0.18 rg 1 0 0 1 54.00 574.00 Tm (Version 2.0) Tj ET
+BT /F1 11 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 550.00 Tm (Prepared 16 August 2026) Tj ET
+0.72 0.48 0.28 RG 2 w 54 515 m 541.28 515 l S
+BT /F1 11 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 480.00 Tm (Installable PWA for a 55-inch portrait touchscreen kiosk) Tj ET
+BT /F1 11 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 458.00 Tm (Slovenian and English interface) Tj ET
+BT /F2 9 Tf 0.46 0.30 0.18 rg 1 0 0 1 54.00 112.00 Tm (Secret-safe documentation: no keys, passwords, or tokens included) Tj ET
+endstream
+endobj
+7 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595.28 841.89] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> /Contents 6 0 R >>
+endobj
+8 0 obj
+<< /Length 6514 >>
+stream
+0.35 0.55 0.18 rg 0 812 595.28 29.89 re f
+BT /F2 8 Tf 1 1 1 rg 1 0 0 1 54 823 Tm (ZDRAVO JEM) Tj ET
+BT /F1 8 Tf 1 1 1 rg 1 0 0 1 415 823 Tm (PROJECT DOCUMENTATION) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 779.89 Tm (Version 2.0 Prepared: 16 August 2026) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 759.89 Tm (Zdravo Jem \("I Eat Healthy"\) is an installable Progressive Web App designed for a 55-inch portrait) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 746.89 Tm (touchscreen kiosk at a Slovenian farmers' market. It helps visitors discover recipes from market) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 733.89 Tm (ingredients, view cooking guidance, send recipes by email, and learn through two food-themed games.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 713.89 Tm (This document is intended for project owners, developers, content administrators, deployment) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 700.89 Tm (administrators, and kiosk support staff.) Tj ET
+BT /F2 15 Tf 0.20 0.38 0.12 rg 1 0 0 1 54.00 664.89 Tm (1. Product overview) Tj ET
+0.77 0.83 0.64 RG 0.7 w 54 651.89 m 541.28 651.89 l S
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 638.89 Tm (The kiosk provides the following visitor experiences:) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 62.00 618.89 Tm (-) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 618.89 Tm (A Slovenian and English interface selected with the SL/EN control.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 62.00 602.89 Tm (-) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 602.89 Tm (Ingredient and category browsing.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 62.00 586.89 Tm (-) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 586.89 Tm (Recipe recommendations based on selected ingredients.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 62.00 570.89 Tm (-) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 570.89 Tm (Recipe details including description, ingredients, preparation steps, additional advice, time,) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 557.89 Tm (servings, and difficulty.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 62.00 541.89 Tm (-) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 541.89 Tm (Email and QR-code sharing.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 62.00 525.89 Tm (-) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 525.89 Tm (The "Od kmetije do kroznika" Farm to Plate puzzle game.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 62.00 509.89 Tm (-) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 509.89 Tm (The Market Detective question game.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 62.00 493.89 Tm (-) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 493.89 Tm (Offline operation after the application and catalogue have been cached.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 477.89 Tm (The application was migrated from Electron and local SQLite to a browser-based PWA. The current) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 464.89 Tm (frontend uses plain JavaScript ES modules and reads catalogue data from Supabase through its REST) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 451.89 Tm (API.) Tj ET
+BT /F2 15 Tf 0.20 0.38 0.12 rg 1 0 0 1 54.00 415.89 Tm (2. System architecture) Tj ET
+0.77 0.83 0.64 RG 0.7 w 54 402.89 m 541.28 402.89 l S
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 389.89 Tm (The system has four main parts:) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 62.00 369.89 Tm (-) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 369.89 Tm (Frontend PWA: static HTML, CSS, JavaScript modules, images, fonts, manifest, and service worker) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 356.89 Tm (under public/.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 62.00 340.89 Tm (-) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 340.89 Tm (Supabase: recipe, ingredient, and relationship data; image storage; and the email Edge Function.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 62.00 324.89 Tm (-) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 324.89 Tm (Gmail: recipe email delivery through Gmail API OAuth, with authenticated SMTP as a fallback.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 62.00 308.89 Tm (-) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 308.89 Tm (Optional Cloudflare R2 recipe-share pages: public pages opened from generated QR codes.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 292.89 Tm (The browser never receives Gmail credentials, the Supabase service-role key, or R2 private) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 279.89 Tm (credentials. Sensitive values must remain in Netlify environment variables, Supabase secrets, or an) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 266.89 Tm (administrator's local environment.) Tj ET
+BT /F2 15 Tf 0.20 0.38 0.12 rg 1 0 0 1 54.00 230.89 Tm (3. Repository layout) Tj ET
+0.77 0.83 0.64 RG 0.7 w 54 217.89 m 541.28 217.89 l S
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 62.00 204.89 Tm (-) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 204.89 Tm (public/index.html: application entry page.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 62.00 188.89 Tm (-) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 188.89 Tm (public/app.js: application state, navigation, language selection, idle handling, and recipe) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 175.89 Tm (sharing.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 62.00 159.89 Tm (-) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 159.89 Tm (public/screens/: welcome, home, ingredients, results, recipe detail, and game screens.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 62.00 143.89 Tm (-) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 143.89 Tm (public/styles/: global, layout, component, PWA, and game styling.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 62.00 127.89 Tm (-) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 127.89 Tm (public/data/: Supabase REST access, local catalogue cache, configuration, email request, and QR) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 114.89 Tm (utilities.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 62.00 98.89 Tm (-) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 98.89 Tm (public/i18n.js: native Slovenian and English interface translations.) Tj ET
+BT /F1 8 Tf 0.42 0.40 0.35 rg 1 0 0 1 54 28 Tm (Version 2.0) Tj ET
+BT /F1 8 Tf 0.42 0.40 0.35 rg 1 0 0 1 480 28 Tm (Page 2) Tj ET
+endstream
+endobj
+9 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595.28 841.89] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> /Contents 8 0 R >>
+endobj
+10 0 obj
+<< /Length 5922 >>
+stream
+0.35 0.55 0.18 rg 0 812 595.28 29.89 re f
+BT /F2 8 Tf 1 1 1 rg 1 0 0 1 54 823 Tm (ZDRAVO JEM) Tj ET
+BT /F1 8 Tf 1 1 1 rg 1 0 0 1 415 823 Tm (PROJECT DOCUMENTATION) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 62.00 779.89 Tm (-) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 779.89 Tm (public/recipe-field-translations.js: locally stored English recipe descriptions, advice,) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 766.89 Tm (methods, and numbered preparation steps.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 62.00 750.89 Tm (-) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 750.89 Tm (public/sw.js: offline shell and asset caching.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 62.00 734.89 Tm (-) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 734.89 Tm (public/pwa/: service-worker registration and kiosk interaction restrictions.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 62.00 718.89 Tm (-) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 718.89 Tm (public/assets/: images, icons, and fonts.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 62.00 702.89 Tm (-) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 702.89 Tm (supabase/functions/send-recipe-email/: server-side recipe email function.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 62.00 686.89 Tm (-) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 686.89 Tm (recipe-share/: standalone public recipe-share page.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 62.00 670.89 Tm (-) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 670.89 Tm (scripts/: environment, assets, images, icons, QR pages, and local-server tooling.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 62.00 654.89 Tm (-) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 654.89 Tm (netlify.toml: Netlify build, caching, and security-header configuration.) Tj ET
+BT /F2 15 Tf 0.20 0.38 0.12 rg 1 0 0 1 54.00 622.89 Tm (4. Local development) Tj ET
+0.77 0.83 0.64 RG 0.7 w 54 609.89 m 541.28 609.89 l S
+BT /F2 11.5 Tf 0.20 0.38 0.12 rg 1 0 0 1 54.00 586.89 Tm (4.1 Requirements) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 62.00 567.39 Tm (-) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 567.39 Tm (Node.js 20 or a current Node.js LTS release.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 62.00 551.39 Tm (-) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 551.39 Tm (npm.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 62.00 535.39 Tm (-) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 535.39 Tm (Access to the Supabase project.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 62.00 519.39 Tm (-) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 519.39 Tm (A modern Chromium-based browser for kiosk testing.) Tj ET
+BT /F2 11.5 Tf 0.20 0.38 0.12 rg 1 0 0 1 54.00 493.39 Tm (4.2 Install and start) Tj ET
+BT /F3 7.6 Tf 0.27 0.25 0.22 rg 1 0 0 1 66.00 473.89 Tm (npm install) Tj ET
+BT /F3 7.6 Tf 0.27 0.25 0.22 rg 1 0 0 1 66.00 463.89 Tm (npm run env:build) Tj ET
+BT /F3 7.6 Tf 0.27 0.25 0.22 rg 1 0 0 1 66.00 453.89 Tm (npm start) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 437.89 Tm (Open http://localhost:4173.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 417.89 Tm (The frontend does not require a production bundling step. The build command generates the asset) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 404.89 Tm (manifest and the public runtime environment file.) Tj ET
+BT /F2 11.5 Tf 0.20 0.38 0.12 rg 1 0 0 1 54.00 374.89 Tm (4.3 Public environment values) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 355.39 Tm (Create .env.local from .env.example. The browser needs only:) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 62.00 335.39 Tm (-) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 335.39 Tm (SUPABASE_URL or VITE_PUBLIC_SUPABASE_URL.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 62.00 319.39 Tm (-) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 319.39 Tm (SUPABASE_ANON_KEY, containing the project's anon or publishable key.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 303.39 Tm (Run npm run env:build after changing these values. This generates the gitignored public/env.js file.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 283.39 Tm (Never place the following in public/env.js or any VITE_PUBLIC_* variable:) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 62.00 263.39 Tm (-) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 263.39 Tm (Supabase service-role keys.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 62.00 247.39 Tm (-) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 247.39 Tm (Gmail passwords, OAuth client secrets, or refresh tokens.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 62.00 231.39 Tm (-) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 231.39 Tm (R2 secret access keys.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 215.39 Tm (Every value shipped in the frontend can be read by a visitor.) Tj ET
+BT /F2 15 Tf 0.20 0.38 0.12 rg 1 0 0 1 54.00 179.39 Tm (5. Data model and content flow) Tj ET
+0.77 0.83 0.64 RG 0.7 w 54 166.39 m 541.28 166.39 l S
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 153.39 Tm (The kiosk reads the Supabase tables recipes, ingredients, and recipe_ingredients. Public read access) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 140.39 Tm (must be enabled only for the data required by the kiosk. Example policies are provided in) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 127.39 Tm (supabase-kiosk-read-policies.sql.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 107.39 Tm (On startup, the data store:) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 58.00 87.39 Tm (1.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 72.00 87.39 Tm (Loads the last valid catalogue from localStorage for a fast or offline start.) Tj ET
+BT /F1 8 Tf 0.42 0.40 0.35 rg 1 0 0 1 54 28 Tm (Version 2.0) Tj ET
+BT /F1 8 Tf 0.42 0.40 0.35 rg 1 0 0 1 480 28 Tm (Page 3) Tj ET
+endstream
+endobj
+11 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595.28 841.89] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> /Contents 10 0 R >>
+endobj
+12 0 obj
+<< /Length 5946 >>
+stream
+0.35 0.55 0.18 rg 0 812 595.28 29.89 re f
+BT /F2 8 Tf 1 1 1 rg 1 0 0 1 54 823 Tm (ZDRAVO JEM) Tj ET
+BT /F1 8 Tf 1 1 1 rg 1 0 0 1 415 823 Tm (PROJECT DOCUMENTATION) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 58.00 779.89 Tm (2.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 72.00 779.89 Tm (Fetches the current catalogue from Supabase.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 58.00 763.89 Tm (3.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 72.00 763.89 Tm (Normalizes recipe fields, ingredients, servings, tags, and translated fields.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 58.00 747.89 Tm (4.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 72.00 747.89 Tm (Refreshes the remote catalogue every five minutes by default.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 731.89 Tm (The refresh interval can be changed with ZDRAVO_REFRESH_INTERVAL_MS.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 711.89 Tm (Recipe and ingredient images normally come from public Supabase Storage buckets. Bundled images) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 698.89 Tm (under public/assets/images/ provide fallbacks.) Tj ET
+BT /F2 15 Tf 0.20 0.38 0.12 rg 1 0 0 1 54.00 662.89 Tm (6. Language system) Tj ET
+0.77 0.83 0.64 RG 0.7 w 54 649.89 m 541.28 649.89 l S
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 636.89 Tm (Language switching is native, immediate, and does not reload the page. The selected locale is saved) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 623.89 Tm (in localStorage under zdravo.locale.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 603.89 Tm (The application does not load the Google Website Translator widget. No Google translation banner,) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 590.89 Tm (badge, popup, or runtime script is shown to kiosk users.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 570.89 Tm (English content comes from:) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 62.00 550.89 Tm (-) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 550.89 Tm (Interface strings in public/i18n.js.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 62.00 534.89 Tm (-) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 534.89 Tm (Ingredient translations in public/i18n.js.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 62.00 518.89 Tm (-) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 518.89 Tm (Database fields such as description_en, steps_en, dodatni_nasvet_en, and nacin_priprave_en, when) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 505.89 Tm (present.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 62.00 489.89 Tm (-) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 489.89 Tm (Local fallbacks in public/recipe-field-translations.js.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 473.89 Tm (All 70 current recipes have local English preparation-step translations, covering 700 numbered) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 460.89 Tm (steps.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 440.89 Tm (Recipe names are intentionally never translated. They remain in their original Slovenian form in) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 427.89 Tm (lists, detail headings, page titles, game references, and shared email content.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 407.89 Tm (Language-specific images are selected by application state. English currently uses the English home) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 394.89 Tm (hero, puzzle header, and detective header variants.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 374.89 Tm (When adding a new recipe, prefer storing English fields in Supabase. If no English step list exists,) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 361.89 Tm (add a steps array to the matching recipe entry in public/recipe-field-translations.js.) Tj ET
+BT /F2 15 Tf 0.20 0.38 0.12 rg 1 0 0 1 54.00 325.89 Tm (7. Recipe experience) Tj ET
+0.77 0.83 0.64 RG 0.7 w 54 312.89 m 541.28 312.89 l S
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 299.89 Tm (The recipe detail screen displays:) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 62.00 279.89 Tm (-) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 279.89 Tm (Original Slovenian recipe name.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 62.00 263.89 Tm (-) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 263.89 Tm (Localized description.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 62.00 247.89 Tm (-) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 247.89 Tm (Time, difficulty, servings, and suitability information.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 62.00 231.89 Tm (-) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 231.89 Tm (Localized ingredient names and units.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 62.00 215.89 Tm (-) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 215.89 Tm (Numbered, localized preparation steps.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 62.00 199.89 Tm (-) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 199.89 Tm (Localized additional advice with a pastel-green bulb icon.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 62.00 183.89 Tm (-) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 183.89 Tm (Email and QR sharing actions.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 167.89 Tm (The servings controls recalculate displayed ingredient quantities. Recipe names remain unchanged) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 154.89 Tm (when language or servings change.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 134.89 Tm (The email success popup has a top-right close control and closes automatically after five seconds) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 121.89 Tm (when left untouched.) Tj ET
+BT /F1 8 Tf 0.42 0.40 0.35 rg 1 0 0 1 54 28 Tm (Version 2.0) Tj ET
+BT /F1 8 Tf 0.42 0.40 0.35 rg 1 0 0 1 480 28 Tm (Page 4) Tj ET
+endstream
+endobj
+13 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595.28 841.89] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> /Contents 12 0 R >>
+endobj
+14 0 obj
+<< /Length 5779 >>
+stream
+0.35 0.55 0.18 rg 0 812 595.28 29.89 re f
+BT /F2 8 Tf 1 1 1 rg 1 0 0 1 54 823 Tm (ZDRAVO JEM) Tj ET
+BT /F1 8 Tf 1 1 1 rg 1 0 0 1 415 823 Tm (PROJECT DOCUMENTATION) Tj ET
+BT /F2 15 Tf 0.20 0.38 0.12 rg 1 0 0 1 54.00 763.89 Tm (8. Games) Tj ET
+0.77 0.83 0.64 RG 0.7 w 54 750.89 m 541.28 750.89 l S
+BT /F2 11.5 Tf 0.20 0.38 0.12 rg 1 0 0 1 54.00 727.89 Tm (8.1 Farm to Plate puzzle) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 708.39 Tm (Players drag picture pieces from the side tray to their correct positions. Difficulty controls time,) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 695.39 Tm (pre-placed pieces, distractors, points, and hint cost.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 675.39 Tm (Touchscreen behavior:) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 62.00 655.39 Tm (-) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 655.39 Tm (A vertical swipe scrolls the pieces tray with momentum.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 62.00 639.39 Tm (-) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 639.39 Tm (A sideways movement toward the board begins piece dragging.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 62.00 623.39 Tm (-) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 623.39 Tm (Overscroll is contained inside the tray.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 62.00 607.39 Tm (-) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 607.39 Tm (Hint and Restart stay in a fixed bottom action row.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 62.00 591.39 Tm (-) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 591.39 Tm (When solved, Complete replaces the Hint and Restart controls.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 62.00 575.39 Tm (-) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 575.39 Tm (The completed picture remains visible for ten seconds before the result screen.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 62.00 559.39 Tm (-) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 559.39 Tm (Complete can be pressed immediately to continue without waiting.) Tj ET
+BT /F2 11.5 Tf 0.20 0.38 0.12 rg 1 0 0 1 54.00 533.39 Tm (8.2 Market Detective) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 513.89 Tm (Players identify the correct ingredient or recipe answer. Correct and incorrect responses affect) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 500.89 Tm (points according to difficulty. The correct-answer indicator uses a complete circular badge.) Tj ET
+BT /F2 11.5 Tf 0.20 0.38 0.12 rg 1 0 0 1 54.00 470.89 Tm (8.3 Replay behavior) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 451.39 Tm (Both games offer two replay paths:) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 62.00 431.39 Tm (-) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 431.39 Tm (Continue Game preserves the accumulated score and starts another round.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 62.00 415.39 Tm (-) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 415.39 Tm (Start Again resets the score and starts a fresh game.) Tj ET
+BT /F2 15 Tf 0.20 0.38 0.12 rg 1 0 0 1 54.00 383.39 Tm (9. Sending recipes by email) Tj ET
+0.77 0.83 0.64 RG 0.7 w 54 370.39 m 541.28 370.39 l S
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 357.39 Tm (Email is handled by the Supabase send-recipe-email Edge Function. The frontend sends structured) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 344.39 Tm (recipe content to the function; it never sends Gmail credentials.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 324.39 Tm (The function prefers Gmail API OAuth when all OAuth credentials are configured. If OAuth delivery) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 311.39 Tm (fails and an app password is available, it falls back to authenticated Gmail SMTP on ports 465 and) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 298.39 Tm (587.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 278.39 Tm (Configure Supabase secrets similar to:) Tj ET
+BT /F3 7.6 Tf 0.27 0.25 0.22 rg 1 0 0 1 66.00 258.39 Tm (supabase secrets set GMAIL_USER=...) Tj ET
+BT /F3 7.6 Tf 0.27 0.25 0.22 rg 1 0 0 1 66.00 248.39 Tm (supabase secrets set GMAIL_CLIENT_ID=...) Tj ET
+BT /F3 7.6 Tf 0.27 0.25 0.22 rg 1 0 0 1 66.00 238.39 Tm (supabase secrets set GMAIL_CLIENT_SECRET=...) Tj ET
+BT /F3 7.6 Tf 0.27 0.25 0.22 rg 1 0 0 1 66.00 228.39 Tm (supabase secrets set GMAIL_REFRESH_TOKEN=...) Tj ET
+BT /F3 7.6 Tf 0.27 0.25 0.22 rg 1 0 0 1 66.00 218.39 Tm (supabase secrets set GMAIL_APP_PASSWORD=...) Tj ET
+BT /F3 7.6 Tf 0.27 0.25 0.22 rg 1 0 0 1 66.00 208.39 Tm (supabase secrets set ZDRAVO_ALLOWED_ORIGINS=https://your-kiosk-domain) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 192.39 Tm (Then deploy:) Tj ET
+BT /F3 7.6 Tf 0.27 0.25 0.22 rg 1 0 0 1 66.00 172.39 Tm (supabase functions deploy send-recipe-email) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 156.39 Tm (The function creates multipart plain-text and HTML email content with standards-compliant MIME and) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 143.39 Tm (CRLF line endings.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 123.39 Tm (Gmail API delivery does not guarantee inbox placement. Spam classification also depends on sender) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 110.39 Tm (reputation, message content, recipient behavior, and domain authentication. For a custom sending) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 97.39 Tm (domain, configure SPF, DKIM, and DMARC. Do not repeatedly send identical test messages to many) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 84.39 Tm (inactive recipients.) Tj ET
+BT /F1 8 Tf 0.42 0.40 0.35 rg 1 0 0 1 54 28 Tm (Version 2.0) Tj ET
+BT /F1 8 Tf 0.42 0.40 0.35 rg 1 0 0 1 480 28 Tm (Page 5) Tj ET
+endstream
+endobj
+15 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595.28 841.89] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> /Contents 14 0 R >>
+endobj
+16 0 obj
+<< /Length 5595 >>
+stream
+0.35 0.55 0.18 rg 0 812 595.28 29.89 re f
+BT /F2 8 Tf 1 1 1 rg 1 0 0 1 54 823 Tm (ZDRAVO JEM) Tj ET
+BT /F1 8 Tf 1 1 1 rg 1 0 0 1 415 823 Tm (PROJECT DOCUMENTATION) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 779.89 Tm (If OAuth reports invalid_grant, generate a new refresh token and update the Supabase secret. OAuth) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 766.89 Tm (applications left in Google Cloud Testing mode commonly issue short-lived refresh tokens; publish) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 753.89 Tm (the consent configuration for durable production use.) Tj ET
+BT /F2 15 Tf 0.20 0.38 0.12 rg 1 0 0 1 54.00 717.89 Tm (10. QR and public recipe sharing) Tj ET
+0.77 0.83 0.64 RG 0.7 w 54 704.89 m 541.28 704.89 l S
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 691.89 Tm (The browser can generate a QR code for the current recipe. Optional public recipe pages are built) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 678.89 Tm (from recipe-share/ and can be synchronized to Cloudflare R2.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 658.89 Tm (Useful commands:) Tj ET
+BT /F3 7.6 Tf 0.27 0.25 0.22 rg 1 0 0 1 66.00 638.89 Tm (npm run recipe-share:build) Tj ET
+BT /F3 7.6 Tf 0.27 0.25 0.22 rg 1 0 0 1 66.00 628.89 Tm (npm run recipe-qr:dry-run) Tj ET
+BT /F3 7.6 Tf 0.27 0.25 0.22 rg 1 0 0 1 66.00 618.89 Tm (npm run recipe-qr:sync) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 602.89 Tm (R2 access keys are private deployment credentials and must never be added to frontend files.) Tj ET
+BT /F2 15 Tf 0.20 0.38 0.12 rg 1 0 0 1 54.00 566.89 Tm (11. Offline operation and caching) Tj ET
+0.77 0.83 0.64 RG 0.7 w 54 553.89 m 541.28 553.89 l S
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 540.89 Tm (The service worker precaches the application shell and progressively caches artwork. The last) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 527.89 Tm (successful Supabase catalogue is also retained in localStorage.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 507.89 Tm (This allows the kiosk to reopen and navigate during a temporary connection outage after it has been) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 494.89 Tm (warmed once online.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 474.89 Tm (The current service-worker cache version is v20. Increase CACHE_VERSION in public/sw.js whenever a) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 461.89 Tm (cached shell file changes. Regenerate the asset list after adding or removing artwork:) Tj ET
+BT /F3 7.6 Tf 0.27 0.25 0.22 rg 1 0 0 1 66.00 441.89 Tm (npm run assets:manifest) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 425.89 Tm (After deployment, restart or refresh the installed kiosk once if it is still displaying an older) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 412.89 Tm (cached interface.) Tj ET
+BT /F2 15 Tf 0.20 0.38 0.12 rg 1 0 0 1 54.00 376.89 Tm (12. Netlify deployment) Tj ET
+0.77 0.83 0.64 RG 0.7 w 54 363.89 m 541.28 363.89 l S
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 350.89 Tm (The repository's netlify.toml defines:) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 62.00 330.89 Tm (-) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 330.89 Tm (Build command: npm run build.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 62.00 314.89 Tm (-) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 314.89 Tm (Publish directory: public.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 62.00 298.89 Tm (-) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 298.89 Tm (Node.js version 20.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 62.00 282.89 Tm (-) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 282.89 Tm (Revalidation headers for sw.js, env.js, and index.html.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 62.00 266.89 Tm (-) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 266.89 Tm (Longer caching for fonts and artwork.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 62.00 250.89 Tm (-) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 250.89 Tm (Content Security Policy and related security headers.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 234.89 Tm (Required Netlify environment values:) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 62.00 214.89 Tm (-) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 214.89 Tm (SUPABASE_URL.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 62.00 198.89 Tm (-) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 198.89 Tm (SUPABASE_ANON_KEY using the anon or publishable key.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 182.89 Tm (The current configuration contains SECRETS_SCAN_ENABLED = "false". Disabling Netlify's scan does not) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 169.89 Tm (make committed credentials safe. Verify that .env.local, generated public/env.js, service-role keys,) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 156.89 Tm (Gmail credentials, and R2 secrets are excluded from version control. Rotate any secret that has been) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 143.89 Tm (publicly exposed.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 123.89 Tm (The site must be hosted at the domain root over HTTPS. Do not add a catch-all redirect that returns) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 110.89 Tm (index.html for missing assets, because the service worker could cache HTML as an image or module.) Tj ET
+BT /F1 8 Tf 0.42 0.40 0.35 rg 1 0 0 1 54 28 Tm (Version 2.0) Tj ET
+BT /F1 8 Tf 0.42 0.40 0.35 rg 1 0 0 1 480 28 Tm (Page 6) Tj ET
+endstream
+endobj
+17 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595.28 841.89] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> /Contents 16 0 R >>
+endobj
+18 0 obj
+<< /Length 6290 >>
+stream
+0.35 0.55 0.18 rg 0 812 595.28 29.89 re f
+BT /F2 8 Tf 1 1 1 rg 1 0 0 1 54 823 Tm (ZDRAVO JEM) Tj ET
+BT /F1 8 Tf 1 1 1 rg 1 0 0 1 415 823 Tm (PROJECT DOCUMENTATION) Tj ET
+BT /F2 15 Tf 0.20 0.38 0.12 rg 1 0 0 1 54.00 763.89 Tm (13. Installing and operating the kiosk) Tj ET
+0.77 0.83 0.64 RG 0.7 w 54 750.89 m 541.28 750.89 l S
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 58.00 737.89 Tm (1.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 72.00 737.89 Tm (Open the deployed HTTPS URL in Chrome or Edge on the kiosk computer.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 58.00 721.89 Tm (2.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 72.00 721.89 Tm (Use the browser menu or address-bar install icon to install the PWA.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 58.00 705.89 Tm (3.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 72.00 705.89 Tm (Launch the installed application.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 58.00 689.89 Tm (4.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 72.00 689.89 Tm (Configure the operating system or browser kiosk mode for unattended operation.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 58.00 673.89 Tm (5.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 72.00 673.89 Tm (Confirm touch dragging, tray scrolling, email delivery, SL/EN switching, sound, and offline) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 72.00 660.89 Tm (startup.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 644.89 Tm (The frontend blocks context menus, long-press menus, pinch zoom, and double-tap zoom. The first) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 631.89 Tm (interaction can request fullscreen when the app is opened in a normal browser tab.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 611.89 Tm (After two minutes without interaction, the app returns to the Welcome screen.) Tj ET
+BT /F2 15 Tf 0.20 0.38 0.12 rg 1 0 0 1 54.00 575.89 Tm (14. Common maintenance commands) Tj ET
+0.77 0.83 0.64 RG 0.7 w 54 562.89 m 541.28 562.89 l S
+BT /F3 7.6 Tf 0.27 0.25 0.22 rg 1 0 0 1 66.00 549.89 Tm (npm start                 Start the local static server on port 4173) Tj ET
+BT /F3 7.6 Tf 0.27 0.25 0.22 rg 1 0 0 1 66.00 539.89 Tm (npm run build             Build environment and asset manifest for deployment) Tj ET
+BT /F3 7.6 Tf 0.27 0.25 0.22 rg 1 0 0 1 66.00 529.89 Tm (npm run env:build         Generate public/env.js) Tj ET
+BT /F3 7.6 Tf 0.27 0.25 0.22 rg 1 0 0 1 66.00 519.89 Tm (npm run assets:manifest   Refresh the service-worker artwork manifest) Tj ET
+BT /F3 7.6 Tf 0.27 0.25 0.22 rg 1 0 0 1 66.00 509.89 Tm (npm run icons:build       Regenerate PWA icons) Tj ET
+BT /F3 7.6 Tf 0.27 0.25 0.22 rg 1 0 0 1 66.00 499.89 Tm (npm run images:optimize   Optimize new image assets) Tj ET
+BT /F3 7.6 Tf 0.27 0.25 0.22 rg 1 0 0 1 66.00 489.89 Tm (npm run vendor:qrcode     Rebuild the browser QR library) Tj ET
+BT /F3 7.6 Tf 0.27 0.25 0.22 rg 1 0 0 1 66.00 479.89 Tm (npm run recipe-qr:dry-run Preview public recipe-page synchronization) Tj ET
+BT /F3 7.6 Tf 0.27 0.25 0.22 rg 1 0 0 1 66.00 469.89 Tm (npm run recipe-qr:sync    Publish public recipe pages) Tj ET
+BT /F3 7.6 Tf 0.27 0.25 0.22 rg 1 0 0 1 66.00 459.89 Tm (npm run docs:pdf          Regenerate this PDF manual) Tj ET
+BT /F2 15 Tf 0.20 0.38 0.12 rg 1 0 0 1 54.00 427.89 Tm (15. Troubleshooting) Tj ET
+0.77 0.83 0.64 RG 0.7 w 54 414.89 m 541.28 414.89 l S
+BT /F2 11.5 Tf 0.20 0.38 0.12 rg 1 0 0 1 54.00 391.89 Tm (Application opens with no catalogue) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 62.00 372.39 Tm (-) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 372.39 Tm (Confirm public/env.js exists in the deployed output.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 62.00 356.39 Tm (-) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 356.39 Tm (Confirm it contains an anon or publishable key, not a service-role key.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 62.00 340.39 Tm (-) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 340.39 Tm (Check Supabase public read policies and browser network errors.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 62.00 324.39 Tm (-) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 324.39 Tm (Confirm the configured Supabase project URL matches the key.) Tj ET
+BT /F2 11.5 Tf 0.20 0.38 0.12 rg 1 0 0 1 54.00 298.39 Tm (A deployed change is not visible) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 62.00 278.89 Tm (-) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 278.89 Tm (Increase CACHE_VERSION in public/sw.js.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 62.00 262.89 Tm (-) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 262.89 Tm (Run npm run assets:manifest.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 62.00 246.89 Tm (-) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 246.89 Tm (Deploy again.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 62.00 230.89 Tm (-) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 230.89 Tm (Fully close and reopen the installed PWA, or clear the site's service-worker storage during) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 217.89 Tm (testing.) Tj ET
+BT /F2 11.5 Tf 0.20 0.38 0.12 rg 1 0 0 1 54.00 191.89 Tm (English recipe details remain Slovenian) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 62.00 172.39 Tm (-) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 172.39 Tm (Confirm the recipe ID has an entry in public/recipe-field-translations.js, or provide the) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 159.39 Tm (corresponding *_en database field.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 62.00 143.39 Tm (-) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 143.39 Tm (Confirm steps_en is a valid array or JSON array.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 62.00 127.39 Tm (-) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 127.39 Tm (Keep the recipe title in name_sl; titles must not be translated.) Tj ET
+BT /F2 11.5 Tf 0.20 0.38 0.12 rg 1 0 0 1 54.00 101.39 Tm (Email returns HTTP 500) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 62.00 81.89 Tm (-) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 81.89 Tm (Review Edge Function logs in Supabase.) Tj ET
+BT /F1 8 Tf 0.42 0.40 0.35 rg 1 0 0 1 54 28 Tm (Version 2.0) Tj ET
+BT /F1 8 Tf 0.42 0.40 0.35 rg 1 0 0 1 480 28 Tm (Page 7) Tj ET
+endstream
+endobj
+19 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595.28 841.89] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> /Contents 18 0 R >>
+endobj
+20 0 obj
+<< /Length 7088 >>
+stream
+0.35 0.55 0.18 rg 0 812 595.28 29.89 re f
+BT /F2 8 Tf 1 1 1 rg 1 0 0 1 54 823 Tm (ZDRAVO JEM) Tj ET
+BT /F1 8 Tf 1 1 1 rg 1 0 0 1 415 823 Tm (PROJECT DOCUMENTATION) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 62.00 779.89 Tm (-) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 779.89 Tm (Confirm Gmail values are Supabase secrets, not only local Netlify values.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 62.00 763.89 Tm (-) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 763.89 Tm (Check OAuth refresh-token validity.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 62.00 747.89 Tm (-) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 747.89 Tm (Confirm the sender address matches the authenticated Gmail account.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 62.00 731.89 Tm (-) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 731.89 Tm (Confirm ZDRAVO_ALLOWED_ORIGINS includes the deployed kiosk origin.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 62.00 715.89 Tm (-) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 715.89 Tm (Redeploy the Edge Function after changing its source.) Tj ET
+BT /F2 11.5 Tf 0.20 0.38 0.12 rg 1 0 0 1 54.00 689.89 Tm (Puzzle controls or tray are inaccessible) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 62.00 670.39 Tm (-) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 670.39 Tm (Confirm the kiosk has loaded service-worker cache v20 or later.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 62.00 654.39 Tm (-) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 654.39 Tm (Test at the actual kiosk resolution and browser scaling.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 62.00 638.39 Tm (-) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 638.39 Tm (Use a vertical swipe inside the pieces panel to scroll.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 62.00 622.39 Tm (-) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 622.39 Tm (Move sideways from a piece to initiate dragging.) Tj ET
+BT /F2 15 Tf 0.20 0.38 0.12 rg 1 0 0 1 54.00 590.39 Tm (16. Security checklist) Tj ET
+0.77 0.83 0.64 RG 0.7 w 54 577.39 m 541.28 577.39 l S
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 62.00 564.39 Tm (-) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 564.39 Tm (Keep .env.local out of Git.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 62.00 548.39 Tm (-) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 548.39 Tm (Never expose Supabase service-role credentials to the browser.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 62.00 532.39 Tm (-) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 532.39 Tm (Keep Gmail, OAuth, and R2 secrets in server-side secret stores.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 62.00 516.39 Tm (-) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 516.39 Tm (Use least-privilege Supabase Row Level Security policies.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 62.00 500.39 Tm (-) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 500.39 Tm (Restrict allowed email-function origins to production and approved test domains.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 62.00 484.39 Tm (-) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 484.39 Tm (Rotate exposed credentials immediately.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 62.00 468.39 Tm (-) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 468.39 Tm (Keep dependencies, browser, operating system, and Supabase CLI current.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 62.00 452.39 Tm (-) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 452.39 Tm (Review Content Security Policy when adding a new external service.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 62.00 436.39 Tm (-) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 76.00 436.39 Tm (Back up Supabase data and storage according to the project's recovery requirements.) Tj ET
+BT /F2 15 Tf 0.20 0.38 0.12 rg 1 0 0 1 54.00 404.39 Tm (17. Release checklist) Tj ET
+0.77 0.83 0.64 RG 0.7 w 54 391.39 m 541.28 391.39 l S
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 378.39 Tm (Before each production release:) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 58.00 358.39 Tm (1.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 72.00 358.39 Tm (Review changes for accidentally committed secrets.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 58.00 342.39 Tm (2.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 72.00 342.39 Tm (Run npm run build.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 58.00 326.39 Tm (3.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 72.00 326.39 Tm (Run an ES-module bundle or syntax validation.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 58.00 310.39 Tm (4.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 72.00 310.39 Tm (Verify SL and EN across every screen; recipe names must remain Slovenian.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 58.00 294.39 Tm (5.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 72.00 294.39 Tm (Test both games with touch input.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 58.00 278.39 Tm (6.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 72.00 278.39 Tm (Confirm Hint, Restart, and Complete remain visible at kiosk resolution.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 58.00 262.39 Tm (7.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 72.00 262.39 Tm (Test puzzle-tray vertical scrolling and piece dragging.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 58.00 246.39 Tm (8.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 72.00 246.39 Tm (Send a test recipe email and wait for the five-second success-popup close.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 58.00 230.39 Tm (9.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 72.00 230.39 Tm (Test the QR page on a phone.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 58.00 214.39 Tm (10.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 72.00 214.39 Tm (Test a warm offline restart.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 58.00 198.39 Tm (11.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 72.00 198.39 Tm (Confirm the service-worker cache version was increased for shell changes.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 58.00 182.39 Tm (12.) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 72.00 182.39 Tm (Deploy and restart the installed kiosk once.) Tj ET
+BT /F2 15 Tf 0.20 0.38 0.12 rg 1 0 0 1 54.00 150.39 Tm (18. Support handover information) Tj ET
+0.77 0.83 0.64 RG 0.7 w 54 137.39 m 541.28 137.39 l S
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 124.39 Tm (Maintain a private operational record containing the production URLs, Supabase project owner,) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 111.39 Tm (Netlify site owner, Gmail account owner, OAuth project owner, R2 account owner, backup procedure,) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 98.39 Tm (and credential-rotation schedule. Do not place actual passwords, keys, tokens, or recovery codes in) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 85.39 Tm (this PDF.) Tj ET
+BT /F1 8 Tf 0.42 0.40 0.35 rg 1 0 0 1 54 28 Tm (Version 2.0) Tj ET
+BT /F1 8 Tf 0.42 0.40 0.35 rg 1 0 0 1 480 28 Tm (Page 8) Tj ET
+endstream
+endobj
+21 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595.28 841.89] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> /Contents 20 0 R >>
+endobj
+22 0 obj
+<< /Length 587 >>
+stream
+0.35 0.55 0.18 rg 0 812 595.28 29.89 re f
+BT /F2 8 Tf 1 1 1 rg 1 0 0 1 54 823 Tm (ZDRAVO JEM) Tj ET
+BT /F1 8 Tf 1 1 1 rg 1 0 0 1 415 823 Tm (PROJECT DOCUMENTATION) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 779.89 Tm (Project name: Zdravo Jem Application type: Installable static PWA Primary target: 55-inch portrait) Tj ET
+BT /F1 9.5 Tf 0.25 0.24 0.20 rg 1 0 0 1 54.00 766.89 Tm (touchscreen kiosk Frontend languages: Slovenian and English) Tj ET
+BT /F1 8 Tf 0.42 0.40 0.35 rg 1 0 0 1 54 28 Tm (Version 2.0) Tj ET
+BT /F1 8 Tf 0.42 0.40 0.35 rg 1 0 0 1 480 28 Tm (Page 9) Tj ET
+endstream
+endobj
+23 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595.28 841.89] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> /Contents 22 0 R >>
+endobj
+xref
+0 24
+0000000000 65535 f 
+0000000015 00000 n 
+0000000064 00000 n 
+0000000176 00000 n 
+0000000246 00000 n 
+0000000321 00000 n 
+0000000389 00000 n 
+0000001335 00000 n 
+0000001487 00000 n 
+0000008052 00000 n 
+0000008204 00000 n 
+0000014178 00000 n 
+0000014332 00000 n 
+0000020330 00000 n 
+0000020484 00000 n 
+0000026315 00000 n 
+0000026469 00000 n 
+0000032116 00000 n 
+0000032270 00000 n 
+0000038612 00000 n 
+0000038766 00000 n 
+0000045906 00000 n 
+0000046060 00000 n 
+0000046698 00000 n 
+trailer
+<< /Size 24 /Root 1 0 R >>
+startxref
+46852
+%%EOF

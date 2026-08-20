@@ -1,5 +1,5 @@
 {
-  "bytes": 54454830,
+  "bytes": 54503224,
   "files": [
     "/assets/fonts/DMSans-latin.woff2",
     "/assets/fonts/DMSans-latinext.woff2",
@@ -493,6 +493,7 @@
     "/assets/images/recipes/zganci.webp",
     "/assets/images/ui/additional-advice-bulb.png",
     "/assets/images/welcome-poster.webp",
+    "/assets/images/welcome-poster2.webp",
     "/assets/logos/eu-flag.svg",
     "/assets/logos/i-feel-slovenia.svg",
     "/assets/logos/slovenia-flag.svg"

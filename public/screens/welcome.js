@@ -1,4 +1,6 @@
 const welcomePosterSrc = '../assets/images/welcome-poster.webp';
+const welcomePoster2Src = '../assets/images/welcome-poster2.webp';
+const POSTER2_DURATION_MS = 2000;
 
 export function render() {
   return `
@@ -12,6 +14,14 @@ export function render() {
           decoding="async"
           fetchpriority="high"
         />
+        <img
+          class="welcome-poster welcome-poster--second"
+          src="${welcomePoster2Src}"
+          alt=""
+          aria-hidden="true"
+          loading="eager"
+          decoding="async"
+        />
       </div>
     </section>
   `;
@@ -23,7 +33,28 @@ export function bind({ actions, root }) {
     return;
   }
 
+  const poster2 = screen.querySelector('.welcome-poster--second');
+  let tapped = false;
+  let timer = null;
+
   screen.addEventListener('pointerdown', () => {
-    actions.goTo('home');
+    if (tapped) {
+      return;
+    }
+    tapped = true;
+
+    if (!poster2) {
+      actions.goTo('home');
+      return;
+    }
+
+    poster2.classList.add('is-visible');
+    timer = setTimeout(() => {
+      timer = null;
+      // The screen may have been re-rendered (e.g. locale switch) while waiting.
+      if (poster2.isConnected) {
+        actions.goTo('home');
+      }
+    }, POSTER2_DURATION_MS);
   });
 }

@@ -14,7 +14,8 @@
     "vendor:qrcode": "node scripts/vendor-qrcode.cjs",
     "recipe-share:build": "node scripts/build-recipe-share.cjs",
     "recipe-qr:sync": "node scripts/sync-recipe-qr-pages.cjs",
-    "recipe-qr:dry-run": "node scripts/sync-recipe-qr-pages.cjs --dry-run"
+    "recipe-qr:dry-run": "node scripts/sync-recipe-qr-pages.cjs --dry-run",
+    "docs:pdf": "node scripts/build-docs-pdf.cjs"
   },
   "devDependencies": {
     "@aws-sdk/client-s3": "^3.1067.0",
